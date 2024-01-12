@@ -8,24 +8,24 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import jdk.jfr.Timestamp;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
 import uk.jinhy.survey_mate_api.data.Data;
 import uk.jinhy.survey_mate_api.member.Member;
 
 @Entity
 @Getter
-@Setter
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class DataComment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,10 +33,12 @@ public class DataComment {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
+    @NotNull
     private Member dataCommenter;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "data_id")
+    @NotNull
     private Data data;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -47,9 +49,10 @@ public class DataComment {
     @OneToMany(mappedBy = "parentDataComment", orphanRemoval = true)
     private List<DataComment> children = new ArrayList<>();
 
+    @NotNull
     private String content;
 
-    @Timestamp
+    @CreatedDate
     private LocalDateTime createdAt;
 
     public void confirmDataCommenter(Member dataCommenter){

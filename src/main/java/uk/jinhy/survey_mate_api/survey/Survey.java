@@ -11,33 +11,33 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import java.awt.image.MultiPixelPackedSampleModel;
-import java.time.LocalDateTime;
+import jakarta.validation.constraints.NotNull;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
-import jdk.jfr.Timestamp;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import uk.jinhy.survey_mate_api.answer.Answer;
 import uk.jinhy.survey_mate_api.member.Member;
 import uk.jinhy.survey_mate_api.surveyComment.SurveyComment;
 
 @Entity
 @Getter
-@Setter
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Survey {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long surveyId;
 
+    @NotNull
     private String linkUrl;
 
+    @NotNull
     private Long goal;
 
     private Long reward;
@@ -46,14 +46,15 @@ public class Survey {
     @JoinColumn(name = "member_id")
     private Member registrant;
 
+    @NotNull
     private Long numberOfQuestions;
 
-    @Timestamp
-    private LocalDateTime estimatedTime;
+    private LocalTime estimatedTime;
 
     @Enumerated(EnumType.STRING)
     private SurveyStatus status;
 
+    @NotNull
     private String rewardUrl;
 
     @Builder.Default

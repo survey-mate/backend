@@ -6,6 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
@@ -13,7 +14,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import uk.jinhy.survey_mate_api.answer.Answer;
 import uk.jinhy.survey_mate_api.data.Data;
 import uk.jinhy.survey_mate_api.data_comment.DataComment;
@@ -26,27 +26,33 @@ import uk.jinhy.survey_mate_api.surveyComment.SurveyComment;
 
 @Entity
 @Getter
-@Setter
 @Builder
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long memberId;
 
+    @NotNull
     private String nickname;
 
+    @NotNull
     private String email;
 
+    @NotNull
     private String password;
 
+    @NotNull
     private boolean messageConsent;
 
+    @NotNull
     private boolean marketingConsent;
 
+    @NotNull
     private String school;
 
+    @NotNull
     private String yearOfAdmission;
 
     private Long point;
