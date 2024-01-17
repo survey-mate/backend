@@ -9,19 +9,21 @@ import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import uk.jinhy.survey_mate_api.answer.Answer;
+import uk.jinhy.survey_mate_api.survey.domain.Answer;
 import uk.jinhy.survey_mate_api.data.Data;
 import uk.jinhy.survey_mate_api.data_comment.DataComment;
 import uk.jinhy.survey_mate_api.deviceToken.DeviceToken;
 import uk.jinhy.survey_mate_api.notification.Notification;
 import uk.jinhy.survey_mate_api.purchaseHistory.PurchaseHistory;
 import uk.jinhy.survey_mate_api.statement.Statement;
-import uk.jinhy.survey_mate_api.survey.Survey;
+import uk.jinhy.survey_mate_api.survey.domain.Survey;
 import uk.jinhy.survey_mate_api.surveyComment.SurveyComment;
 
 @Entity
@@ -131,4 +133,7 @@ public class Member {
         surveyCommentList.add(surveyComment);
     }
 
+    public boolean equals(Member member) {
+        return Objects.equals(member.getMemberId(), this.memberId);
+    }
 }

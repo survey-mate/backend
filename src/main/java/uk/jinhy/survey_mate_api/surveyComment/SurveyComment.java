@@ -19,7 +19,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import uk.jinhy.survey_mate_api.member.Member;
-import uk.jinhy.survey_mate_api.survey.Survey;
+import uk.jinhy.survey_mate_api.survey.domain.Survey;
 
 @Entity
 @Getter

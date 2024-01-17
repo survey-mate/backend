@@ -1,4 +1,4 @@
-package uk.jinhy.survey_mate_api.survey;
+package uk.jinhy.survey_mate_api.survey.domain;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -12,15 +12,20 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotNull;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import uk.jinhy.survey_mate_api.answer.Answer;
+import org.springframework.data.annotation.CreatedDate;
 import uk.jinhy.survey_mate_api.member.Member;
 import uk.jinhy.survey_mate_api.surveyComment.SurveyComment;
 
@@ -34,12 +39,19 @@ public class Survey {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long surveyId;
 
+    @CreatedDate
+    private LocalDate createdAt;
+
+    @NotNull
+    private LocalDateTime endedAt;
+
     @NotNull
     private String linkUrl;
 
     @NotNull
     private Long goal;
 
+    @NotNull
     private Long reward;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -50,9 +62,6 @@ public class Survey {
     private Long numberOfQuestions;
 
     private LocalTime estimatedTime;
-
-    @Enumerated(EnumType.STRING)
-    private SurveyStatus status;
 
     @NotNull
     private String rewardUrl;
@@ -76,5 +85,15 @@ public class Survey {
     public void confirmRegistrant(Member registrant){
         this.registrant = registrant;
         registrant.addSurvey(this);
+    }
+
+    public boolean isSurveyEnded() {
+        LocalDateTime currentTime = LocalDateTime.now();
+        return currentTime.isBefore(this.endedAt);
+    }
+
+    public boolean isAnswered(Member member) {
+        return answerList.stream()
+                .anyMatch(a -> a.getRespondent().equals(member));
     }
 }
