@@ -1,9 +1,7 @@
-package uk.jinhy.survey_mate_api.survey.domain;
+package uk.jinhy.survey_mate_api.survey.domain.entity;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -18,7 +16,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -27,7 +24,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import uk.jinhy.survey_mate_api.member.Member;
-import uk.jinhy.survey_mate_api.surveyComment.SurveyComment;
 
 @Entity
 @Getter
@@ -49,9 +45,6 @@ public class Survey {
     private String linkUrl;
 
     @NotNull
-    private Long goal;
-
-    @NotNull
     private Long reward;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -59,9 +52,10 @@ public class Survey {
     private Member registrant;
 
     @NotNull
-    private Long numberOfQuestions;
+    private String title;
 
-    private LocalTime estimatedTime;
+    @NotNull
+    private String description;
 
     @NotNull
     private String rewardUrl;
@@ -95,5 +89,17 @@ public class Survey {
     public boolean isAnswered(Member member) {
         return answerList.stream()
                 .anyMatch(a -> a.getRespondent().equals(member));
+    }
+
+    public void updateTitle(String newTitle) {
+        title = newTitle;
+    }
+
+    public void updateLinkUrl(String newLinkUrl) {
+        linkUrl = newLinkUrl;
+    }
+
+    public void updateDescription(String newDescription) {
+        description = newDescription;
     }
 }
