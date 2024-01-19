@@ -20,13 +20,13 @@ public class ApiResponse<T> {
     private final String message;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Object data;
+    private T data;
 
-   /* public static <T> ApiResponse<T> onSuccess(T result){
-        return new ApiResponse<>();
+    public static <T> ApiResponse<T> onSuccess(String status, String message, T data) {
+        return new ApiResponse<>(true, status, message, data);
     }
-*/
-    public static <T> ApiResponse<T> onFailure (String status, String message, Object data){
+
+    public static <T> ApiResponse<T> onFailure (String status, String message, T data){
         return new ApiResponse<>(false, status, message, data);
     }
 
