@@ -29,5 +29,8 @@ cloud:
     stack:
       auto: false
 
+jwt:
+  secret-key: asdf
+
 server:
   port: ${PORT}
