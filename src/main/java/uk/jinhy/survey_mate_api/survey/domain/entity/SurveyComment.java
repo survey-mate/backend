@@ -1,4 +1,4 @@
-package uk.jinhy.survey_mate_api.surveyComment;
+package uk.jinhy.survey_mate_api.survey.domain.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -19,7 +19,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import uk.jinhy.survey_mate_api.member.Member;
-import uk.jinhy.survey_mate_api.survey.Survey;
 
 @Entity
 @Getter

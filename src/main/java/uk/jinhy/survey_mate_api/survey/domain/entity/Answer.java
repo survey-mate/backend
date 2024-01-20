@@ -1,4 +1,4 @@
-package uk.jinhy.survey_mate_api.answer;
+package uk.jinhy.survey_mate_api.survey.domain.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -14,7 +14,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import uk.jinhy.survey_mate_api.member.Member;
-import uk.jinhy.survey_mate_api.survey.Survey;
+import uk.jinhy.survey_mate_api.survey.domain.entity.Survey;
 
 @Entity
 @Getter
