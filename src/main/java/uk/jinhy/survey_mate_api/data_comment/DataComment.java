@@ -18,7 +18,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
-import uk.jinhy.survey_mate_api.data.Data;
+import uk.jinhy.survey_mate_api.data.domain.entity.Data;
 import uk.jinhy.survey_mate_api.member.Member;
 
 @Entity
