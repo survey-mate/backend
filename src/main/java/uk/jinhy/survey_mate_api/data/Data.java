@@ -18,7 +18,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import uk.jinhy.survey_mate_api.data_comment.DataComment;
-import uk.jinhy.survey_mate_api.member.Member;
+import uk.jinhy.survey_mate_api.auth.domain.entity.Member;
 import uk.jinhy.survey_mate_api.purchaseHistory.PurchaseHistory;
 
 @Entity

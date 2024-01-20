@@ -1,4 +1,4 @@
-package uk.jinhy.survey_mate_api.common.util;
+package uk.jinhy.survey_mate_api.auth.util;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;

@@ -14,7 +14,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import uk.jinhy.survey_mate_api.data.Data;
-import uk.jinhy.survey_mate_api.member.Member;
+import uk.jinhy.survey_mate_api.auth.domain.entity.Member;
 
 @Entity
 @Getter
