@@ -22,7 +22,7 @@ import uk.jinhy.survey_mate_api.data_comment.DataComment;
 import uk.jinhy.survey_mate_api.deviceToken.DeviceToken;
 import uk.jinhy.survey_mate_api.notification.Notification;
 import uk.jinhy.survey_mate_api.data.domain.entity.PurchaseHistory;
-import uk.jinhy.survey_mate_api.statement.Statement;
+import uk.jinhy.survey_mate_api.statement.domain.entity.Statement;
 import uk.jinhy.survey_mate_api.survey.domain.entity.Survey;
 import uk.jinhy.survey_mate_api.survey.domain.entity.SurveyComment;
 
