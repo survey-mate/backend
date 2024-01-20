@@ -1,4 +1,4 @@
-package uk.jinhy.survey_mate_api.purchaseHistory;
+package uk.jinhy.survey_mate_api.data.domain.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -13,7 +13,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import uk.jinhy.survey_mate_api.data.Data;
+import uk.jinhy.survey_mate_api.data.domain.entity.Data;
 import uk.jinhy.survey_mate_api.member.Member;
 
 @Entity
