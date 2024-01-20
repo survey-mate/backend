@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import uk.jinhy.survey_mate_api.common.util.Util;
 import uk.jinhy.survey_mate_api.member.Member;
 import uk.jinhy.survey_mate_api.survey.application.dto.SurveyServiceDTO;
 import uk.jinhy.survey_mate_api.survey.domain.entity.Answer;
@@ -21,8 +22,19 @@ import java.util.List;
 public class SurveyService {
     private final SurveyRepository surveyRepository;
 
-    // TODO
-    // public Survey createSurvey(Member registrant, SurveyServiceDTO.CreateSurveyDTO dto)
+     public Survey createSurvey(Member registrant, SurveyServiceDTO.CreateSurveyDTO dto) {
+         Survey survey = Survey.builder()
+                 .reward(dto.getReward())
+                 .endedAt(LocalDateTime.now().plusDays(dto.getPeriod()))
+                 .linkUrl(dto.getLinkUrl())
+                 .rewardUrl(Util.generateRandomString())
+                 .title(dto.getTitle())
+                 .description(dto.getDescription())
+                 .registrant(registrant)
+                 .build();
+         surveyRepository.save(survey);
+         return survey;
+     }
 
     @Transactional
     public void editSurvey(Member registrant, SurveyServiceDTO.EditSurveyDTO dto) {
