@@ -6,6 +6,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import uk.jinhy.survey_mate_api.auth.domain.entity.Member;
 import uk.jinhy.survey_mate_api.auth.domain.repository.MemberRepository;
@@ -18,17 +20,22 @@ import uk.jinhy.survey_mate_api.jwt.JwtTokenProvider;
 @Service
 public class AuthService {
 
+    @Qualifier("AuthenticationManager")
     private final AuthenticationManager authenticationManager;
 
     private final JwtTokenProvider jwtTokenProvider;
 
     private final MemberRepository memberRepository;
 
+    private final UserDetailsServiceImpl userDetailsServiceImpl;
+
+    private final PasswordEncoder passwordEncoder;
+
     public Member join(MemberControllerDTO.MemberRequestDTO requestDTO){
         Member member = Member.builder()
                 .memberId(requestDTO.getMemberId())
                 .nickname(requestDTO.getNickname())
-                .password(requestDTO.getPassword())
+                .password(passwordEncoder.encode(requestDTO.getPassword()))
                 .messageConsent(requestDTO.isMessageConsent())
                 .marketingConsent(requestDTO.isMarketingConsent())
                 .point(0L)
@@ -46,9 +53,11 @@ public class AuthService {
 
         Authentication authentication = authenticationManager.authenticate(authenticationToken);
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+        UserDetails userDetails = userDetailsServiceImpl.loadUserByUsername(id);
+        String jwtToken = jwtTokenProvider.createToken(userDetails.getUsername());
+       /* SecurityContextHolder.getContext().setAuthentication(authentication);*/
 
-        return jwtTokenProvider.createToken(id);
+        return jwtToken;
 
     }
 

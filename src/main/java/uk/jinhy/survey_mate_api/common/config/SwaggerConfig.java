@@ -10,6 +10,7 @@ import java.util.function.Predicate;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
+import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
@@ -24,42 +25,33 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @Configuration
 public class SwaggerConfig {
-        @Bean
-        public Docket api() {
-            return new Docket(DocumentationType.SWAGGER_2)
-                    .select()
-                    .apis(RequestHandlerSelectors.basePackage("src.main.java.uk.jinhy.survey_mate_api"))
-                    .paths(PathSelectors.any())
-                    .build()
-                    .securitySchemes(Arrays.asList(apiKey()))
-                    .securityContexts(Arrays.asList(securityContext()))
-                    .apiInfo(apiInfo());
-        }
+    @Bean
+    public Docket api() {
+        return new Docket(DocumentationType.OAS_30)
+                .securityContexts(Arrays.asList(securityContext()))
+                .securitySchemes(Arrays.asList(apiKey()))
+                .select()
+                .apis(RequestHandlerSelectors.any())
+                .paths(PathSelectors.any())
+                .build();
+    }
 
-        private ApiKey apiKey() {
-            return new ApiKey("JWT", HttpHeaders.AUTHORIZATION, In.HEADER.name());
-        }
+    private SecurityContext securityContext() {
+        return SecurityContext.builder()
+                .securityReferences(defaultAuth())
+                .build();
+    }
 
-        private SecurityContext securityContext() {
-            return SecurityContext.builder()
-                    .securityReferences(defaultAuth())
-                    .forPaths(PathSelectors.any())
-                    .build();
-        }
+    private List<SecurityReference> defaultAuth() {
+        AuthorizationScope authorizationScope = new AuthorizationScope("global", "accessEverything");
+        AuthorizationScope[] authorizationScopes = new AuthorizationScope[1];
+        authorizationScopes[0] = authorizationScope;
+        return Arrays.asList(new SecurityReference("Authorization", authorizationScopes));
+    }
 
-        private List<SecurityReference> defaultAuth() {
-            AuthorizationScope authorizationScope = new AuthorizationScope("global", "accessEverything");
-            AuthorizationScope[] authorizationScopes = new AuthorizationScope[]{authorizationScope};
-            return Arrays.asList(new SecurityReference("JWT", authorizationScopes));
-        }
-
-        private ApiInfo apiInfo() {
-            return new ApiInfoBuilder()
-                    .title("Your API Title")
-                    .description("Your API Description")
-                    .version("1.0")
-                    .build();
-        }
+    private ApiKey apiKey() {
+        return new ApiKey("Authorization", "Authorization", "header");
+    }
 
 
     @Bean

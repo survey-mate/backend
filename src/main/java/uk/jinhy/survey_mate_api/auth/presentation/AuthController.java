@@ -12,7 +12,7 @@ import uk.jinhy.survey_mate_api.auth.presentation.dto.LoginControllerDTO;
 import uk.jinhy.survey_mate_api.auth.presentation.dto.MemberControllerDTO;
 import uk.jinhy.survey_mate_api.common.response.ApiResponse;
 import uk.jinhy.survey_mate_api.common.response.Status;
-import uk.jinhy.survey_mate_api.jwt.JwtTokenInfo;
+
 
 @RestController
 @RequiredArgsConstructor

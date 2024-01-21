@@ -5,6 +5,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
@@ -18,6 +22,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import uk.jinhy.survey_mate_api.auth.application.service.UserDetailsServiceImpl;
 import uk.jinhy.survey_mate_api.jwt.JwtAccessDeniedHandler;
 import uk.jinhy.survey_mate_api.jwt.JwtAuthenticationEntryPoint;
 import uk.jinhy.survey_mate_api.jwt.JwtAuthenticationFilter;
@@ -29,15 +34,19 @@ public class SecurityConfig{
 
     private final JwtTokenProvider jwtTokenProvider;
 
+    private final UserDetailsServiceImpl userDetailsServiceimpl;
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    /*@Bean
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
-    }*/
+    @Bean(name = "AuthenticationManager")
+    public AuthenticationManager loginAuthenticationManager() {
+        DaoAuthenticationProvider loginProvider = new DaoAuthenticationProvider();
+        loginProvider.setUserDetailsService(userDetailsServiceimpl);
+        loginProvider.setPasswordEncoder(passwordEncoder());
+        return new ProviderManager(Arrays.asList(loginProvider));
+    }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {

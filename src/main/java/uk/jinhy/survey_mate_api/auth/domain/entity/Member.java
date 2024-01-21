@@ -36,9 +36,6 @@ public class Member {
     private String memberId;
 
     @NotNull
-    private String name;
-
-    @NotNull
     private String nickname;
 
     @NotNull
