@@ -28,6 +28,8 @@ public class StatementService {
         return statementRepository.findByStatementId(statementId).get();
     }
 
+    public List<Statement> getStatementList(Member member) { return statementRepository.findByMember(member); }
+
     public Long getTotalAmount(Member member) {
         return statementRepository.findTotalAmountByMember(member);
     }
