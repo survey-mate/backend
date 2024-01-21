@@ -13,7 +13,6 @@ import uk.jinhy.survey_mate_api.auth.domain.entity.Member;
 import uk.jinhy.survey_mate_api.auth.domain.repository.MemberRepository;
 import uk.jinhy.survey_mate_api.auth.presentation.dto.LoginControllerDTO;
 import uk.jinhy.survey_mate_api.auth.presentation.dto.MemberControllerDTO;
-import uk.jinhy.survey_mate_api.jwt.JwtTokenInfo;
 import uk.jinhy.survey_mate_api.jwt.JwtTokenProvider;
 
 @RequiredArgsConstructor
