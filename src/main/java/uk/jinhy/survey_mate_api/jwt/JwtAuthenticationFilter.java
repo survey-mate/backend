@@ -1,11 +1,15 @@
 package uk.jinhy.survey_mate_api.jwt;
 
+import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -13,31 +17,21 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import org.springframework.web.server.ResponseStatusException;
 
 @RequiredArgsConstructor
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    public static final String AUTHORIZATION_HEADER = "Authorization";
-
-    public static final String BEARER_PREFIX = "Bearer ";
-
     private final JwtTokenProvider jwtTokenProvider;
-
-    private static final List<String> EXCLUDE_URL =
-            List.of("/",
-                    "/h2",
-                    "/members/signup",
-                    "/auth/login",
-                    "/auth/reissue");
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
-        String jwt = resolveToken(request);
+        String jwt = extractJwtToken(request.getHeader("Authorization"));
 
-        if (StringUtils.hasText(jwt) && jwtTokenProvider.validateToken(jwt)) {
+        if(jwt != null && jwtTokenProvider.validateToken(jwt)){
             Authentication authentication = jwtTokenProvider.getAuthentication(jwt);
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
@@ -45,17 +39,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    @Override
-    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        boolean result = EXCLUDE_URL.stream().anyMatch(exclude -> exclude.equalsIgnoreCase(request.getServletPath()));
-
-        return result;
-    }
-
-    private String resolveToken(HttpServletRequest request) {
-        String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
-            return bearerToken.substring(7);
+    private String extractJwtToken(String header) {
+        if (header != null && header.startsWith("Bearer ")) {
+            return header.replace("Bearer ", "").trim();
         }
         return null;
     }

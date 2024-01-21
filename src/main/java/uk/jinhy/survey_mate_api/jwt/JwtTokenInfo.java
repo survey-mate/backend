@@ -9,6 +9,8 @@ import lombok.Data;
 @AllArgsConstructor
 public class JwtTokenInfo {
 
+    private String grantType;
+
     private String accessToken;
 
     private String refreshToken;

@@ -8,6 +8,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
@@ -27,59 +28,45 @@ import org.springframework.stereotype.Component;
 @Component
 public class JwtTokenProvider {
 
-    private static final String AUTHORITIES_KEY = "auth";
-
-    private static final String BEARER_TYPE = "Bearer";
-
     private static final long ACCESS_TOKEN_DURATION = 30L * 60L * 1000L;
 
     private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7;
-    @Value("${jwt.secret-key}") String secretKey;
-    private final Key key;
 
-    public JwtTokenProvider() {
+
+    @Value("${jwt.secret}") String secretKey;
+
+    private  Key key;
+
+    @PostConstruct
+    public void init() {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public JwtTokenInfo createToken(Authentication authentication){
-
-        String authorities = authentication.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.joining(","));
+    public String createToken(String id){
 
         Date now = new Date();
-
-        Date accessTokenExpiry = new Date(now.getTime() + ACCESS_TOKEN_DURATION);
-        String accessToken = Jwts.builder()
-                .setSubject(authentication.getName())
-                .claim(AUTHORITIES_KEY, authorities)
+        Claims claims = Jwts.claims()
+                .setSubject("Access Token")
                 .setIssuedAt(now)
-                .setExpiration(accessTokenExpiry)
-                .signWith(SignatureAlgorithm.HS256, key)
-                .compact();
+                .setExpiration(new Date(now.getTime() + ACCESS_TOKEN_DURATION));
 
-        String refreshToken = Jwts.builder()
-                .setExpiration(new Date(now.getTime() + REFRESH_TOKEN_EXPIRE_TIME))
-                .signWith(key, SignatureAlgorithm.HS512)
+        return Jwts.builder()
+                .setClaims(claims)
+                .signWith(key)
                 .compact();
-
-        return JwtTokenInfo.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
-                .build();
     }
 
     public Authentication getAuthentication(String accessToken){
 
         Claims claims = parseClaims(accessToken);
 
-        if(claims.get(AUTHORITIES_KEY) == null){
+        if(claims.get(key) == null){
             throw new RuntimeException("권한 정보가 없는 토큰입니다.");
         }
 
         Collection<? extends GrantedAuthority> authorities =
-                Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
+                Arrays.stream(claims.get(key).toString().split(","))
                         .map(SimpleGrantedAuthority::new)
                         .collect(Collectors.toList());
 
@@ -87,6 +74,8 @@ public class JwtTokenProvider {
 
         return new UsernamePasswordAuthenticationToken(principal, "", authorities);
     }
+
+
 
     public boolean validateToken(String token) {
         try {

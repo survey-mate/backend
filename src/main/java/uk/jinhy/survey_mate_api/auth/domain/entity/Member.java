@@ -33,8 +33,10 @@ import uk.jinhy.survey_mate_api.survey.domain.entity.SurveyComment;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String email;
+    private String memberId;
+
+    @NotNull
+    private String name;
 
     @NotNull
     private String nickname;
@@ -47,12 +49,6 @@ public class Member {
 
     @NotNull
     private boolean marketingConsent;
-
-    @NotNull
-    private String school;
-
-    @NotNull
-    private String yearOfAdmission;
 
     private Long point;
 
@@ -131,6 +127,6 @@ public class Member {
     }
 
     public boolean equals(Member member) {
-        return Objects.equals(member.getEmail(), this.email);
+        return Objects.equals(member.getMemberId(), this.memberId);
     }
 }

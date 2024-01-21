@@ -11,7 +11,7 @@ import uk.jinhy.survey_mate_api.jwt.JwtTokenProvider;
 @Configuration
 public class JwtConfig {
 
-    @Value("${jwt.secret-key}")
+    @Value("${jwt.secret}")
     private String plainSecretKey;
 
 
