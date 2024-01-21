@@ -71,7 +71,7 @@ public class SurveyService {
 
     public void addAnswer(Member respondent, Long surveyId) {
         Survey survey = surveyRepository.findBySurveyId(surveyId).get();
-        if (!survey.isAnswered(respondent)) {
+        if (!survey.isResponded(respondent)) {
             return;
         }
         Answer answer = Answer.builder()
@@ -101,5 +101,9 @@ public class SurveyService {
 
     public List<Survey> getRecentSurveyList() {
         return surveyRepository.findRecentSurvey();
+    }
+
+    public boolean isResponded(Survey survey, Member member) {
+         return survey.isResponded(member);
     }
 }

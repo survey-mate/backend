@@ -86,7 +86,7 @@ public class Survey {
         return currentTime.isBefore(this.endedAt);
     }
 
-    public boolean isAnswered(Member member) {
+    public boolean isResponded(Member member) {
         return answerList.stream()
                 .anyMatch(a -> a.getRespondent().equals(member));
     }
