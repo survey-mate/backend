@@ -21,7 +21,7 @@ public class SurveyControllerDTO {
     @Getter
     @Builder
     @AllArgsConstructor
-    public class EditSurveyRequestDTO {
+    public static class EditSurveyRequestDTO {
         public String title;
         public String description;
         public String linkUrl;
