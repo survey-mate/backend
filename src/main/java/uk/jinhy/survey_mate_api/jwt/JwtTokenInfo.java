@@ -1,4 +1,4 @@
-package uk.jinhy.survey_mate_api.auth.presentation.dto;
+package uk.jinhy.survey_mate_api.jwt;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

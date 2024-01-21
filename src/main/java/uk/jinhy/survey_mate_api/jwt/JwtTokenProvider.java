@@ -1,4 +1,4 @@
-package uk.jinhy.survey_mate_api.auth.util;
+package uk.jinhy.survey_mate_api.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -6,12 +6,15 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.UnsupportedJwtException;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.security.Key;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -19,42 +22,46 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-import uk.jinhy.survey_mate_api.auth.presentation.dto.JwtTokenInfo;
-import uk.jinhy.survey_mate_api.common.config.JwtConfig;
 
 @Slf4j
 @Component
-public class JwtTokenUtil {
+public class JwtTokenProvider {
 
-    private final Key key;
+    private static final String AUTHORITIES_KEY = "auth";
+
+    private static final String BEARER_TYPE = "Bearer";
 
     private static final long ACCESS_TOKEN_DURATION = 30L * 60L * 1000L;
 
-    private static final long REFRESH_TOKEN_DURATION = 60L * 60L * 1000L * 24L * 14L;
+    private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7;
+    @Value("${jwt.secret-key}") String secretKey;
+    private final Key key;
 
-    public JwtTokenUtil(JwtConfig jwtConfig) {
-        this.key = jwtConfig.jwtSecretKey();
+    public JwtTokenProvider() {
+        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
+        this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public JwtTokenInfo createToken(String id){
-        Date now = new Date();
-        Date accessTokenExpiry = new Date(now.getTime() + ACCESS_TOKEN_DURATION);
-        Claims claims = Jwts.claims();
-        claims.put("id", id);
+    public JwtTokenInfo createToken(Authentication authentication){
 
+        String authorities = authentication.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.joining(","));
+
+        Date now = new Date();
+
+        Date accessTokenExpiry = new Date(now.getTime() + ACCESS_TOKEN_DURATION);
         String accessToken = Jwts.builder()
-                .setClaims(claims)
+                .setSubject(authentication.getName())
+                .claim(AUTHORITIES_KEY, authorities)
                 .setIssuedAt(now)
                 .setExpiration(accessTokenExpiry)
                 .signWith(SignatureAlgorithm.HS256, key)
                 .compact();
 
-        Date refreshTokenExpiry = new Date(now.getTime() + REFRESH_TOKEN_DURATION);
         String refreshToken = Jwts.builder()
-                .setClaims(claims)
-                .setIssuedAt(now)
-                .setExpiration(refreshTokenExpiry)
-                .signWith(SignatureAlgorithm.HS256, key)
+                .setExpiration(new Date(now.getTime() + REFRESH_TOKEN_EXPIRE_TIME))
+                .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
 
         return JwtTokenInfo.builder()
@@ -64,19 +71,20 @@ public class JwtTokenUtil {
     }
 
     public Authentication getAuthentication(String accessToken){
+
         Claims claims = parseClaims(accessToken);
 
-        //TO DO 커스텀 예외로 수정하기
-        if(claims.get("id") == null){
+        if(claims.get(AUTHORITIES_KEY) == null){
             throw new RuntimeException("권한 정보가 없는 토큰입니다.");
         }
 
         Collection<? extends GrantedAuthority> authorities =
-                Arrays.stream(claims.get("id").toString().split(","))
+                Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
                         .map(SimpleGrantedAuthority::new)
                         .collect(Collectors.toList());
 
         UserDetails principal = new User(claims.getSubject(), "", authorities);
+
         return new UsernamePasswordAuthenticationToken(principal, "", authorities);
     }
 

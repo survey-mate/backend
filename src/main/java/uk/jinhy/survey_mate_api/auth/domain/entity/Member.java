@@ -131,6 +131,6 @@ public class Member {
     }
 
     public boolean equals(Member member) {
-        return Objects.equals(member.getMemberId(), this.memberId);
+        return Objects.equals(member.getEmail(), this.email);
     }
 }
