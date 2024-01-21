@@ -26,20 +26,6 @@ import static uk.jinhy.survey_mate_api.common.response.ApiResponse.onSuccess;
 public class StatementController {
     private final StatementService statementService;
 
-    @PostMapping(value = "/create")
-    @Operation(summary = "사용내역 생성")
-    public ApiResponse<?> createStatement(@ModelAttribute StatementControllerDTO.CreateStatementDTO controllerDTO) {
-        Member member = controllerDTO.getMember();
-        StatementServiceDTO.CreateStatementDTO serviceDTO = StatementConverter.convertCreateDto(controllerDTO);
-
-        // TODO
-        // 인증 실패 시 예외처리
-
-        Statement createdStatement = statementService.createStatement(member, serviceDTO);
-
-        return ApiResponse.onSuccess(Status.CREATED.getHttpStatus().toString(), Status.CREATED.getMessage(), createdStatement.getStatementId());
-    }
-
     @GetMapping(value = "/list")
     @Operation(summary = "전체 사용내역 조회")
     public ApiResponse<?> getStatementList(@ModelAttribute StatementControllerDTO.GetStatementDTO controllerDTO) {
