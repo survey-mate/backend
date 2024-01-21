@@ -28,7 +28,7 @@ public class StatementService {
         return statementRepository.findByStatementId(statementId).get();
     }
 
-    public Long getTotalAmountOfMember(Member member) {
+    public Long getTotalAmount(Member member) {
         return statementRepository.findTotalAmountByMember(member);
     }
 
