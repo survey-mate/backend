@@ -1,4 +1,4 @@
-package uk.jinhy.survey_mate_api.data;
+package uk.jinhy.survey_mate_api.data.domain.entity;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -10,6 +10,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotNull;
+
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
@@ -17,9 +19,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
 import uk.jinhy.survey_mate_api.data_comment.DataComment;
 import uk.jinhy.survey_mate_api.auth.domain.entity.Member;
-import uk.jinhy.survey_mate_api.purchaseHistory.PurchaseHistory;
+
 
 @Entity
 @Getter
@@ -31,6 +34,9 @@ public class Data {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long dataId;
 
+    @CreatedDate
+    private LocalDate createdAt;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     @NotNull
@@ -39,8 +45,13 @@ public class Data {
     @NotNull
     private String fileUrl;
 
+    @NotNull
+    private String title;
+
+    @NotNull
     private String description;
 
+    @NotNull
     private Long price;
 
     @Builder.Default
@@ -64,4 +75,7 @@ public class Data {
         seller.addData(this);
     }
 
+    public void updateTitle(String newTitle) { title = newTitle; }
+    public void updateDescription(String newDescription) { title = newDescription; }
+    public void updateFileUrl(String newFileUrl) { title = newFileUrl; }
 }
