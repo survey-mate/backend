@@ -88,7 +88,7 @@ public class SurveyService {
 
     public List<Survey> getSurveyList(int pageNumber) {
         Pageable pageable = PageRequest.of(pageNumber, 10);
-        return surveyRepository.findByEndedAtIsBefore(pageable, LocalDateTime.now());
+        return surveyRepository.findByEndedAtIsBeforeOrderByCreatedAtDesc(pageable, LocalDateTime.now());
     }
 
     public List<Survey> getMySurveyList(Member registrant) {

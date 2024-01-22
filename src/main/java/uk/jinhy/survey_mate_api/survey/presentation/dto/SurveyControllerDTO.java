@@ -1,10 +1,14 @@
 package uk.jinhy.survey_mate_api.survey.presentation.dto;
 
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import org.hibernate.validator.constraints.URL;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class SurveyControllerDTO {
@@ -12,9 +16,16 @@ public class SurveyControllerDTO {
     @Builder
     @AllArgsConstructor
     public static class CreateSurveyRequestDTO {
+        @NotBlank
         public String title;
+        @NotBlank
         public String description;
+        // TODO
+        // 구글폼인지 확인하는 Validator 필요
+        @URL(protocol="https")
         public String linkUrl;
+        @Min(1)
+        @Max(7)
         public Long period;
     }
 
@@ -22,8 +33,11 @@ public class SurveyControllerDTO {
     @Builder
     @AllArgsConstructor
     public static class EditSurveyRequestDTO {
+        @NotBlank
         public String title;
+        @NotBlank
         public String description;
+        @URL(protocol = "https")
         public String linkUrl;
     }
 
@@ -34,7 +48,7 @@ public class SurveyControllerDTO {
         public Long surveyId;
         public String title;
         public String description;
-        public LocalDate createdAt;
+        public LocalDateTime createdAt;
     }
 
     @Getter
@@ -51,7 +65,7 @@ public class SurveyControllerDTO {
         public Long surveyId;
         public String title;
         public String description;
-        public LocalDate createdAt;
+        public LocalDateTime createdAt;
         public String registrantName;
         public String linkUrl;
         public boolean isResponded;

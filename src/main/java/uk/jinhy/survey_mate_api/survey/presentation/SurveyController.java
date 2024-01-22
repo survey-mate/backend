@@ -1,8 +1,8 @@
 package uk.jinhy.survey_mate_api.survey.presentation;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import uk.jinhy.survey_mate_api.common.response.ApiResponse;
 import uk.jinhy.survey_mate_api.common.response.Status;
@@ -17,17 +17,19 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RequestMapping("/survey")
-@Controller
+@RestController
 public class SurveyController {
     private final SurveyService surveyService;
     private final SurveyServiceFacade surveyServiceFacade;
     private final SurveyConverter surveyConverter;
 
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("/")
+    @PostMapping("")
     public ApiResponse<SurveyControllerDTO.SurveyDTO> createSurvey(
-            SurveyControllerDTO.CreateSurveyRequestDTO dto
+            @RequestBody @Valid SurveyControllerDTO.CreateSurveyRequestDTO dto
     ) {
+        // TODO
+        // 입력값 Validate하기
         SurveyServiceDTO.CreateSurveyDTO serviceDto = surveyConverter.toServiceCreateSurveyDto(dto);
         surveyServiceFacade.createSurvey(null, serviceDto);
         return ApiResponse.onSuccess(Status.CREATED.getCode(), Status.CREATED.getMessage(), null);
@@ -35,7 +37,7 @@ public class SurveyController {
 
     @PatchMapping("/{surveyId}")
     public ApiResponse<SurveyControllerDTO.SurveyDTO> editSurvey(
-            SurveyControllerDTO.EditSurveyRequestDTO dto,
+            @RequestBody @Valid SurveyControllerDTO.EditSurveyRequestDTO dto,
             @PathVariable("surveyId") Long surveyId
     ) {
         SurveyServiceDTO.EditSurveyDTO serviceDto = surveyConverter.toServiceEditSurveyDto(surveyId, dto);
@@ -57,7 +59,7 @@ public class SurveyController {
         return ApiResponse.onSuccess(Status.OK.getCode(), Status.OK.getMessage(), null);
     }
 
-    @GetMapping("/")
+    @GetMapping("")
     public ApiResponse<SurveyControllerDTO.SurveyListDTO> getSurveysList(@RequestParam("page") int pageNumber) {
         List<Survey> surveyList = surveyService.getSurveyList(pageNumber);
         List<SurveyControllerDTO.SurveyDTO> dtoList = surveyList.stream()

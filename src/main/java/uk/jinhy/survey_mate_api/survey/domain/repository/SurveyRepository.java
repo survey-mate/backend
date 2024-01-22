@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface SurveyRepository extends JpaRepository<Survey, Long> {
-    List<Survey> findByEndedAtIsBefore(Pageable pageable, LocalDateTime time);
+    List<Survey> findByEndedAtIsBeforeOrderByCreatedAtDesc(Pageable pageable, LocalDateTime time);
     Optional<Survey> findBySurveyId(Long id);
     Optional<Survey> findByRewardUrl(String url);
     @Query("select survey from Survey survey order by survey.createdAt limit 15")
