@@ -71,6 +71,7 @@ public class SurveyController {
 
     @GetMapping("/answer/{rewardUrl}")
     public ApiResponse<SurveyControllerDTO.RewardResultDTO> earnRewardsAfterAnswerTheSurvey(@PathVariable("rewardUrl") String rewardUrl) {
+        surveyServiceFacade.answerSurvey(null, rewardUrl);
         return ApiResponse.onSuccess(Status.OK.getCode(), Status.OK.getMessage(), null);
     }
 

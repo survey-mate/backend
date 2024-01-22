@@ -19,9 +19,9 @@ public class SurveyServiceFacade {
     }
 
     @Transactional
-    public void answerSurvey(Member respondent, Long surveyId) {
+    public void answerSurvey(Member respondent, String rewardUrl) {
         // TODO
         // Point 지급하는 로직 필요
-        surveyService.addAnswer(respondent, surveyId);
+        surveyService.addAnswer(respondent, rewardUrl);
     }
 }
