@@ -1,7 +1,10 @@
-package uk.jinhy.survey_mate_api.auth.application.service;
+package uk.jinhy.survey_mate_api.jwt;
 
 import java.util.Collections;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -21,6 +24,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with id: " + id));
 
-        return new User(member.getMemberId(), member.getPassword(), Collections.emptyList());
+        List<GrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
+        return new User(member.getMemberId(), member.getPassword(), authorities);
     }
 }

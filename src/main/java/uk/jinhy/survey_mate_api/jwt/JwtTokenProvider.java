@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.security.Key;
+import java.util.List;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,9 +31,6 @@ public class JwtTokenProvider {
 
     private static final long ACCESS_TOKEN_DURATION = 30L * 60L * 1000L;
 
-    private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7;
-
-
     @Value("${jwt.secret}") String secretKey;
 
     private  Key key;
@@ -43,30 +41,32 @@ public class JwtTokenProvider {
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public String createToken(String id){
+    public String createToken(Authentication authentication){
 
-        Date now = new Date();
-        Claims claims = Jwts.claims()
-                .setSubject("Access Token")
-                .setIssuedAt(now)
-                .setExpiration(new Date(now.getTime() + ACCESS_TOKEN_DURATION));
+        String authorities = authentication.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.joining(","));
+
+        long now = (new Date()).getTime();
+        Date validity = new Date(now + ACCESS_TOKEN_DURATION);
 
         return Jwts.builder()
-                .setClaims(claims)
-                .signWith(key)
+                .setSubject(authentication.getName())
+                .claim("role", authorities)
+                .signWith(key, SignatureAlgorithm.HS512)
+                .setExpiration(validity)
                 .compact();
     }
 
     public Authentication getAuthentication(String accessToken){
-
         Claims claims = parseClaims(accessToken);
 
-        if(claims.get(key) == null){
+        if(claims.get("role") == null){
             throw new RuntimeException("권한 정보가 없는 토큰입니다.");
         }
 
         Collection<? extends GrantedAuthority> authorities =
-                Arrays.stream(claims.get(key).toString().split(","))
+                Arrays.stream(claims.get("role").toString().split(","))
                         .map(SimpleGrantedAuthority::new)
                         .collect(Collectors.toList());
 
@@ -75,14 +75,14 @@ public class JwtTokenProvider {
         return new UsernamePasswordAuthenticationToken(principal, "", authorities);
     }
 
-
-
     public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder()
                     .setSigningKey(key)
                     .build()
-                    .parseClaimsJws(token);
+                    .parseClaimsJws(token)
+                    .getBody()
+                    .getSubject();
             return true;
         } catch (SecurityException | MalformedJwtException e) {
             log.info("Invalid JWT Token", e);
@@ -95,7 +95,6 @@ public class JwtTokenProvider {
         }
         return false;
     }
-
 
     public Claims parseClaims(String accessToken) {
         try {

@@ -8,6 +8,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -107,6 +109,38 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
         WebRequest webRequest = new ServletWebRequest(request);
         return super.handleExceptionInternal(
                 generalException,
+                response,
+                HttpHeaders.EMPTY,
+                body.getHttpStatus(),
+                webRequest
+        );
+    }
+
+    @ExceptionHandler(UsernameNotFoundException.class)
+    public ResponseEntity<Object> handleUserNotFoundException(
+            UsernameNotFoundException userNotFoundException,
+            WebRequest webRequest
+    ) {
+        Body body = Status.MEMBER_NOT_FOUND.getBody();
+        ApiResponse<Object> response = ApiResponse.onFailure(body.getCode(), body.getMessage(), null);
+        return super.handleExceptionInternal(
+                userNotFoundException,
+                response,
+                HttpHeaders.EMPTY,
+                body.getHttpStatus(),
+                webRequest
+        );
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<Object> handleBadCredentialsException(
+            BadCredentialsException badCredentialsException,
+            WebRequest webRequest
+    ) {
+        Body body = Status.PASSWORD_INCORRECT.getBody();
+        ApiResponse<Object> response = ApiResponse.onFailure(body.getCode(), body.getMessage(), null);
+        return super.handleExceptionInternal(
+                badCredentialsException,
                 response,
                 HttpHeaders.EMPTY,
                 body.getHttpStatus(),
