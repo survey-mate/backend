@@ -2,11 +2,7 @@ package uk.jinhy.survey_mate_api.statement.presentation;
 
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import uk.jinhy.survey_mate_api.common.response.ApiResponse;
 import uk.jinhy.survey_mate_api.common.response.Status;
 import uk.jinhy.survey_mate_api.member.Member;
@@ -22,7 +18,7 @@ import static uk.jinhy.survey_mate_api.common.response.ApiResponse.onSuccess;
 
 @RequiredArgsConstructor
 @RequestMapping("/statement")
-@Controller
+@RestController
 public class StatementController {
     private final StatementService statementService;
 
