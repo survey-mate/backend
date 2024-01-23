@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import uk.jinhy.survey_mate_api.common.response.ApiResponse;
 import uk.jinhy.survey_mate_api.common.response.Status;
-import uk.jinhy.survey_mate_api.member.Member;
+import uk.jinhy.survey_mate_api.auth.domain.entity.Member;
 import uk.jinhy.survey_mate_api.statement.application.dto.StatementServiceDTO;
 import uk.jinhy.survey_mate_api.statement.application.service.StatementService;
 import uk.jinhy.survey_mate_api.statement.domain.entity.Statement;
