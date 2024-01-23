@@ -9,19 +9,25 @@ import uk.jinhy.survey_mate_api.statement.domain.entity.Statement;
 import uk.jinhy.survey_mate_api.statement.domain.repository.StatementRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
 public class StatementService {
     private StatementRepository statementRepository;
 
-    public Statement createStatement(Member member, StatementServiceDTO.CreateStatementDTO dto) {
+    public Optional<Statement> createStatement(Member member, StatementServiceDTO.CreateStatementDTO dto) {
         Statement statement = Statement.builder()
                 .amount(dto.getAmount())
                 .description(dto.getDescription())
                 .build();
+
+        if(getTotalAmount(member) + statement.getAmount() < 0) {
+            return null;
+        }
+
         statementRepository.save(statement);
-        return statement;
+        return Optional.of(statement);
     }
 
     public Statement getStatement(Long statementId) {
