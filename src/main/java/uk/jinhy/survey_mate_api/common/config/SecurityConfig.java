@@ -42,14 +42,11 @@ public class SecurityConfig {
 
     private final JwtTokenProvider jwtTokenProvider;
 
-    @Autowired
-    private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
-    @Autowired
-    private JwtAccessDeniedHandler jwtAccessDeniedHandler;
+    private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
 
-    @Autowired
-    private UserDetailsServiceImpl userDetailsService;
+    private final UserDetailsServiceImpl userDetailsService;
 
     private final String[] allowedUrls = {
             "/",

@@ -103,7 +103,6 @@ public class JwtTokenProvider {
             log.info("JWT claims string is empty.", e);
             throw e;
         }
-        //return false;
     }
 
     public Claims parseClaims(String accessToken) {

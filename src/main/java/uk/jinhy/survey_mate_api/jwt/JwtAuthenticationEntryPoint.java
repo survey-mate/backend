@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component;
 import uk.jinhy.survey_mate_api.common.response.Status;
 
 @Component
-@Slf4j
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
     @Override
