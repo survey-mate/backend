@@ -3,7 +3,7 @@ package uk.jinhy.survey_mate_api.data.domain.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import uk.jinhy.survey_mate_api.data.domain.entity.Data;
-import uk.jinhy.survey_mate_api.member.Member;
+import uk.jinhy.survey_mate_api.auth.domain.entity.Member;
 
 import java.util.List;
 import java.util.Optional;

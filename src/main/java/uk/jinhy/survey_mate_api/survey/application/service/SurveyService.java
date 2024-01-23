@@ -6,7 +6,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import uk.jinhy.survey_mate_api.common.util.Util;
-import uk.jinhy.survey_mate_api.member.Member;
+import uk.jinhy.survey_mate_api.auth.domain.entity.Member;
 import uk.jinhy.survey_mate_api.survey.application.dto.SurveyServiceDTO;
 import uk.jinhy.survey_mate_api.survey.domain.entity.Answer;
 import uk.jinhy.survey_mate_api.survey.domain.entity.Survey;

@@ -7,7 +7,7 @@ import uk.jinhy.survey_mate_api.data.application.dto.DataServiceDTO;
 import uk.jinhy.survey_mate_api.data.domain.entity.Data;
 import uk.jinhy.survey_mate_api.data.domain.entity.PurchaseHistory;
 import uk.jinhy.survey_mate_api.data.domain.repository.DataRepository;
-import uk.jinhy.survey_mate_api.member.Member;
+import uk.jinhy.survey_mate_api.auth.domain.entity.Member;
 
 import java.util.List;
 
