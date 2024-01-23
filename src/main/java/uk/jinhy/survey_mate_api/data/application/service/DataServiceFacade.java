@@ -3,9 +3,8 @@ package uk.jinhy.survey_mate_api.data.application.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import uk.jinhy.survey_mate_api.data.application.dto.DataServiceDTO;
-import uk.jinhy.survey_mate_api.member.Member;
-import uk.jinhy.survey_mate_api.survey.application.dto.SurveyServiceDTO;
+import uk.jinhy.survey_mate_api.auth.domain.entity.Member;
+
 
 @RequiredArgsConstructor
 @Service

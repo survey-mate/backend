@@ -1,4 +1,4 @@
-package uk.jinhy.survey_mate_api.member;
+package uk.jinhy.survey_mate_api.auth.domain.entity;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -33,14 +33,10 @@ import uk.jinhy.survey_mate_api.survey.domain.entity.SurveyComment;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long memberId;
+    private String memberId;
 
     @NotNull
     private String nickname;
-
-    @NotNull
-    private String email;
 
     @NotNull
     private String password;
@@ -50,12 +46,6 @@ public class Member {
 
     @NotNull
     private boolean marketingConsent;
-
-    @NotNull
-    private String school;
-
-    @NotNull
-    private String yearOfAdmission;
 
     private Long point;
 
