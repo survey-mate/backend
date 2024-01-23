@@ -116,35 +116,4 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
         );
     }
 
-    @ExceptionHandler(UsernameNotFoundException.class)
-    public ResponseEntity<Object> handleUserNotFoundException(
-            UsernameNotFoundException userNotFoundException,
-            WebRequest webRequest
-    ) {
-        Body body = Status.MEMBER_NOT_FOUND.getBody();
-        ApiResponse<Object> response = ApiResponse.onFailure(body.getCode(), body.getMessage(), null);
-        return super.handleExceptionInternal(
-                userNotFoundException,
-                response,
-                HttpHeaders.EMPTY,
-                body.getHttpStatus(),
-                webRequest
-        );
-    }
-
-    @ExceptionHandler(BadCredentialsException.class)
-    public ResponseEntity<Object> handleBadCredentialsException(
-            BadCredentialsException badCredentialsException,
-            WebRequest webRequest
-    ) {
-        Body body = Status.PASSWORD_INCORRECT.getBody();
-        ApiResponse<Object> response = ApiResponse.onFailure(body.getCode(), body.getMessage(), null);
-        return super.handleExceptionInternal(
-                badCredentialsException,
-                response,
-                HttpHeaders.EMPTY,
-                body.getHttpStatus(),
-                webRequest
-        );
-    }
 }

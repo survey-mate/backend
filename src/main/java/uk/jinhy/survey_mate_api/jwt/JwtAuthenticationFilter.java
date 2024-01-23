@@ -1,11 +1,14 @@
 package uk.jinhy.survey_mate_api.jwt;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.MalformedJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
+import lombok.Generated;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -19,6 +22,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import org.springframework.web.server.ResponseStatusException;
+import uk.jinhy.survey_mate_api.common.response.Status;
+import uk.jinhy.survey_mate_api.common.response.exception.GeneralException;
 
 @RequiredArgsConstructor
 @Component
@@ -32,20 +37,41 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
 
-        String jwt = extractJwtToken(request.getHeader("Authorization"));
+        if (isSwaggerUiRequest(request)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
 
-        if(jwt != null && jwtTokenProvider.validateToken(jwt)){
-            Authentication authentication = jwtTokenProvider.getAuthentication(jwt);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+        String jwt = null;
+        try {
+            jwt = extractJwtToken(request.getHeader("Authorization"));
+        } catch (Exception e) {
+            request.setAttribute("exception", Status.JWT_NULL.getCode());
+        }
+
+        try{
+            if (jwt != null && jwtTokenProvider.validateToken(jwt)) {
+                Authentication authentication = jwtTokenProvider.getAuthentication(jwt);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
+        }catch (MalformedJwtException e){
+            request.setAttribute("exception", Status.JWT_INVALID.getCode());
         }
 
         filterChain.doFilter(request, response);
+
+    }
+
+    private boolean isSwaggerUiRequest(HttpServletRequest request) {
+        String requestURI = request.getRequestURI();
+        return requestURI.startsWith("/swagger-ui") || requestURI.startsWith("/v3/api-docs");
     }
 
     private String extractJwtToken(String header) {
-        if (header != null && header.startsWith("Bearer ")) {
+        try{
             return header.replace("Bearer ", "").trim();
+        }catch (Exception e){
+            throw new GeneralException(Status.JWT_NULL);
         }
-        return null;
     }
 }

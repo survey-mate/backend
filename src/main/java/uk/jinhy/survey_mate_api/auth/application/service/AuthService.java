@@ -7,16 +7,14 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import uk.jinhy.survey_mate_api.auth.domain.entity.Member;
 import uk.jinhy.survey_mate_api.auth.domain.repository.MemberRepository;
 import uk.jinhy.survey_mate_api.auth.presentation.dto.LoginControllerDTO;
 import uk.jinhy.survey_mate_api.auth.presentation.dto.MemberControllerDTO;
-import uk.jinhy.survey_mate_api.common.util.AuthUtil;
+import uk.jinhy.survey_mate_api.common.auth.AuthProvider;
 import uk.jinhy.survey_mate_api.jwt.JwtTokenProvider;
-import uk.jinhy.survey_mate_api.jwt.UserDetailsServiceImpl;
 
 @RequiredArgsConstructor
 @Service
@@ -61,7 +59,7 @@ public class AuthService {
     }
 
     public Member getCurrentMember() {
-        String memberId = AuthUtil.getAuthenticationInfoMemberId();
+        String memberId = AuthProvider.getAuthenticationInfoMemberId();
         return memberRepository.findById(memberId)
                 .orElseThrow(() -> new NotFoundException("해당 유저가 없습니다."));
     }

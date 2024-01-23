@@ -2,6 +2,7 @@ package uk.jinhy.survey_mate_api.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -9,6 +10,9 @@ import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
@@ -24,6 +28,8 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import uk.jinhy.survey_mate_api.common.response.Status;
+import uk.jinhy.survey_mate_api.common.response.exception.GeneralException;
 
 @Slf4j
 @Component
@@ -47,14 +53,14 @@ public class JwtTokenProvider {
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
 
-        long now = (new Date()).getTime();
-        Date validity = new Date(now + ACCESS_TOKEN_DURATION);
+        LocalDateTime validity = LocalDateTime.now().plusSeconds(ACCESS_TOKEN_DURATION);
+        Date expirationDate = Date.from(validity.atZone(ZoneId.systemDefault()).toInstant());
 
         return Jwts.builder()
                 .setSubject(authentication.getName())
                 .claim("role", authorities)
                 .signWith(key, SignatureAlgorithm.HS512)
-                .setExpiration(validity)
+                .setExpiration(expirationDate)
                 .compact();
     }
 
@@ -86,14 +92,18 @@ public class JwtTokenProvider {
             return true;
         } catch (SecurityException | MalformedJwtException e) {
             log.info("Invalid JWT Token", e);
+            throw e;
         } catch (ExpiredJwtException e) {
             log.info("Expired JWT Token", e);
+            throw e;
         } catch (UnsupportedJwtException e) {
             log.info("Unsupported JWT Token", e);
+            throw e;
         } catch (IllegalArgumentException e) {
             log.info("JWT claims string is empty.", e);
+            throw e;
         }
-        return false;
+        //return false;
     }
 
     public Claims parseClaims(String accessToken) {
