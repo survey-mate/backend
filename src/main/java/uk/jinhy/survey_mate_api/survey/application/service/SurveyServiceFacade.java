@@ -20,9 +20,7 @@ public class SurveyServiceFacade {
                 .CreateStatementDTO
                 .builder()
                 .description("설문조사 추가")
-                // TODO
-                // 기간 별 금액 책정 로직 추가
-                .amount(dto.getPeriod())
+                .amount(SurveyRegistrationFee.getFee(dto.getPeriod()))
                 .build();
         surveyService.createSurvey(registrant, dto);
         statementService.createStatement(registrant, createStatementDTO);
