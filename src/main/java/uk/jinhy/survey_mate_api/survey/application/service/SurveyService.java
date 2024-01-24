@@ -42,7 +42,7 @@ public class SurveyService {
         Survey survey = surveyRepository.findBySurveyId(surveyId).get();
 
         if (!survey.getRegistrant().equals(registrant)) {
-            return;
+            throw new GeneralException(Status.WRONG_REGISTRANT);
         }
 
         String newTitle = dto.getTitle();
