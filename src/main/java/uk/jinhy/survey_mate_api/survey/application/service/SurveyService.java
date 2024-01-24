@@ -63,7 +63,9 @@ public class SurveyService {
 
     @Transactional
     public void deleteSurvey(Member registrant, Long surveyId) {
-        Survey survey = surveyRepository.findBySurveyId(surveyId).get();
+        Survey survey = surveyRepository.findBySurveyId(surveyId).orElseThrow(
+                () -> new GeneralException(Status.SURVEY_NOT_FOUND)
+        );
         if (survey.getRegistrant().equals(registrant)) {
             surveyRepository.deleteById(surveyId);
         }
