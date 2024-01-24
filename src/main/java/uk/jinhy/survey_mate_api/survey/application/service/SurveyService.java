@@ -85,7 +85,7 @@ public class SurveyService {
     }
 
     public Survey getSurvey(Long surveyId) {
-        return surveyRepository.findBySurveyId(surveyId).get();
+        return surveyRepository.findBySurveyId(surveyId).orElseThrow(() -> new GeneralException(Status.SURVEY_NOT_FOUND));
     }
 
     public List<Survey> getSurveyList(int pageNumber) {
