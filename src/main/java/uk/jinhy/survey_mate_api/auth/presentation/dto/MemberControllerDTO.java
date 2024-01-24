@@ -7,14 +7,18 @@ public class MemberControllerDTO {
     @Builder
     @Getter
     public static class MemberRequestDTO{
+
         private String memberId;
 
         private String nickname;
 
         private String password;
 
+        private String emailToken;
+
         private boolean messageConsent;
 
         private boolean marketingConsent;
     }
+
 }
