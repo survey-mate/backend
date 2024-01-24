@@ -3,9 +3,7 @@ package uk.jinhy.survey_mate_api.survey.domain.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +14,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import uk.jinhy.survey_mate_api.member.Member;
+import uk.jinhy.survey_mate_api.auth.domain.entity.Member;
 
 @Entity
 @Getter
@@ -80,7 +78,7 @@ public class Survey {
         return currentTime.isBefore(this.endedAt);
     }
 
-    public boolean isResponded(Member member) {
+    public boolean isAnswered(Member member) {
         return answerList.stream()
                 .anyMatch(a -> a.getRespondent().equals(member));
     }

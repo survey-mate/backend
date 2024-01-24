@@ -17,7 +17,13 @@ public enum Status {
     CONFLICT(HttpStatus.CONFLICT, "COMMON409", "이미 생성되었습니다."),
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "COMMON500", "서버에 오류가 발생했습니다."),
 
-    SURVEY_NOT_FOUND(HttpStatus.NOT_FOUND, "SURVEY404", "설문조사를 찾을 수 없습니다.")
+    SURVEY_NOT_FOUND(HttpStatus.NOT_FOUND, "SURVEY404", "설문조사를 찾을 수 없습니다."),
+
+    MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "MEMBER404", "해당 아이디는 존재하지 않습니다."),
+    PASSWORD_INCORRECT(HttpStatus.BAD_REQUEST, "MEMBER400", "비밀번호가 틀렸습니다."),
+
+    JWT_NULL(HttpStatus.UNAUTHORIZED, "JWT401", "JWT가 NULL입니다."),
+    JWT_INVALID(HttpStatus.FORBIDDEN, "JWT404", "JWT가 유효하지 않습니다."),
     ;
     private final HttpStatus httpStatus;
     private final String code;

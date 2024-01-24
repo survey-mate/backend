@@ -2,15 +2,13 @@ package uk.jinhy.survey_mate_api.survey.application.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import uk.jinhy.survey_mate_api.auth.domain.entity.Member;
 import uk.jinhy.survey_mate_api.common.response.Status;
 import uk.jinhy.survey_mate_api.common.response.exception.GeneralException;
 import uk.jinhy.survey_mate_api.common.util.Util;
-import uk.jinhy.survey_mate_api.member.Member;
 import uk.jinhy.survey_mate_api.survey.application.dto.SurveyServiceDTO;
 import uk.jinhy.survey_mate_api.survey.domain.entity.Answer;
 import uk.jinhy.survey_mate_api.survey.domain.entity.Survey;
@@ -19,7 +17,6 @@ import uk.jinhy.survey_mate_api.survey.domain.repository.SurveyRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Slf4j
 @RequiredArgsConstructor
 @Service
 public class SurveyService {
@@ -42,7 +39,6 @@ public class SurveyService {
     @Transactional
     public void editSurvey(Member registrant, SurveyServiceDTO.EditSurveyDTO dto) {
         Long surveyId = dto.getSurveyId();
-        log.info(surveyId.toString());
         Survey survey = surveyRepository.findBySurveyId(surveyId).get();
 
         if (!survey.getRegistrant().equals(registrant)) {
@@ -77,7 +73,7 @@ public class SurveyService {
         Survey survey = surveyRepository.findByRewardUrl(rewardUrl).orElseThrow(
                 () -> new GeneralException(Status.SURVEY_NOT_FOUND)
         );
-        if (!survey.isResponded(respondent)) {
+        if (!survey.isAnswered(respondent)) {
             return;
         }
         Answer answer = Answer.builder()
@@ -110,6 +106,6 @@ public class SurveyService {
     }
 
     public boolean isResponded(Survey survey, Member member) {
-         return survey.isResponded(member);
+         return survey.isAnswered(member);
     }
 }
