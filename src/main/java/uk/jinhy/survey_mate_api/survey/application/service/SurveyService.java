@@ -74,7 +74,7 @@ public class SurveyService {
                 () -> new GeneralException(Status.SURVEY_NOT_FOUND)
         );
         if (!survey.isAnswered(respondent)) {
-            return;
+            throw new GeneralException(Status.ALREADY_ANSWERED);
         }
         Answer answer = Answer.builder()
                 .survey(survey)
