@@ -4,24 +4,39 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import uk.jinhy.survey_mate_api.auth.domain.entity.Member;
+import uk.jinhy.survey_mate_api.statement.application.dto.StatementServiceDTO;
+import uk.jinhy.survey_mate_api.statement.application.service.StatementService;
 import uk.jinhy.survey_mate_api.survey.application.dto.SurveyServiceDTO;
 
 @RequiredArgsConstructor
 @Service
 public class SurveyServiceFacade {
     private final SurveyService surveyService;
+    private final StatementService statementService;
 
     @Transactional
     public void createSurvey(Member registrant, SurveyServiceDTO.CreateSurveyDTO dto) {
-        // TODO
-        // Point 지불하는 로직 필요
+        StatementServiceDTO.CreateStatementDTO createStatementDTO = StatementServiceDTO
+                .CreateStatementDTO
+                .builder()
+                .description("설문조사 추가")
+                // TODO
+                // 기간 별 금액 책정 로직 추가
+                .amount(dto.getPeriod())
+                .build();
         surveyService.createSurvey(registrant, dto);
+        statementService.createStatement(registrant, createStatementDTO);
     }
 
     @Transactional
     public void answerSurvey(Member respondent, String rewardUrl) {
-        // TODO
-        // Point 지급하는 로직 필요
+        StatementServiceDTO.CreateStatementDTO createStatementDTO = StatementServiceDTO
+                .CreateStatementDTO
+                .builder()
+                .description("설문조사 응답")
+                .amount(-1L)
+                .build();
         surveyService.addAnswer(respondent, rewardUrl);
+        statementService.createStatement(respondent, createStatementDTO);
     }
 }

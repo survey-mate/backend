@@ -1,4 +1,4 @@
-package uk.jinhy.survey_mate_api.statement;
+package uk.jinhy.survey_mate_api.statement.domain.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;

@@ -3,7 +3,10 @@ package uk.jinhy.survey_mate_api.survey.presentation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import uk.jinhy.survey_mate_api.auth.application.service.AuthService;
+import uk.jinhy.survey_mate_api.auth.domain.entity.Member;
 import uk.jinhy.survey_mate_api.common.response.ApiResponse;
 import uk.jinhy.survey_mate_api.common.response.Status;
 import uk.jinhy.survey_mate_api.survey.application.dto.SurveyServiceDTO;
@@ -18,20 +21,23 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/survey")
 @RestController
+@PreAuthorize("hasRole('USER')")
 public class SurveyController {
     private final SurveyService surveyService;
     private final SurveyServiceFacade surveyServiceFacade;
     private final SurveyConverter surveyConverter;
+    private final AuthService authService;
 
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("")
+    @PostMapping("/survey")
     public ApiResponse<SurveyControllerDTO.SurveyDTO> createSurvey(
             @RequestBody @Valid SurveyControllerDTO.CreateSurveyRequestDTO dto
     ) {
         // TODO
         // 입력값 Validate하기
+        Member registrant = authService.getCurrentMember();
         SurveyServiceDTO.CreateSurveyDTO serviceDto = surveyConverter.toServiceCreateSurveyDto(dto);
-        surveyServiceFacade.createSurvey(null, serviceDto);
+        surveyServiceFacade.createSurvey(registrant, serviceDto);
         return ApiResponse.onSuccess(Status.CREATED.getCode(), Status.CREATED.getMessage(), null);
     }
 
@@ -40,14 +46,16 @@ public class SurveyController {
             @RequestBody @Valid SurveyControllerDTO.EditSurveyRequestDTO dto,
             @PathVariable("surveyId") Long surveyId
     ) {
+        Member registrant = authService.getCurrentMember();
         SurveyServiceDTO.EditSurveyDTO serviceDto = surveyConverter.toServiceEditSurveyDto(surveyId, dto);
-        surveyService.editSurvey(null, serviceDto);
+        surveyService.editSurvey(registrant, serviceDto);
         return ApiResponse.onSuccess(Status.OK.getCode(), Status.OK.getMessage(), null);
     }
 
     @DeleteMapping("/{surveyId}")
     public ApiResponse<Object> deleteSurvey(@PathVariable("surveyId") Long surveyId) {
-        surveyService.deleteSurvey(null, surveyId);
+        Member registrant = authService.getCurrentMember();
+        surveyService.deleteSurvey(registrant, surveyId);
         return ApiResponse.onSuccess(Status.OK.getCode(), Status.OK.getMessage(), null);
     }
 
@@ -71,13 +79,15 @@ public class SurveyController {
 
     @GetMapping("/answer/{rewardUrl}")
     public ApiResponse<SurveyControllerDTO.RewardResultDTO> earnRewardsAfterAnswerTheSurvey(@PathVariable("rewardUrl") String rewardUrl) {
-        surveyServiceFacade.answerSurvey(null, rewardUrl);
+        Member respondent = authService.getCurrentMember();
+        surveyServiceFacade.answerSurvey(respondent, rewardUrl);
         return ApiResponse.onSuccess(Status.OK.getCode(), Status.OK.getMessage(), null);
     }
 
     @GetMapping("/registrant")
     public ApiResponse<SurveyControllerDTO.SurveyListDTO> getSurveysListByRegistrant() {
-        List<Survey> surveyList = surveyService.getMySurveyList(null);
+        Member registrant = authService.getCurrentMember();
+        List<Survey> surveyList = surveyService.getMySurveyList(registrant);
         List<SurveyControllerDTO.SurveyDTO> dtoList = surveyList.stream()
                 .map(surveyConverter::toSurveyDTO)
                 .toList();
@@ -87,7 +97,8 @@ public class SurveyController {
 
     @GetMapping("/respondent")
     public ApiResponse<SurveyControllerDTO.SurveyListDTO> getSurveysListByRespondent() {
-        List<Survey> surveyList = surveyService.getAnsweredSurveyList(null);
+        Member registrant = authService.getCurrentMember();
+        List<Survey> surveyList = surveyService.getAnsweredSurveyList(registrant);
         List<SurveyControllerDTO.SurveyDTO> dtoList = surveyList.stream()
                 .map(surveyConverter::toSurveyDTO)
                 .toList();

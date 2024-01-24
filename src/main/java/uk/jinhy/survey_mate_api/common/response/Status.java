@@ -24,6 +24,8 @@ public enum Status {
 
     JWT_NULL(HttpStatus.UNAUTHORIZED, "JWT401", "JWT가 NULL입니다."),
     JWT_INVALID(HttpStatus.FORBIDDEN, "JWT404", "JWT가 유효하지 않습니다."),
+
+    STATEMENT_NOT_ENOUGH(HttpStatus.BAD_REQUEST, "STATEMENT400", "포인트가 부족합니다.")
     ;
     private final HttpStatus httpStatus;
     private final String code;
