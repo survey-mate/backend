@@ -19,7 +19,7 @@ import uk.jinhy.survey_mate_api.common.response.exception.GeneralException;
 @Component
 public class CustomAuthenticationProvider implements AuthenticationProvider {
 
-    private final UserDetailsServiceImpl userDetailsServiceImpl;
+    private final UserDetailsService userDetailsService;
 
     private final PasswordEncoder passwordEncoder;
 
@@ -27,19 +27,19 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         String username = authentication.getName();
         String password = authentication.getCredentials().toString();
-        User user = null;
+        UserDetails userDetails;
 
         try {
-            user = userDetailsServiceImpl.loadUserByUsername(username);
+            userDetails = userDetailsService.loadUserByUsername(username);
         } catch (Exception e) {
             throw new GeneralException(Status.MEMBER_NOT_FOUND);
         }
 
-        if (!passwordEncoder.matches(password, user.getPassword())) {
+        if (!passwordEncoder.matches(password, userDetails.getPassword())) {
             throw new GeneralException(Status.PASSWORD_INCORRECT);
         }
 
-        return new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+        return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     }
 
     @Override

@@ -27,7 +27,7 @@ public enum Status {
 
     JWT_NULL(HttpStatus.UNAUTHORIZED, "JWT401", "JWT가 NULL입니다."),
     JWT_INVALID(HttpStatus.FORBIDDEN, "JWT404", "JWT가 유효하지 않습니다."),
-    NO_AUTH(HttpStatus.UNAUTHORIZED, "AUTH401", "인증 정보가 없습니다."),
+    UNAUTHENTICATED_USER(HttpStatus.UNAUTHORIZED, "AUTH401", "인증 정보가 없습니다."),
 
     MAIL_SEND_FAIL(HttpStatus.BAD_REQUEST, "MAIL400", "메일 전송에 실패했습니다."),
     DUPLICATE_MAIL(HttpStatus.CONFLICT, "MAIL409", "이미 가입된 이메일 입니다."),

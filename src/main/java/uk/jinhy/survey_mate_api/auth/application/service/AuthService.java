@@ -23,13 +23,7 @@ import uk.jinhy.survey_mate_api.auth.domain.repository.MailCodeRepository;
 import uk.jinhy.survey_mate_api.auth.domain.repository.MemberRepository;
 import uk.jinhy.survey_mate_api.auth.domain.repository.PasswordResetCodeRepository;
 import uk.jinhy.survey_mate_api.auth.domain.repository.PasswordResetTokenRepository;
-import uk.jinhy.survey_mate_api.auth.presentation.dto.LoginControllerDTO;
-import uk.jinhy.survey_mate_api.auth.presentation.dto.MailCodeControllerDTO;
-import uk.jinhy.survey_mate_api.auth.presentation.dto.CertificateCodeRequestDTO;
-import uk.jinhy.survey_mate_api.auth.presentation.dto.MemberControllerDTO;
-import uk.jinhy.survey_mate_api.auth.presentation.dto.PasswordResetCodeDTO;
-import uk.jinhy.survey_mate_api.auth.presentation.dto.PasswordResetControllerDTO;
-import uk.jinhy.survey_mate_api.auth.presentation.dto.PasswordUpdateRequestDTO;
+import uk.jinhy.survey_mate_api.auth.presentation.dto.AuthControllerDTO;
 import uk.jinhy.survey_mate_api.common.auth.AuthProvider;
 import uk.jinhy.survey_mate_api.common.response.Status;
 import uk.jinhy.survey_mate_api.common.response.exception.GeneralException;
@@ -59,7 +53,7 @@ public class AuthService {
 
     private final PasswordResetTokenRepository passwordResetTokenRepository;
 
-    public Member join(MemberControllerDTO.MemberRequestDTO requestDTO){
+    public Member join(AuthControllerDTO.MemberControllerDTO.MemberRequestDTO requestDTO){
 
         String emailAddr = requestDTO.getMemberId();
         String emailToken = requestDTO.getEmailToken();
@@ -82,7 +76,7 @@ public class AuthService {
         return member;
     }
 
-    public String login(LoginControllerDTO requestDTO){
+    public String login(AuthControllerDTO.LoginControllerDTO requestDTO){
         String id = requestDTO.getId();
         String password = requestDTO.getPassword();
 
@@ -95,7 +89,7 @@ public class AuthService {
 
     }
 
-    public String sendMailCode(CertificateCodeRequestDTO requestDTO){
+    public String sendMailCode(AuthControllerDTO.CertificateCodeRequestDTO requestDTO){
         String memberId = requestDTO.getReceiver();
         boolean isExist = memberRepository.existsByMemberId(memberId);
         if(isExist){
@@ -115,7 +109,7 @@ public class AuthService {
         return "인증 이메일 전송 성공";
     }
 
-    public String checkEmailCode(MailCodeControllerDTO mailCodeDto){
+    public String checkEmailCode(AuthControllerDTO.MailCodeControllerDTO mailCodeDto){
         String id = mailCodeDto.getEmailAddr();
         String code = mailCodeDto.getCode();
 
@@ -140,7 +134,7 @@ public class AuthService {
         return token;
     }
 
-    public String sendPasswordResetCode(CertificateCodeRequestDTO requestDTO){
+    public String sendPasswordResetCode(AuthControllerDTO.CertificateCodeRequestDTO requestDTO){
         String memberId = requestDTO.getReceiver();
         Member member = getMemberById(memberId);
 
@@ -159,7 +153,7 @@ public class AuthService {
         return "비밀번호 재설정 이메일 전송 성공";
     }
 
-    public String checkPasswordResetCode(PasswordResetCodeDTO resetDTO){
+    public String checkPasswordResetCode(AuthControllerDTO.PasswordResetCodeDTO resetDTO){
         String id = resetDTO.getEmailAddr();
         String code = resetDTO.getCode();
 
@@ -184,7 +178,7 @@ public class AuthService {
         return token;
     }
 
-    public String resetPassword(PasswordResetControllerDTO requestDto){
+    public String resetPassword(AuthControllerDTO.PasswordResetControllerDTO requestDto){
         Member member = getCurrentMember();
         String emailAddr = member.getMemberId();
         String resetToken = requestDto.getPasswordResetToken();
@@ -207,9 +201,9 @@ public class AuthService {
         return modifiedMember.getMemberId();
     }
 
-    public String updatePassword(PasswordUpdateRequestDTO requestDto){
+    public String updatePassword(AuthControllerDTO.PasswordUpdateRequestDTO requestDto){
         Member member = getCurrentMember();
-        String currPassword = requestDto.getCurrPassword();
+        String currPassword = requestDto.getCurrentPassword();
 
         if (!passwordEncoder.matches(currPassword, member.getPassword())) {
             throw new GeneralException(Status.CURRENT_PASSWORD_INCORRECT);

@@ -16,7 +16,7 @@ import org.thymeleaf.context.Context;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.thymeleaf.spring6.SpringTemplateEngine;
-import uk.jinhy.survey_mate_api.auth.presentation.dto.CertificateCodeRequestDTO;
+import uk.jinhy.survey_mate_api.auth.presentation.dto.AuthControllerDTO;
 import uk.jinhy.survey_mate_api.common.response.Status;
 import uk.jinhy.survey_mate_api.common.response.exception.GeneralException;
 
@@ -35,7 +35,7 @@ public class MailService {
     @Value("${spring.mail.username}")
     private String sender;
 
-    public void sendEmail(CertificateCodeRequestDTO requestDTO, String code) {
+    public void sendEmail(AuthControllerDTO.CertificateCodeRequestDTO requestDTO, String code) {
         String emailContent = generateEmailContent(code, requestDTO.getTitle());
         try {
             MimeMessage message = emailSender.createMimeMessage();

@@ -10,7 +10,7 @@ public class AuthProvider {
     public static User getAuthenticationInfo() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()) {
-            throw new GeneralException(Status.NO_AUTH);
+            throw new GeneralException(Status.UNAUTHENTICATED_USER);
         }
 
         return (User) authentication.getPrincipal();
