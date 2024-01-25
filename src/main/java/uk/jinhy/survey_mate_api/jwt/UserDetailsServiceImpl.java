@@ -18,19 +18,17 @@ import uk.jinhy.survey_mate_api.common.response.exception.GeneralException;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     private final MemberRepository memberRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String id) {
-        log.info("loadUserByUsername");
+    public User loadUserByUsername(String id) {
         Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new GeneralException(Status.MEMBER_NOT_FOUND));
-        log.info(member.getMemberId());
 
         List<GrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
         return new User(member.getMemberId(), member.getPassword(), authorities);
     }
+
 }

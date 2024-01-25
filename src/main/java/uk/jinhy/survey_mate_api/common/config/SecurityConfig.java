@@ -46,13 +46,15 @@ public class SecurityConfig {
 
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
 
-    private final UserDetailsServiceImpl userDetailsService;
+    private final UserDetailsServiceImpl userDetailsServiceImpl;
 
     private final String[] allowedUrls = {
             "/",
             "/swagger-ui/**",
             "/v3/**",
-            "/auth/**",
+            "/auth/login",
+            "/auth/join",
+            "/auth/email/**",
             "/error",
             "/v2/api-docs",
             "/swagger-resources/**",
@@ -69,7 +71,7 @@ public class SecurityConfig {
 
     @Bean
     public AuthenticationProvider authenticationProvider() {
-        return new CustomAuthenticationProvider(userDetailsService, passwordEncoder());
+        return new CustomAuthenticationProvider(userDetailsServiceImpl, passwordEncoder());
     }
 
     @Bean(name = "AuthenticationManager")

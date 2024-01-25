@@ -1,6 +1,5 @@
 package uk.jinhy.survey_mate_api.auth.application.service;
 
-import com.amazonaws.services.kms.model.NotFoundException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
@@ -17,13 +16,19 @@ import org.springframework.stereotype.Service;
 import uk.jinhy.survey_mate_api.auth.domain.entity.EmailToken;
 import uk.jinhy.survey_mate_api.auth.domain.entity.MailCode;
 import uk.jinhy.survey_mate_api.auth.domain.entity.Member;
+import uk.jinhy.survey_mate_api.auth.domain.entity.PasswordResetCode;
+import uk.jinhy.survey_mate_api.auth.domain.entity.PasswordResetToken;
 import uk.jinhy.survey_mate_api.auth.domain.repository.EmailTokenRepository;
 import uk.jinhy.survey_mate_api.auth.domain.repository.MailCodeRepository;
 import uk.jinhy.survey_mate_api.auth.domain.repository.MemberRepository;
+import uk.jinhy.survey_mate_api.auth.domain.repository.PasswordResetCodeRepository;
+import uk.jinhy.survey_mate_api.auth.domain.repository.PasswordResetTokenRepository;
 import uk.jinhy.survey_mate_api.auth.presentation.dto.LoginControllerDTO;
 import uk.jinhy.survey_mate_api.auth.presentation.dto.MailCodeControllerDTO;
-import uk.jinhy.survey_mate_api.auth.presentation.dto.MailControllerDTO;
+import uk.jinhy.survey_mate_api.auth.presentation.dto.CertificateCodeRequestDTO;
 import uk.jinhy.survey_mate_api.auth.presentation.dto.MemberControllerDTO;
+import uk.jinhy.survey_mate_api.auth.presentation.dto.PasswordResetCodeDTO;
+import uk.jinhy.survey_mate_api.auth.presentation.dto.PasswordResetControllerDTO;
 import uk.jinhy.survey_mate_api.common.auth.AuthProvider;
 import uk.jinhy.survey_mate_api.common.response.Status;
 import uk.jinhy.survey_mate_api.common.response.exception.GeneralException;
@@ -48,6 +53,10 @@ public class AuthService {
     private final MailCodeRepository mailCodeRepository;
 
     private final EmailTokenRepository emailTokenRepository;
+
+    private final PasswordResetCodeRepository passwordResetCodeRepository;
+
+    private final PasswordResetTokenRepository passwordResetTokenRepository;
 
     public Member join(MemberControllerDTO.MemberRequestDTO requestDTO){
 
@@ -85,20 +94,23 @@ public class AuthService {
 
     }
 
-    public String sendMailCode(MailControllerDTO mailDto){
-        String memberId = mailDto.getReceiver();
+    public String sendMailCode(CertificateCodeRequestDTO requestDTO){
+        String memberId = requestDTO.getReceiver();
         boolean isExist = memberRepository.existsByMemberId(memberId);
         if(isExist){
             throw new GeneralException(Status.DUPLICATE_MAIL);
         }
 
-        String code = createEmailCode();
+        requestDTO.setMailSubject("!썰매! 회원가입 전 학교 이메일을 인증해주세요. 이메일 인증 코드 전송");
+        requestDTO.setTitle("학교 이메일 확인용 인증코드");
+
+        String code = createCode();
         MailCode mailCode = MailCode.builder()
                 .code(code)
-                .emailAddr(mailDto.getReceiver())
+                .emailAddr(requestDTO.getReceiver())
                 .build();
         mailCodeRepository.save(mailCode);
-        mailService.sendEmail(mailDto, code);
+        mailService.sendEmail(requestDTO, code);
         return "인증 이메일 전송 성공";
     }
 
@@ -127,6 +139,75 @@ public class AuthService {
         return token;
     }
 
+    public String sendPasswordResetCode(CertificateCodeRequestDTO requestDTO){
+        String memberId = requestDTO.getReceiver();
+        Member member = getMemberById(memberId);
+
+        requestDTO.setMailSubject("!썰매! 비밀번호를 잊으셨나요? 비밀번호 재설정을 도와드리겠습니다. 계정 인증 코드 전송");
+        requestDTO.setTitle("계정 확인용 인증코드");
+
+        String code = createCode();
+        PasswordResetCode resetCode = PasswordResetCode.builder()
+                .code(code)
+                .emailAddr(memberId)
+                .build();
+
+        passwordResetCodeRepository.save(resetCode);
+        mailService.sendEmail(requestDTO, code);
+
+        return "비밀번호 재설정 이메일 전송 성공";
+    }
+
+    public String checkPasswordResetCode(PasswordResetCodeDTO resetDTO){
+        String id = resetDTO.getEmailAddr();
+        String code = resetDTO.getCode();
+
+        PasswordResetCode resetCode = passwordResetCodeRepository.findByCodeAndEmailAddr(code, id)
+                .orElseThrow(() -> new GeneralException(Status.PASSWORD_RESET_CODE_DIFFERENT));
+
+        LocalDateTime currTime = LocalDateTime.now();
+        LocalDateTime expirationTime = resetCode.getCreatedAt().plusMinutes(3);
+        if(currTime.isAfter(expirationTime)){
+            throw new GeneralException(Status.PASSWORD_RESET_CODE_TIME_OUT);
+        }
+
+        String token = createRandomStr();
+
+        PasswordResetToken resetToken = PasswordResetToken.builder()
+                .token(token)
+                .emailAddr(id)
+                .build();
+
+        passwordResetTokenRepository.save(resetToken);
+
+        return token;
+    }
+
+    public String resetPassword(PasswordResetControllerDTO requestDto){
+        log.info("resetPassword");
+        Member member = getCurrentMember();
+        log.info(member.getMemberId());
+        String emailAddr = member.getMemberId();
+        String resetToken = requestDto.getPasswordResetToken();
+
+        if(!passwordResetTokenRepository.existsByEmailAddrAndToken(emailAddr, resetToken)){
+            throw new GeneralException(Status.PASSWORD_TOKEN_INVALID);
+        }
+
+        Member modifiedMember = Member.builder()
+                .memberId(member.getMemberId())
+                .nickname(member.getNickname())
+                .password(passwordEncoder.encode(requestDto.getNewPassword()))
+                .messageConsent(member.isMessageConsent())
+                .marketingConsent(member.isMarketingConsent())
+                .point(member.getPoint())
+                .profileUrl(member.getProfileUrl())
+                .build();
+
+        memberRepository.save(modifiedMember);
+        return modifiedMember.getMemberId();
+    }
+
     public Member getCurrentMember() {
         String memberId = AuthProvider.getAuthenticationInfoMemberId();
         return memberRepository.findById(memberId)
@@ -138,12 +219,12 @@ public class AuthService {
                 .orElseThrow(() -> new GeneralException(Status.MEMBER_NOT_FOUND));
     }
 
-    private String createEmailCode() {
-        int lenth = 6;
+    private String createCode() {
+        int length = 6;
         try {
             Random random = SecureRandom.getInstanceStrong();
             StringBuilder builder = new StringBuilder();
-            for (int i = 0; i < lenth; i++) {
+            for (int i = 0; i < length; i++) {
                 builder.append(random.nextInt(10));
             }
             return builder.toString();
