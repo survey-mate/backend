@@ -29,6 +29,7 @@ import uk.jinhy.survey_mate_api.auth.presentation.dto.CertificateCodeRequestDTO;
 import uk.jinhy.survey_mate_api.auth.presentation.dto.MemberControllerDTO;
 import uk.jinhy.survey_mate_api.auth.presentation.dto.PasswordResetCodeDTO;
 import uk.jinhy.survey_mate_api.auth.presentation.dto.PasswordResetControllerDTO;
+import uk.jinhy.survey_mate_api.auth.presentation.dto.PasswordUpdateRequestDTO;
 import uk.jinhy.survey_mate_api.common.auth.AuthProvider;
 import uk.jinhy.survey_mate_api.common.response.Status;
 import uk.jinhy.survey_mate_api.common.response.exception.GeneralException;
@@ -184,14 +185,34 @@ public class AuthService {
     }
 
     public String resetPassword(PasswordResetControllerDTO requestDto){
-        log.info("resetPassword");
         Member member = getCurrentMember();
-        log.info(member.getMemberId());
         String emailAddr = member.getMemberId();
         String resetToken = requestDto.getPasswordResetToken();
 
         if(!passwordResetTokenRepository.existsByEmailAddrAndToken(emailAddr, resetToken)){
             throw new GeneralException(Status.PASSWORD_TOKEN_INVALID);
+        }
+
+        Member modifiedMember = Member.builder()
+                .memberId(member.getMemberId())
+                .nickname(member.getNickname())
+                .password(passwordEncoder.encode(requestDto.getNewPassword()))
+                .messageConsent(member.isMessageConsent())
+                .marketingConsent(member.isMarketingConsent())
+                .point(member.getPoint())
+                .profileUrl(member.getProfileUrl())
+                .build();
+
+        memberRepository.save(modifiedMember);
+        return modifiedMember.getMemberId();
+    }
+
+    public String updatePassword(PasswordUpdateRequestDTO requestDto){
+        Member member = getCurrentMember();
+        String currPassword = requestDto.getCurrPassword();
+
+        if (!passwordEncoder.matches(currPassword, member.getPassword())) {
+            throw new GeneralException(Status.CURRENT_PASSWORD_INCORRECT);
         }
 
         Member modifiedMember = Member.builder()

@@ -40,6 +40,8 @@ public enum Status {
     PASSWORD_RESET_CODE_TIME_OUT(HttpStatus.UNAUTHORIZED, "PASSWORDRESET401", "비밀번호 재설정 인증 코드 유효시간이 지났습니다."),
     PASSWORD_TOKEN_INVALID(HttpStatus.BAD_REQUEST, "PASSWORDRESET400", "비밀번호 재설정 토큰이 유효하지 않습니다."),
 
+    CURRENT_PASSWORD_INCORRECT(HttpStatus.UNAUTHORIZED, "PASSWORDUPDATE401", "현재 비밀번호가 틀렸습니다. 비밀번호 변경을 진행할 수 없습니다."),
+
     STATEMENT_NOT_ENOUGH(HttpStatus.BAD_REQUEST, "STATEMENT400", "포인트가 부족합니다.")
 
     ;

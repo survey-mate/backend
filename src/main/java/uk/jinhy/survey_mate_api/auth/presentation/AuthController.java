@@ -14,6 +14,7 @@ import uk.jinhy.survey_mate_api.auth.presentation.dto.CertificateCodeRequestDTO;
 import uk.jinhy.survey_mate_api.auth.presentation.dto.MemberControllerDTO;
 import uk.jinhy.survey_mate_api.auth.presentation.dto.PasswordResetCodeDTO;
 import uk.jinhy.survey_mate_api.auth.presentation.dto.PasswordResetControllerDTO;
+import uk.jinhy.survey_mate_api.auth.presentation.dto.PasswordUpdateRequestDTO;
 import uk.jinhy.survey_mate_api.common.response.ApiResponse;
 import uk.jinhy.survey_mate_api.common.response.Status;
 
@@ -86,6 +87,16 @@ public class AuthController {
             @RequestBody PasswordResetControllerDTO requstDTO
     ){
         String memberId = authService.resetPassword(requstDTO);
+        return ApiResponse.onSuccess(Status.OK.getHttpStatus().toString(),
+                Status.OK.getMessage(), memberId + "계정의 비밀번호가 수정되었습니다.");
+    }
+
+    @PostMapping("/password/update")
+    @Operation(summary = "비밀번호 변경")
+    public ApiResponse<?> updatePassword(
+            @RequestBody PasswordUpdateRequestDTO requestDto
+    ){
+        String memberId = authService.updatePassword(requestDto);
         return ApiResponse.onSuccess(Status.OK.getHttpStatus().toString(),
                 Status.OK.getMessage(), memberId + "계정의 비밀번호가 수정되었습니다.");
     }
