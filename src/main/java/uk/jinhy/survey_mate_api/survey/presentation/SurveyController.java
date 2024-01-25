@@ -33,8 +33,6 @@ public class SurveyController {
     public ApiResponse<SurveyControllerDTO.SurveyDTO> createSurvey(
             @RequestBody @Valid SurveyControllerDTO.CreateSurveyRequestDTO dto
     ) {
-        // TODO
-        // 입력값 Validate하기
         Member registrant = authService.getCurrentMember();
         SurveyServiceDTO.CreateSurveyDTO serviceDto = surveyConverter.toServiceCreateSurveyDto(dto);
         surveyServiceFacade.createSurvey(registrant, serviceDto);
