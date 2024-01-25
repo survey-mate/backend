@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import org.hibernate.validator.constraints.URL;
+import uk.jinhy.survey_mate_api.survey.domain.entity.SurveyFormLink;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -20,9 +21,7 @@ public class SurveyControllerDTO {
         public String title;
         @NotBlank
         public String description;
-        // TODO
-        // 구글폼인지 확인하는 Validator 필요
-        @URL(protocol="https")
+        @SurveyFormLink
         public String linkUrl;
         @Min(1)
         @Max(7)
@@ -37,7 +36,7 @@ public class SurveyControllerDTO {
         public String title;
         @NotBlank
         public String description;
-        @URL(protocol = "https")
+        @SurveyFormLink
         public String linkUrl;
     }
 

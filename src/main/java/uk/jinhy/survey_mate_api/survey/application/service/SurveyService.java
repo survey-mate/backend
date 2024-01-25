@@ -39,7 +39,9 @@ public class SurveyService {
     @Transactional
     public void editSurvey(Member registrant, SurveyServiceDTO.EditSurveyDTO dto) {
         Long surveyId = dto.getSurveyId();
-        Survey survey = surveyRepository.findBySurveyId(surveyId).get();
+        Survey survey = surveyRepository.findBySurveyId(surveyId).orElseThrow(
+                () -> new GeneralException(Status.SURVEY_NOT_FOUND)
+        );
 
         if (!survey.getRegistrant().equals(registrant)) {
             throw new GeneralException(Status.WRONG_REGISTRANT);
@@ -66,9 +68,12 @@ public class SurveyService {
         Survey survey = surveyRepository.findBySurveyId(surveyId).orElseThrow(
                 () -> new GeneralException(Status.SURVEY_NOT_FOUND)
         );
-        if (survey.getRegistrant().equals(registrant)) {
-            surveyRepository.deleteById(surveyId);
+
+        if (!survey.getRegistrant().equals(registrant)) {
+            throw new GeneralException(Status.WRONG_REGISTRANT);
         }
+
+        surveyRepository.deleteById(surveyId);
     }
 
     public void addAnswer(Member respondent, String rewardUrl) {
