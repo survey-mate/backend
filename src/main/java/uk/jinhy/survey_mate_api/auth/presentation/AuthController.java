@@ -24,7 +24,7 @@ public class AuthController {
     @Operation(summary = "회원가입")
     public ApiResponse<?> join(AuthControllerDTO.MemberRequestDTO requestDTO){
         AuthControllerDTO.MemberResponseDTO memberResponseDTO = authService.join(requestDTO);
-        return ApiResponse.onSuccess(Status.CREATED.getHttpStatus().toString(),
+        return ApiResponse.onSuccess(Status.CREATED.getCode(),
                 Status.CREATED.getMessage(), memberResponseDTO);
     }
 
@@ -32,7 +32,7 @@ public class AuthController {
     @Operation(summary = "로그인")
     public ApiResponse<?> login(AuthControllerDTO.LoginRequestDTO requestDTO){
         AuthControllerDTO.JwtResponseDTO jwtResponseDTO = authService.login(requestDTO);
-        return ApiResponse.onSuccess(Status.CREATED.getHttpStatus().toString(),
+        return ApiResponse.onSuccess(Status.OK.getCode(),
                 Status.CREATED.getMessage(), jwtResponseDTO);
     }
 
@@ -42,7 +42,7 @@ public class AuthController {
             @RequestBody AuthControllerDTO.CertificateCodeRequestDTO requestDTO
             ){
         authService.sendMailCode(requestDTO);
-        return ApiResponse.onSuccess(Status.OK.getHttpStatus().toString(),
+        return ApiResponse.onSuccess(Status.OK.getCode(),
                 Status.OK.getMessage(), null);
     }
 
@@ -52,7 +52,7 @@ public class AuthController {
             @RequestBody AuthControllerDTO.MailCodeRequestDTO mailCodeDto
             ){
         AuthControllerDTO.EmailCodeResponseDTO emailCodeResponseDTO = authService.checkEmailCode(mailCodeDto);
-        return ApiResponse.onSuccess(Status.CREATED.getHttpStatus().toString(),
+        return ApiResponse.onSuccess(Status.CREATED.getCode(),
                 Status.CREATED.getMessage(), emailCodeResponseDTO);
     }
 
@@ -62,7 +62,7 @@ public class AuthController {
             @RequestBody AuthControllerDTO.CertificateCodeRequestDTO requestDTO
     ){
         authService.sendPasswordResetCode(requestDTO);
-        return ApiResponse.onSuccess(Status.OK.getHttpStatus().toString(),
+        return ApiResponse.onSuccess(Status.OK.getCode(),
                 Status.OK.getMessage(), null);
     }
 
@@ -73,7 +73,7 @@ public class AuthController {
     ){
         AuthControllerDTO.PasswordResetCodeResponseDTO passwordResetCodeResponseDTO
                 = authService.checkPasswordResetCode(resetDTO);
-        return ApiResponse.onSuccess(Status.CREATED.getHttpStatus().toString(),
+        return ApiResponse.onSuccess(Status.CREATED.getCode(),
                 Status.CREATED.getMessage(), passwordResetCodeResponseDTO);
     }
 
@@ -83,7 +83,7 @@ public class AuthController {
             @RequestBody AuthControllerDTO.PasswordResetRequestDTO requstDTO
     ){
         authService.resetPassword(requstDTO);
-        return ApiResponse.onSuccess(Status.OK.getHttpStatus().toString(),
+        return ApiResponse.onSuccess(Status.OK.getCode(),
                 Status.OK.getMessage(), null);
     }
 
@@ -93,7 +93,7 @@ public class AuthController {
             @RequestBody AuthControllerDTO.PasswordUpdateRequestDTO requestDto
     ){
         authService.updatePassword(requestDto);
-        return ApiResponse.onSuccess(Status.OK.getHttpStatus().toString(),
+        return ApiResponse.onSuccess(Status.OK.getCode(),
                 Status.OK.getMessage(), null);
     }
 }

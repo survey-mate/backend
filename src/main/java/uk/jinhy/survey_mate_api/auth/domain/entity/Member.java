@@ -126,4 +126,9 @@ public class Member {
     public boolean equals(Member member) {
         return Objects.equals(member.getMemberId(), this.memberId);
     }
+
+    public void changePassword(String newPassword){
+        password = newPassword;
+    }
+
 }

@@ -32,9 +32,11 @@ public class AuthControllerDTO {
     @Builder
     @Getter
     public static class LoginRequestDTO {
+
         private String id;
 
         private String password;
+
     }
 
     @Getter
@@ -67,8 +69,8 @@ public class AuthControllerDTO {
         private boolean messageConsent;
 
         private boolean marketingConsent;
-    }
 
+    }
 
     @Builder
     @Getter

@@ -57,7 +57,7 @@ public class AuthService {
         String emailAddress = requestDTO.getMemberId();
         String emailToken = requestDTO.getEmailToken();
 
-        if(!emailTokenRepository.existsByEmailAddressAndToken(emailAddress, emailToken)){
+        if (!emailTokenRepository.existsByEmailAddressAndToken(emailAddress, emailToken)) {
             throw new GeneralException(Status.MAIL_TOKEN_INVALID);
         }
 
@@ -84,7 +84,7 @@ public class AuthService {
         String id = requestDTO.getId();
         String password = requestDTO.getPassword();
 
-        if(!memberRepository.existsByMemberId(id)){
+        if (!memberRepository.existsByMemberId(id)) {
             throw new GeneralException(Status.MEMBER_NOT_FOUND);
         }
 
@@ -103,15 +103,14 @@ public class AuthService {
 
     public void sendMailCode(AuthControllerDTO.CertificateCodeRequestDTO requestDTO){
         String memberId = requestDTO.getReceiver();
-        boolean isExist = memberRepository.existsByMemberId(memberId);
-        if(isExist){
+        if (memberRepository.existsByMemberId(memberId)) {
             throw new GeneralException(Status.DUPLICATE_MAIL);
         }
 
         requestDTO.setMailSubject("!썰매! 회원가입 전 학교 이메일을 인증해주세요. 이메일 인증 코드 전송");
         requestDTO.setMailTitle("학교 이메일 확인용 인증코드");
 
-        String mailValidationCode = CreateCodeUtil.createCode();
+        String mailValidationCode = CreateCodeUtil.createCode(6);
         MailCode mailCode = MailCode.builder()
                 .code(mailValidationCode)
                 .emailAddress(requestDTO.getReceiver())
@@ -128,9 +127,9 @@ public class AuthService {
         MailCode mailCode = mailCodeRepository.findByCodeAndEmailAddress(mailValidationCode, id)
                 .orElseThrow(() -> new GeneralException(Status.MAIL_CODE_DIFFERENT));
 
-        LocalDateTime currTime = LocalDateTime.now();
+        LocalDateTime currentTime = LocalDateTime.now();
         LocalDateTime expirationTime = mailCode.getCreatedAt().plusMinutes(3);
-        if(currTime.isAfter(expirationTime)){
+        if (currentTime.isAfter(expirationTime)) {
             throw new GeneralException(Status.MAIL_CODE_TIME_OUT);
         }
 
@@ -155,7 +154,7 @@ public class AuthService {
         requestDTO.setMailSubject("!썰매! 비밀번호를 잊으셨나요? 비밀번호 재설정을 도와드리겠습니다. 계정 인증 코드 전송");
         requestDTO.setMailTitle("계정 확인용 인증코드");
 
-        String accountValidationCode = CreateCodeUtil.createCode();
+        String accountValidationCode = CreateCodeUtil.createCode(6);
         PasswordResetCode passwordResetCode = PasswordResetCode.builder()
                 .code(accountValidationCode)
                 .emailAddress(memberId)
@@ -173,9 +172,9 @@ public class AuthService {
         PasswordResetCode resetCode = passwordResetCodeRepository.findByCodeAndEmailAddress(code, id)
                 .orElseThrow(() -> new GeneralException(Status.PASSWORD_RESET_CODE_DIFFERENT));
 
-        LocalDateTime currTime = LocalDateTime.now();
+        LocalDateTime currentTime = LocalDateTime.now();
         LocalDateTime expirationTime = resetCode.getCreatedAt().plusMinutes(3);
-        if(currTime.isAfter(expirationTime)){
+        if (currentTime.isAfter(expirationTime)) {
             throw new GeneralException(Status.PASSWORD_RESET_CODE_TIME_OUT);
         }
 
@@ -198,42 +197,26 @@ public class AuthService {
         String emailAddress = member.getMemberId();
         String resetToken = requestDto.getPasswordResetToken();
 
-        if(!passwordResetTokenRepository.existsByEmailAddressAndToken(emailAddress, resetToken)){
+        if (!passwordResetTokenRepository.existsByEmailAddressAndToken(emailAddress, resetToken)) {
             throw new GeneralException(Status.PASSWORD_TOKEN_INVALID);
         }
 
-        Member modifiedMember = Member.builder()
-                .memberId(member.getMemberId())
-                .nickname(member.getNickname())
-                .password(passwordEncoder.encode(requestDto.getNewPassword()))
-                .messageConsent(member.isMessageConsent())
-                .marketingConsent(member.isMarketingConsent())
-                .point(member.getPoint())
-                .profileUrl(member.getProfileUrl())
-                .build();
+        member.changePassword(passwordEncoder.encode(requestDto.getNewPassword()));
 
-        memberRepository.save(modifiedMember);
+        memberRepository.save(member);
     }
 
     public void updatePassword(AuthControllerDTO.PasswordUpdateRequestDTO requestDto){
         Member member = getCurrentMember();
-        String currPassword = requestDto.getCurrentPassword();
+        String currentPassword = requestDto.getCurrentPassword();
 
-        if (!passwordEncoder.matches(currPassword, member.getPassword())) {
+        if (!passwordEncoder.matches(currentPassword, member.getPassword())) {
             throw new GeneralException(Status.CURRENT_PASSWORD_INCORRECT);
         }
 
-        Member modifiedMember = Member.builder()
-                .memberId(member.getMemberId())
-                .nickname(member.getNickname())
-                .password(passwordEncoder.encode(requestDto.getNewPassword()))
-                .messageConsent(member.isMessageConsent())
-                .marketingConsent(member.isMarketingConsent())
-                .point(member.getPoint())
-                .profileUrl(member.getProfileUrl())
-                .build();
+        member.changePassword(passwordEncoder.encode(requestDto.getNewPassword()));
 
-        memberRepository.save(modifiedMember);
+        memberRepository.save(member);
     }
 
     public Member getCurrentMember() {
