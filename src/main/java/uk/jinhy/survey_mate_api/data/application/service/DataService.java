@@ -57,7 +57,7 @@ public class DataService {
     }
 
     @Transactional
-    public void buyData(Member buyer, Long dataId) {
+    public Long buyData(Member buyer, Long dataId) {
         Data data = dataRepository.findByDataId(dataId).get();
 
         PurchaseHistory purchaseHistory = PurchaseHistory.builder()
@@ -66,6 +66,8 @@ public class DataService {
                 .build();
         data.addPurchaseHistory(purchaseHistory);
         dataRepository.save(data);
+
+        return data.getPrice();
     }
 
     public Data getData(Long dataId) { return dataRepository.findByDataId(dataId).get(); }
