@@ -24,7 +24,7 @@ public class StatementController {
 
     @GetMapping(value = "/list")
     @Operation(summary = "전체 사용내역 조회")
-    public ApiResponse<?> getStatementList(@ModelAttribute StatementControllerDTO.GetStatementDTO controllerDTO) {
+    public ApiResponse<?> getStatementList(@ModelAttribute StatementControllerDTO.GetStatementRequestDTO controllerDTO) {
         Member member = controllerDTO.getMember();
 
         // TODO
@@ -37,7 +37,7 @@ public class StatementController {
 
     @GetMapping(value = "/total")
     @Operation(summary = "전체 포인트 조회")
-    public ApiResponse<?> getTotalAmount(@ModelAttribute StatementControllerDTO.GetStatementDTO controllerDTO) {
+    public ApiResponse<?> getTotalAmount(@ModelAttribute StatementControllerDTO.GetStatementRequestDTO controllerDTO) {
         Member member = controllerDTO.getMember();
 
         // TODO

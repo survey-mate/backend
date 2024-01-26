@@ -7,7 +7,7 @@ import uk.jinhy.survey_mate_api.auth.domain.entity.Member;
 public class StatementControllerDTO {
     @Builder
     @Getter
-    public static class GetStatementDTO {
+    public static class GetStatementRequestDTO {
         private Member member;
     }
 }
