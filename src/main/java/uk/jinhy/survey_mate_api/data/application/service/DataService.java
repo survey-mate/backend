@@ -1,8 +1,12 @@
 package uk.jinhy.survey_mate_api.data.application.service;
 
+import com.amazonaws.services.s3.AmazonS3;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import uk.jinhy.survey_mate_api.common.aws.S3Service;
+import uk.jinhy.survey_mate_api.common.util.Util;
 import uk.jinhy.survey_mate_api.data.application.dto.DataServiceDTO;
 import uk.jinhy.survey_mate_api.data.domain.entity.Data;
 import uk.jinhy.survey_mate_api.data.domain.entity.PurchaseHistory;
@@ -15,16 +19,21 @@ import java.util.List;
 @Service
 public class DataService {
     private final DataRepository dataRepository;
+    private final S3Service s3Service;
 
     public Data createData(Member seller, DataServiceDTO.CreateDataDTO dto) {
+        MultipartFile file = dto.getFile();
+        String fileURL = s3Service.uploadFile(s3Service.generateDataFileKeyName(Util.generateRandomString()), file);
+
         Data data = Data.builder()
                 .seller(seller)
-                .fileUrl(dto.getFileUrl())
+                .fileUrl(fileURL)
                 .title(dto.getTitle())
                 .description(dto.getDescription())
                 .price(dto.getPrice())
                 .seller(seller)
                 .build();
+
         dataRepository.save(data);
         return data;
     }
@@ -41,9 +50,6 @@ public class DataService {
 
         String newDescription = dto.getDescription();
         if(newDescription != null) { data.updateDescription(newDescription); }
-
-        String newFileUrl = dto.getFileUrl();
-        if(newFileUrl != null) { data.updateFileUrl(newFileUrl); }
 
         dataRepository.save(data);
     }
