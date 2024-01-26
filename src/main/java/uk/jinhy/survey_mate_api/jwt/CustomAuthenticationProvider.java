@@ -27,19 +27,16 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         String username = authentication.getName();
         String password = authentication.getCredentials().toString();
-        UserDetails userDetails;
 
         try {
-            userDetails = userDetailsService.loadUserByUsername(username);
+            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+            if (!passwordEncoder.matches(password, userDetails.getPassword())) {
+                throw new GeneralException(Status.PASSWORD_INCORRECT);
+            }
+            return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
         } catch (Exception e) {
-            throw new GeneralException(Status.MEMBER_NOT_FOUND);
-        }
-
-        if (!passwordEncoder.matches(password, userDetails.getPassword())) {
             throw new GeneralException(Status.PASSWORD_INCORRECT);
         }
-
-        return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     }
 
     @Override

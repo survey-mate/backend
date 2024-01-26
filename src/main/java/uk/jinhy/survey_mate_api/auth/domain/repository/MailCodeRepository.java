@@ -6,6 +6,6 @@ import uk.jinhy.survey_mate_api.auth.domain.entity.MailCode;
 
 public interface MailCodeRepository extends JpaRepository<MailCode, String> {
 
-    Optional<MailCode> findByCodeAndEmailAddr(String code, String emaillAddr);
+    Optional<MailCode> findByCodeAndEmailAddress(String code, String emailAddress);
 
 }

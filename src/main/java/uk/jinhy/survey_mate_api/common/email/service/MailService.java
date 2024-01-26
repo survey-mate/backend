@@ -1,4 +1,4 @@
-package uk.jinhy.survey_mate_api.auth.application.service;
+package uk.jinhy.survey_mate_api.common.email.service;
 
 
 import jakarta.mail.MessagingException;
@@ -36,7 +36,7 @@ public class MailService {
     private String sender;
 
     public void sendEmail(AuthControllerDTO.CertificateCodeRequestDTO requestDTO, String code) {
-        String emailContent = generateEmailContent(code, requestDTO.getTitle());
+        String emailContent = generateEmailContent(code, requestDTO.getMailTitle());
         try {
             MimeMessage message = emailSender.createMimeMessage();
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(message, true, "UTF-8");

@@ -9,14 +9,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 @Entity
 @Getter
 @Builder
 @EnableJpaAuditing
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PasswordResetCode {
 
@@ -24,9 +24,9 @@ public class PasswordResetCode {
     private String code;
 
     @NotNull
-    private String emailAddr;
+    private String emailAddress;
 
-    @CreationTimestamp
+    @CreatedDate
     private LocalDateTime createdAt;
 
 }

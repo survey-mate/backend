@@ -6,6 +6,6 @@ import uk.jinhy.survey_mate_api.auth.domain.entity.PasswordResetCode;
 
 public interface PasswordResetCodeRepository extends JpaRepository<PasswordResetCode, String> {
 
-    Optional<PasswordResetCode> findByCodeAndEmailAddr(String code, String emailAddr);
+    Optional<PasswordResetCode> findByCodeAndEmailAddress(String code, String emailAddress);
 
 }

@@ -20,6 +20,6 @@ public class EmailToken {
     String token;
 
     @NotNull
-    String emailAddr;
+    String emailAddress;
 
 }

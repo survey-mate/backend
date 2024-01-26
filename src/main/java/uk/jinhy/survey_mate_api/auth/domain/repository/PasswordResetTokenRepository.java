@@ -5,7 +5,6 @@ import uk.jinhy.survey_mate_api.auth.domain.entity.PasswordResetToken;
 
 public interface PasswordResetTokenRepository extends JpaRepository<PasswordResetToken, String> {
 
-    boolean existsByEmailAddrAndToken(String emailAddr, String token);
-
+    boolean existsByEmailAddressAndToken(String emailAddress, String token);
 
 }

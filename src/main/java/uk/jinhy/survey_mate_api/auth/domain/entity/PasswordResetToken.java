@@ -20,6 +20,6 @@ public class PasswordResetToken {
     String token;
 
     @NotNull
-    String emailAddr;
+    String emailAddress;
 
 }

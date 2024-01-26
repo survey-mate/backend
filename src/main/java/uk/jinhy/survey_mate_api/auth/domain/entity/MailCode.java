@@ -26,9 +26,9 @@ public class MailCode {
     private String code;
 
     @NotNull
-    private String emailAddr;
+    private String emailAddress;
 
-    @CreationTimestamp
+    @CreatedDate
     private LocalDateTime createdAt;
 
 }

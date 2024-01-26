@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import uk.jinhy.survey_mate_api.auth.domain.entity.Member;
 
 public class AuthControllerDTO {
 
@@ -24,13 +25,13 @@ public class AuthControllerDTO {
         private String mailSubject;
 
         @Schema(description = "템플릿 속 제목", example = "학교 이메일 확인용 인증코드")
-        private String title;
+        private String mailTitle;
 
     }
 
     @Builder
     @Getter
-    public static class LoginControllerDTO {
+    public static class LoginRequestDTO {
         private String id;
 
         private String password;
@@ -41,41 +42,39 @@ public class AuthControllerDTO {
     @AllArgsConstructor
     @NoArgsConstructor
     @Builder
-    public static class MailCodeControllerDTO {
+    public static class MailCodeRequestDTO {
 
         @NotNull
         private String code;
 
         @NotNull
-        private String emailAddr;
-
-    }
-
-    public static class MemberControllerDTO {
-        @Builder
-        @Getter
-        public static class MemberRequestDTO{
-
-            private String memberId;
-
-            private String nickname;
-
-            private String password;
-
-            private String emailToken;
-
-            private boolean messageConsent;
-
-            private boolean marketingConsent;
-        }
+        private String emailAddress;
 
     }
 
     @Builder
     @Getter
-    public static class PasswordResetCodeDTO {
+    public static class MemberRequestDTO{
 
-        private String emailAddr;
+        private String memberId;
+
+        private String nickname;
+
+        private String password;
+
+        private String emailToken;
+
+        private boolean messageConsent;
+
+        private boolean marketingConsent;
+    }
+
+
+    @Builder
+    @Getter
+    public static class PasswordResetCodeRequestDTO {
+
+        private String emailAddress;
 
         private String code;
 
@@ -83,7 +82,7 @@ public class AuthControllerDTO {
 
     @Builder
     @Getter
-    public static class PasswordResetControllerDTO {
+    public static class PasswordResetRequestDTO {
 
         private String passwordResetToken;
 
@@ -98,6 +97,38 @@ public class AuthControllerDTO {
         private String currentPassword;
 
         private String newPassword;
+
+    }
+
+    @Getter
+    @Builder
+    public static class MemberResponseDTO {
+
+        private Member member;
+
+    }
+
+    @Getter
+    @Builder
+    public static class JwtResponseDTO {
+
+        private String jwt;
+
+    }
+
+    @Getter
+    @Builder
+    public static class EmailCodeResponseDTO {
+
+        private String emailValidationToken;
+
+    }
+
+    @Getter
+    @Builder
+    public static class PasswordResetCodeResponseDTO {
+
+        private String passwordRestValidationToken;
 
     }
 
