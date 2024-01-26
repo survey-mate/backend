@@ -24,27 +24,29 @@ public class StatementController {
 
     @GetMapping(value = "/list")
     @Operation(summary = "전체 사용내역 조회")
-    public ApiResponse<?> getStatementList(@ModelAttribute StatementControllerDTO.GetStatementRequestDTO controllerDTO) {
-        Member member = controllerDTO.getMember();
+    public ApiResponse<?> getStatementList(@ModelAttribute StatementControllerDTO.GetStatementRequestDTO requestDTO) {
+        Member member = requestDTO.getMember();
 
         // TODO
         // 인증 실패 시 예외처리
 
         List<Statement> statementList = statementService.getStatementList(member);
+        StatementControllerDTO.StatementListDTO responseDTO = new StatementControllerDTO.StatementListDTO(statementList);
 
-        return ApiResponse.onSuccess(Status.OK.getHttpStatus().toString(), Status.OK.getMessage(), statementList);
+        return ApiResponse.onSuccess(Status.OK.getHttpStatus().toString(), Status.OK.getMessage(), responseDTO);
     }
 
     @GetMapping(value = "/total")
     @Operation(summary = "전체 포인트 조회")
-    public ApiResponse<?> getTotalAmount(@ModelAttribute StatementControllerDTO.GetStatementRequestDTO controllerDTO) {
-        Member member = controllerDTO.getMember();
+    public ApiResponse<?> getTotalAmount(@ModelAttribute StatementControllerDTO.GetStatementRequestDTO requestDTO) {
+        Member member = requestDTO.getMember();
 
         // TODO
         // 인증 실패 시 예외처리
 
         Long totalAmount = statementService.getTotalAmount(member);
+        StatementControllerDTO.TotalAmountDTO responseDTO = new StatementControllerDTO.TotalAmountDTO(totalAmount);
 
-        return ApiResponse.onSuccess(Status.OK.getHttpStatus().toString(), Status.OK.getMessage(), totalAmount);
+        return ApiResponse.onSuccess(Status.OK.getHttpStatus().toString(), Status.OK.getMessage(), responseDTO);
     }
 }
