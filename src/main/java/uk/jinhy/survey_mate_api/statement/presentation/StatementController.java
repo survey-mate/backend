@@ -37,7 +37,7 @@ public class StatementController {
         List<Statement> statementList = statementService.getStatementList(member);
         StatementControllerDTO.StatementListDTO responseDTO = new StatementControllerDTO.StatementListDTO(statementList);
 
-        return ApiResponse.onSuccess(Status.OK.getHttpStatus().toString(), Status.OK.getMessage(), responseDTO);
+        return ApiResponse.onSuccess(Status.OK.getCode(), Status.OK.getMessage(), responseDTO);
     }
 
     @GetMapping(value = "/total")
@@ -52,6 +52,6 @@ public class StatementController {
         Long totalAmount = statementService.getTotalAmount(member);
         StatementControllerDTO.TotalAmountDTO responseDTO = new StatementControllerDTO.TotalAmountDTO(totalAmount);
 
-        return ApiResponse.onSuccess(Status.OK.getHttpStatus().toString(), Status.OK.getMessage(), responseDTO);
+        return ApiResponse.onSuccess(Status.OK.getCode(), Status.OK.getMessage(), responseDTO);
     }
 }
