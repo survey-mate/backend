@@ -1,4 +1,4 @@
-package uk.jinhy.survey_mate_api.auth.application.service;
+package uk.jinhy.survey_mate_api.common.email.service;
 
 
 import jakarta.mail.MessagingException;
@@ -16,7 +16,7 @@ import org.thymeleaf.context.Context;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.thymeleaf.spring6.SpringTemplateEngine;
-import uk.jinhy.survey_mate_api.auth.presentation.dto.MailControllerDTO;
+import uk.jinhy.survey_mate_api.auth.presentation.dto.AuthControllerDTO;
 import uk.jinhy.survey_mate_api.common.response.Status;
 import uk.jinhy.survey_mate_api.common.response.exception.GeneralException;
 
@@ -35,14 +35,14 @@ public class MailService {
     @Value("${spring.mail.username}")
     private String sender;
 
-    public void sendEmail(MailControllerDTO mailDto, String code) {
-        String emailContent = generateEmailContent(code);
+    public void sendEmail(AuthControllerDTO.CertificateCodeRequestDTO requestDTO, String code) {
+        String emailContent = generateEmailContent(code, requestDTO.getMailTitle());
         try {
             MimeMessage message = emailSender.createMimeMessage();
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(message, true, "UTF-8");
             mimeMessageHelper.setFrom(sender);
-            mimeMessageHelper.setTo(mailDto.getReceiver());
-            mimeMessageHelper.setSubject("학교 계정 이메일 인증 코드 전송");
+            mimeMessageHelper.setTo(requestDTO.getReceiver());
+            mimeMessageHelper.setSubject(requestDTO.getMailSubject());
             mimeMessageHelper.setText(emailContent, true);
             mimeMessageHelper.addInline("logo", new ClassPathResource("images/logo.png"));
             emailSender.send(message);
@@ -54,9 +54,10 @@ public class MailService {
         }
     }
 
-    private String generateEmailContent(String code){
+    private String generateEmailContent(String code, String title){
         Context context = new Context();
         context.setVariable("code", code);
+        context.setVariable("title", title);
         String emailTemplate = "SurveyEmail.html";
         return springTemplateEngine.process(emailTemplate, context);
     }

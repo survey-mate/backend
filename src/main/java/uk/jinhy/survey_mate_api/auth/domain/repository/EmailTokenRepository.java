@@ -5,6 +5,6 @@ import uk.jinhy.survey_mate_api.auth.domain.entity.EmailToken;
 
 public interface EmailTokenRepository extends JpaRepository<EmailToken, String> {
 
-    boolean existsByEmailAddrAndToken(String emailAddr, String token);
+    boolean existsByEmailAddressAndToken(String emailAddr, String token);
 
 }

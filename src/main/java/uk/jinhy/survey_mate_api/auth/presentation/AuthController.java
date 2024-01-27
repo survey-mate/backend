@@ -2,17 +2,14 @@ package uk.jinhy.survey_mate_api.auth.presentation;
 
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import uk.jinhy.survey_mate_api.auth.application.service.AuthService;
 import uk.jinhy.survey_mate_api.auth.domain.entity.Member;
-import uk.jinhy.survey_mate_api.auth.presentation.dto.LoginControllerDTO;
-import uk.jinhy.survey_mate_api.auth.presentation.dto.MailCodeControllerDTO;
-import uk.jinhy.survey_mate_api.auth.presentation.dto.MailControllerDTO;
-import uk.jinhy.survey_mate_api.auth.presentation.dto.MemberControllerDTO;
+import uk.jinhy.survey_mate_api.auth.presentation.dto.AuthControllerDTO;
 import uk.jinhy.survey_mate_api.common.response.ApiResponse;
 import uk.jinhy.survey_mate_api.common.response.Status;
 
@@ -25,37 +22,78 @@ public class AuthController {
 
     @PostMapping("/join")
     @Operation(summary = "회원가입")
-    public ApiResponse<?> join(MemberControllerDTO.MemberRequestDTO requestDTO){
-        Member member = authService.join(requestDTO);
-        return ApiResponse.onSuccess(Status.CREATED.getHttpStatus().toString(),
-                Status.CREATED.getMessage(), member.getMemberId());
+    public ApiResponse<?> join(AuthControllerDTO.MemberRequestDTO requestDTO){
+        AuthControllerDTO.MemberResponseDTO memberResponseDTO = authService.join(requestDTO);
+        return ApiResponse.onSuccess(Status.CREATED.getCode(),
+                Status.CREATED.getMessage(), memberResponseDTO);
     }
 
     @PostMapping("/login")
     @Operation(summary = "로그인")
-    public ApiResponse<?> login(LoginControllerDTO requestDTO){
-        String jwtTokenInfo = authService.login(requestDTO);
-        return ApiResponse.onSuccess(Status.OK.getHttpStatus().toString(),
-                Status.OK.getMessage(), jwtTokenInfo);
+    public ApiResponse<?> login(AuthControllerDTO.LoginRequestDTO requestDTO){
+        AuthControllerDTO.JwtResponseDTO jwtResponseDTO = authService.login(requestDTO);
+        return ApiResponse.onSuccess(Status.OK.getCode(),
+                Status.CREATED.getMessage(), jwtResponseDTO);
     }
 
     @PostMapping("/email/certification-request")
     @Operation(summary = "이메일 인증 코드 요청")
     public ApiResponse<?> sendEmailCode(
-            @RequestBody MailControllerDTO mailDto
+            @RequestBody AuthControllerDTO.CertificateCodeRequestDTO requestDTO
             ){
-        String result = authService.sendMailCode(mailDto);
-        return ApiResponse.onSuccess(Status.OK.getHttpStatus().toString(),
-                Status.OK.getMessage(), result);
+        authService.sendMailCode(requestDTO);
+        return ApiResponse.onSuccess(Status.OK.getCode(),
+                Status.OK.getMessage(), null);
     }
 
     @PostMapping("/email/certification")
     @Operation(summary = "이메일 인증 코드 확인")
     public ApiResponse<?> checkEmailCode(
-            @RequestBody MailCodeControllerDTO mailCodeDto
+            @RequestBody AuthControllerDTO.MailCodeRequestDTO mailCodeDto
             ){
-        String result = authService.checkEmailCode(mailCodeDto);
-        return ApiResponse.onSuccess(Status.OK.getHttpStatus().toString(),
-                Status.OK.getMessage(), result);
+        AuthControllerDTO.EmailCodeResponseDTO emailCodeResponseDTO = authService.checkEmailCode(mailCodeDto);
+        return ApiResponse.onSuccess(Status.CREATED.getCode(),
+                Status.CREATED.getMessage(), emailCodeResponseDTO);
+    }
+
+    @PostMapping("/password/certification-request")
+    @Operation(summary = "비밀번호 재설정 인증 코드 요청")
+    public ApiResponse<?> sendPasswordResetCode(
+            @RequestBody AuthControllerDTO.CertificateCodeRequestDTO requestDTO
+    ){
+        authService.sendPasswordResetCode(requestDTO);
+        return ApiResponse.onSuccess(Status.OK.getCode(),
+                Status.OK.getMessage(), null);
+    }
+
+    @PostMapping("/password/certification")
+    @Operation(summary = "비밀번호 재설정 인증코드 확인")
+    public ApiResponse<?> checkPasswordResetCode(
+            @RequestBody AuthControllerDTO.PasswordResetCodeRequestDTO resetDTO
+    ){
+        AuthControllerDTO.PasswordResetCodeResponseDTO passwordResetCodeResponseDTO
+                = authService.checkPasswordResetCode(resetDTO);
+        return ApiResponse.onSuccess(Status.CREATED.getCode(),
+                Status.CREATED.getMessage(), passwordResetCodeResponseDTO);
+    }
+
+    @PatchMapping("/password/reset")
+    @Operation(summary = "비밀번호 재설정")
+    public ApiResponse<?> resetPassword(
+            @RequestBody AuthControllerDTO.PasswordResetRequestDTO requstDTO
+    ){
+        authService.resetPassword(requstDTO);
+        return ApiResponse.onSuccess(Status.OK.getCode(),
+                Status.OK.getMessage(), null);
+    }
+
+    @PatchMapping("/password/update")
+    @Operation(summary = "비밀번호 변경")
+    public ApiResponse<?> updatePassword(
+            @RequestBody AuthControllerDTO.PasswordUpdateRequestDTO requestDto
+    ){
+        authService.updatePassword(requestDto);
+        return ApiResponse.onSuccess(Status.OK.getCode(),
+                Status.OK.getMessage(), null);
     }
 }
