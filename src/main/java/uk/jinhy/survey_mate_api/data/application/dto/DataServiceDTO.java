@@ -2,6 +2,7 @@ package uk.jinhy.survey_mate_api.data.application.dto;
 
 import lombok.Builder;
 import lombok.Getter;
+import org.springframework.web.multipart.MultipartFile;
 
 public class DataServiceDTO {
     @Builder
@@ -10,7 +11,7 @@ public class DataServiceDTO {
         private String title;
         private String description;
         private Long price;
-        private String fileUrl;
+        private MultipartFile file;
     }
 
     @Builder
@@ -19,6 +20,5 @@ public class DataServiceDTO {
         private Long dataId;
         private String title;
         private String description;
-        private String fileUrl;
     }
 }
