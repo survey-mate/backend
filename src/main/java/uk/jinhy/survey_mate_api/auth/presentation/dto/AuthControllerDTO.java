@@ -25,10 +25,10 @@ public class AuthControllerDTO {
         @Schema(description = "받는 사람 이메일 주소", example = "mingmingmon@kyonggi.ac.kr")
         private String receiver;
 
-        @Schema(description = "이메일 제목", example = "!썰매! 회원가입 전 학교 이메일을 인증해주세요. 이메일 인증 코드 전송")
+        @Schema(description = "이메일 제목", example = "[썰매 (Survey Mate)] 회원가입을 위한 인증 코드입니다.")
         private String mailSubject;
 
-        @Schema(description = "템플릿 속 제목", example = "학교 이메일 확인용 인증코드")
+        @Schema(description = "템플릿 속 제목", example = "인증 코드")
         private String mailTitle;
 
     }
