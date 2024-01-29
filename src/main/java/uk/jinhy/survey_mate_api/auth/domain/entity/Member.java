@@ -38,10 +38,10 @@ public class Member {
     private String password;
 
     @NotNull
-    private boolean messageConsent;
+    private boolean serviceConsent;
 
     @NotNull
-    private boolean marketingConsent;
+    private boolean privacyConsent;
 
     private Long point;
 

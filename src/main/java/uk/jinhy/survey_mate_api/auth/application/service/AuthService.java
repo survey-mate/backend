@@ -66,8 +66,8 @@ public class AuthService {
                 .memberId(requestDTO.getMemberId())
                 .nickname(requestDTO.getNickname())
                 .password(passwordEncoder.encode(requestDTO.getPassword()))
-                .messageConsent(requestDTO.isMessageConsent())
-                .marketingConsent(requestDTO.isMarketingConsent())
+                .serviceConsent(requestDTO.isServiceConsent())
+                .privacyConsent(requestDTO.isPrivacyConsent())
                 .point(0L)
                 .profileUrl(null)
                 .build();
@@ -75,7 +75,7 @@ public class AuthService {
         memberRepository.save(member);
 
         AuthControllerDTO.MemberResponseDTO memberResponseDTO = AuthControllerDTO.MemberResponseDTO.builder()
-                .member(member)
+                .id(member.getMemberId())
                 .build();
 
         return memberResponseDTO;
