@@ -1,6 +1,7 @@
 package uk.jinhy.survey_mate_api.auth.presentation;
 
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,7 +23,8 @@ public class AuthController {
 
     @PostMapping("/join")
     @Operation(summary = "회원가입")
-    public ApiResponse<?> join(AuthControllerDTO.MemberRequestDTO requestDTO){
+    public ApiResponse<?> join(
+            @RequestBody @Valid AuthControllerDTO.MemberRequestDTO requestDTO){
         AuthControllerDTO.MemberResponseDTO memberResponseDTO = authService.join(requestDTO);
         return ApiResponse.onSuccess(Status.CREATED.getCode(),
                 Status.CREATED.getMessage(), memberResponseDTO);
@@ -30,7 +32,8 @@ public class AuthController {
 
     @PostMapping("/login")
     @Operation(summary = "로그인")
-    public ApiResponse<?> login(AuthControllerDTO.LoginRequestDTO requestDTO){
+    public ApiResponse<?> login(
+            @RequestBody @Valid AuthControllerDTO.LoginRequestDTO requestDTO){
         AuthControllerDTO.JwtResponseDTO jwtResponseDTO = authService.login(requestDTO);
         return ApiResponse.onSuccess(Status.OK.getCode(),
                 Status.CREATED.getMessage(), jwtResponseDTO);
@@ -39,7 +42,7 @@ public class AuthController {
     @PostMapping("/email/certification-request")
     @Operation(summary = "이메일 인증 코드 요청")
     public ApiResponse<?> sendEmailCode(
-            @RequestBody AuthControllerDTO.CertificateCodeRequestDTO requestDTO
+            @RequestBody @Valid AuthControllerDTO.CertificateCodeRequestDTO requestDTO
             ){
         authService.sendMailCode(requestDTO);
         return ApiResponse.onSuccess(Status.OK.getCode(),
@@ -49,7 +52,7 @@ public class AuthController {
     @PostMapping("/email/certification")
     @Operation(summary = "이메일 인증 코드 확인")
     public ApiResponse<?> checkEmailCode(
-            @RequestBody AuthControllerDTO.MailCodeRequestDTO mailCodeDto
+            @RequestBody @Valid AuthControllerDTO.MailCodeRequestDTO mailCodeDto
             ){
         AuthControllerDTO.EmailCodeResponseDTO emailCodeResponseDTO = authService.checkEmailCode(mailCodeDto);
         return ApiResponse.onSuccess(Status.CREATED.getCode(),
@@ -69,7 +72,7 @@ public class AuthController {
     @PostMapping("/password/certification")
     @Operation(summary = "비밀번호 재설정 인증코드 확인")
     public ApiResponse<?> checkPasswordResetCode(
-            @RequestBody AuthControllerDTO.PasswordResetCodeRequestDTO resetDTO
+            @RequestBody @Valid AuthControllerDTO.PasswordResetCodeRequestDTO resetDTO
     ){
         AuthControllerDTO.PasswordResetCodeResponseDTO passwordResetCodeResponseDTO
                 = authService.checkPasswordResetCode(resetDTO);
