@@ -62,7 +62,7 @@ public class AuthController {
     @PostMapping("/password/certification-request")
     @Operation(summary = "비밀번호 재설정 인증 코드 요청")
     public ApiResponse<?> sendPasswordResetCode(
-            @RequestBody AuthControllerDTO.CertificateCodeRequestDTO requestDTO
+            @RequestBody @Valid AuthControllerDTO.CertificateCodeRequestDTO requestDTO
     ){
         authService.sendPasswordResetCode(requestDTO);
         return ApiResponse.onSuccess(Status.OK.getCode(),
@@ -83,9 +83,9 @@ public class AuthController {
     @PatchMapping("/password/reset")
     @Operation(summary = "비밀번호 재설정")
     public ApiResponse<?> resetPassword(
-            @RequestBody AuthControllerDTO.PasswordResetRequestDTO requstDTO
+            @RequestBody @Valid AuthControllerDTO.PasswordResetRequestDTO requestDTO
     ){
-        authService.resetPassword(requstDTO);
+        authService.resetPassword(requestDTO);
         return ApiResponse.onSuccess(Status.OK.getCode(),
                 Status.OK.getMessage(), null);
     }
@@ -93,7 +93,7 @@ public class AuthController {
     @PatchMapping("/password/update")
     @Operation(summary = "비밀번호 변경")
     public ApiResponse<?> updatePassword(
-            @RequestBody AuthControllerDTO.PasswordUpdateRequestDTO requestDto
+            @RequestBody @Valid AuthControllerDTO.PasswordUpdateRequestDTO requestDto
     ){
         authService.updatePassword(requestDto);
         return ApiResponse.onSuccess(Status.OK.getCode(),
