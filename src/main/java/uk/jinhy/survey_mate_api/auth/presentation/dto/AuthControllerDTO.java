@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import uk.jinhy.survey_mate_api.auth.domain.entity.Member;
+import uk.jinhy.survey_mate_api.auth.domain.entity.Password;
+import uk.jinhy.survey_mate_api.auth.domain.entity.StudentEmail;
 
 public class AuthControllerDTO {
 
@@ -18,6 +20,7 @@ public class AuthControllerDTO {
     @Builder
     public static class CertificateCodeRequestDTO {
 
+        @StudentEmail
         @NotNull
         private String receiver;
 
@@ -33,6 +36,7 @@ public class AuthControllerDTO {
     @Getter
     public static class LoginRequestDTO {
 
+        @StudentEmail
         private String id;
 
         private String password;
@@ -50,6 +54,7 @@ public class AuthControllerDTO {
         private String code;
 
         @NotNull
+        @StudentEmail
         private String emailAddress;
 
     }
@@ -58,10 +63,12 @@ public class AuthControllerDTO {
     @Getter
     public static class MemberRequestDTO{
 
+        @StudentEmail
         private String memberId;
 
         private String nickname;
 
+        @Password
         private String password;
 
         private String emailToken;
@@ -76,6 +83,7 @@ public class AuthControllerDTO {
     @Getter
     public static class PasswordResetCodeRequestDTO {
 
+        @StudentEmail
         private String emailAddress;
 
         private String code;
@@ -88,6 +96,7 @@ public class AuthControllerDTO {
 
         private String passwordResetToken;
 
+        @Password
         private String newPassword;
 
     }
@@ -98,6 +107,7 @@ public class AuthControllerDTO {
 
         private String currentPassword;
 
+        @Password
         private String newPassword;
 
     }

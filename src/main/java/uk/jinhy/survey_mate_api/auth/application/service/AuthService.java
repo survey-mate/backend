@@ -14,6 +14,7 @@ import uk.jinhy.survey_mate_api.auth.domain.entity.MailCode;
 import uk.jinhy.survey_mate_api.auth.domain.entity.Member;
 import uk.jinhy.survey_mate_api.auth.domain.entity.PasswordResetCode;
 import uk.jinhy.survey_mate_api.auth.domain.entity.PasswordResetToken;
+import uk.jinhy.survey_mate_api.auth.domain.entity.StudentEmail;
 import uk.jinhy.survey_mate_api.auth.domain.repository.EmailTokenRepository;
 import uk.jinhy.survey_mate_api.auth.domain.repository.MailCodeRepository;
 import uk.jinhy.survey_mate_api.auth.domain.repository.MemberRepository;
