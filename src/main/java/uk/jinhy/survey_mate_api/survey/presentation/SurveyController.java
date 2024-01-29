@@ -1,5 +1,6 @@
 package uk.jinhy.survey_mate_api.survey.presentation;
 
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -29,7 +30,8 @@ public class SurveyController {
     private final AuthService authService;
 
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("/survey")
+    @PostMapping("")
+    @Operation(summary = "설문 추가")
     public ApiResponse<SurveyControllerDTO.SurveyDTO> createSurvey(
             @RequestBody @Valid SurveyControllerDTO.CreateSurveyRequestDTO dto
     ) {
@@ -40,6 +42,7 @@ public class SurveyController {
     }
 
     @PatchMapping("/{surveyId}")
+    @Operation(summary = "설문 수정")
     public ApiResponse<SurveyControllerDTO.SurveyDTO> editSurvey(
             @RequestBody @Valid SurveyControllerDTO.EditSurveyRequestDTO dto,
             @PathVariable("surveyId") Long surveyId
@@ -51,6 +54,7 @@ public class SurveyController {
     }
 
     @DeleteMapping("/{surveyId}")
+    @Operation(summary = "설문 삭제")
     public ApiResponse<Object> deleteSurvey(@PathVariable("surveyId") Long surveyId) {
         Member registrant = authService.getCurrentMember();
         surveyService.deleteSurvey(registrant, surveyId);
@@ -58,6 +62,7 @@ public class SurveyController {
     }
 
     @GetMapping("/{surveyId}")
+    @Operation(summary = "설문 상세정보 불러오기")
     public ApiResponse<SurveyControllerDTO.SurveyDetailDTO> getSurveyDetail(@PathVariable("surveyId") Long surveyId) {
         Survey survey = surveyService.getSurvey(surveyId);
         boolean isResponded = surveyService.isResponded(survey, null);
@@ -66,6 +71,7 @@ public class SurveyController {
     }
 
     @GetMapping("")
+    @Operation(summary = "설문 불러오기")
     public ApiResponse<SurveyControllerDTO.SurveyListDTO> getSurveysList(@RequestParam("page") int pageNumber) {
         List<Survey> surveyList = surveyService.getSurveyList(pageNumber);
         List<SurveyControllerDTO.SurveyDTO> dtoList = surveyList.stream()
@@ -76,6 +82,7 @@ public class SurveyController {
     }
 
     @GetMapping("/answer/{rewardUrl}")
+    @Operation(summary = "포인트 수령")
     public ApiResponse<SurveyControllerDTO.RewardResultDTO> earnRewardsAfterAnswerTheSurvey(@PathVariable("rewardUrl") String rewardUrl) {
         Member respondent = authService.getCurrentMember();
         surveyServiceFacade.answerSurvey(respondent, rewardUrl);
@@ -83,6 +90,7 @@ public class SurveyController {
     }
 
     @GetMapping("/registrant")
+    @Operation(summary = "내가 등록한 설문 불러오기")
     public ApiResponse<SurveyControllerDTO.SurveyListDTO> getSurveysListByRegistrant() {
         Member registrant = authService.getCurrentMember();
         List<Survey> surveyList = surveyService.getMySurveyList(registrant);
@@ -94,6 +102,7 @@ public class SurveyController {
     }
 
     @GetMapping("/respondent")
+    @Operation(summary = "내가 응답한 설문 불러오기")
     public ApiResponse<SurveyControllerDTO.SurveyListDTO> getSurveysListByRespondent() {
         Member registrant = authService.getCurrentMember();
         List<Survey> surveyList = surveyService.getAnsweredSurveyList(registrant);
@@ -105,6 +114,7 @@ public class SurveyController {
     }
 
     @GetMapping("/new")
+    @Operation(summary = "최신 설문 불러오기")
     public ApiResponse<SurveyControllerDTO.SurveyListDTO> getRecentSurveysList() {
         List<Survey> surveyList = surveyService.getRecentSurveyList();
         List<SurveyControllerDTO.SurveyDTO> dtoList = surveyList.stream()
