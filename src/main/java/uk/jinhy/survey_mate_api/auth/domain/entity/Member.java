@@ -18,13 +18,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import uk.jinhy.survey_mate_api.survey.domain.entity.Answer;
 import uk.jinhy.survey_mate_api.data.domain.entity.Data;
-import uk.jinhy.survey_mate_api.data_comment.DataComment;
-import uk.jinhy.survey_mate_api.deviceToken.DeviceToken;
-import uk.jinhy.survey_mate_api.notification.Notification;
 import uk.jinhy.survey_mate_api.data.domain.entity.PurchaseHistory;
 import uk.jinhy.survey_mate_api.statement.domain.entity.Statement;
 import uk.jinhy.survey_mate_api.survey.domain.entity.Survey;
-import uk.jinhy.survey_mate_api.survey.domain.entity.SurveyComment;
 
 @Entity
 @Getter
@@ -42,10 +38,13 @@ public class Member {
     private String password;
 
     @NotNull
-    private boolean messageConsent;
+    private boolean serviceConsent;
 
     @NotNull
-    private boolean marketingConsent;
+    private boolean privacyConsent;
+
+    @NotNull
+    private boolean isStudent;
 
     private Long point;
 
@@ -65,30 +64,6 @@ public class Member {
 
     public void addData(Data data){
         dataList.add(data);
-    }
-
-    @Builder.Default
-    @OneToMany(mappedBy = "dataCommenter", cascade = CascadeType.ALL)
-    private List<DataComment> dataCommentList = new ArrayList<>();
-
-    public void addDataComment(DataComment dataComment){
-        dataCommentList.add(dataComment);
-    }
-
-    @Builder.Default
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-    private List<DeviceToken> deviceTokenList = new ArrayList<>();
-
-    public void addDeviceToken(DeviceToken deviceToken){
-        deviceTokenList.add(deviceToken);
-    }
-
-    @Builder.Default
-    @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL)
-    private List<Notification> notificationList = new ArrayList<>();
-
-    public void addNotification(Notification notification){
-        notificationList.add(notification);
     }
 
     @Builder.Default
@@ -115,20 +90,16 @@ public class Member {
         surveyList.add(survey);
     }
 
-    @Builder.Default
-    @OneToMany(mappedBy = "surveyCommenter", cascade = CascadeType.ALL)
-    private List<SurveyComment> surveyCommentList = new ArrayList<>();
-
-    public void addSurveyComment(SurveyComment surveyComment){
-        surveyCommentList.add(surveyComment);
-    }
-
     public boolean equals(Member member) {
         return Objects.equals(member.getMemberId(), this.memberId);
     }
 
     public void changePassword(String newPassword){
         password = newPassword;
+    }
+
+    public void setIsStudent(boolean isStudent){
+        this.isStudent = isStudent;
     }
 
 }

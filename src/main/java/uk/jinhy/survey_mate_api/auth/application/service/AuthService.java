@@ -61,20 +61,30 @@ public class AuthService {
             throw new GeneralException(Status.MAIL_TOKEN_INVALID);
         }
 
+        if (memberRepository.existsByMemberId(emailAddress)) {
+            throw new GeneralException(Status.MEMBER_ALREADY_EXIST);
+        }
+
         Member member = Member.builder()
                 .memberId(requestDTO.getMemberId())
                 .nickname(requestDTO.getNickname())
                 .password(passwordEncoder.encode(requestDTO.getPassword()))
-                .messageConsent(requestDTO.isMessageConsent())
-                .marketingConsent(requestDTO.isMarketingConsent())
+                .serviceConsent(requestDTO.isServiceConsent())
+                .privacyConsent(requestDTO.isPrivacyConsent())
                 .point(0L)
                 .profileUrl(null)
                 .build();
 
+        if (emailAddress.matches(".*\\.(ac\\.kr|edu)$")) {
+            member.setIsStudent(true);
+        } else {
+            member.setIsStudent(false);
+        }
+
         memberRepository.save(member);
 
         AuthControllerDTO.MemberResponseDTO memberResponseDTO = AuthControllerDTO.MemberResponseDTO.builder()
-                .member(member)
+                .id(member.getMemberId())
                 .build();
 
         return memberResponseDTO;
@@ -107,8 +117,8 @@ public class AuthService {
             throw new GeneralException(Status.DUPLICATE_MAIL);
         }
 
-        requestDTO.setMailSubject("!썰매! 회원가입 전 학교 이메일을 인증해주세요. 이메일 인증 코드 전송");
-        requestDTO.setMailTitle("학교 이메일 확인용 인증코드");
+        requestDTO.setMailSubject("[썰매 (Survey Mate)] 회원가입을 위한 인증 코드입니다.");
+        requestDTO.setMailTitle("인증코드");
 
         String mailValidationCode = CreateCodeUtil.createCode(6);
         MailCode mailCode = MailCode.builder()
@@ -151,8 +161,8 @@ public class AuthService {
         String memberId = requestDTO.getReceiver();
         Member member = getMemberById(memberId);
 
-        requestDTO.setMailSubject("!썰매! 비밀번호를 잊으셨나요? 비밀번호 재설정을 도와드리겠습니다. 계정 인증 코드 전송");
-        requestDTO.setMailTitle("계정 확인용 인증코드");
+        requestDTO.setMailSubject("[썰매 (Survey Mate)] 계정 비밀번호 재설정을 위한 인증 코드입니다.");
+        requestDTO.setMailTitle("인증코드");
 
         String accountValidationCode = CreateCodeUtil.createCode(6);
         PasswordResetCode passwordResetCode = PasswordResetCode.builder()
@@ -217,6 +227,22 @@ public class AuthService {
         member.changePassword(passwordEncoder.encode(requestDto.getNewPassword()));
 
         memberRepository.save(member);
+    }
+
+    public void deleteAccount(AuthControllerDTO.DeleteAccountRequestDTO requestDTO){
+        Member member = getCurrentMember();
+
+        log.info(requestDTO.getCurrentPassword());
+        String emailAddress = member.getMemberId();
+        if (!passwordEncoder.matches(requestDTO.getCurrentPassword(), member.getPassword())) {
+            throw new GeneralException(Status.PASSWORD_INCORRECT);
+        }
+
+        memberRepository.deleteById(emailAddress);
+    }
+
+    public boolean isStudentAccount(){
+        return getCurrentMember().isStudent();
     }
 
     public Member getCurrentMember() {

@@ -7,7 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import uk.jinhy.survey_mate_api.auth.domain.entity.Member;
+import uk.jinhy.survey_mate_api.auth.domain.entity.Password;
 
 public class AuthControllerDTO {
 
@@ -19,12 +19,13 @@ public class AuthControllerDTO {
     public static class CertificateCodeRequestDTO {
 
         @NotNull
+        @Schema(description = "받는 사람 이메일 주소", example = "mingmingmon@kyonggi.ac.kr")
         private String receiver;
 
-        @Schema(description = "이메일 제목", example = "!썰매! 회원가입 전 학교 이메일을 인증해주세요. 이메일 인증 코드 전송")
+        @Schema(description = "이메일 제목", example = "[썰매 (Survey Mate)] 회원가입을 위한 인증 코드입니다.")
         private String mailSubject;
 
-        @Schema(description = "템플릿 속 제목", example = "학교 이메일 확인용 인증코드")
+        @Schema(description = "템플릿 속 제목", example = "인증 코드")
         private String mailTitle;
 
     }
@@ -33,8 +34,10 @@ public class AuthControllerDTO {
     @Getter
     public static class LoginRequestDTO {
 
+        @Schema(description = "아이디(학교 계정 이메일 주소)", example = "mingmingmon@kyonggi.ac.kr")
         private String id;
 
+        @Schema(description = "비밀번호", example = "1234asdf!")
         private String password;
 
     }
@@ -47,9 +50,11 @@ public class AuthControllerDTO {
     public static class MailCodeRequestDTO {
 
         @NotNull
+        @Schema(description = "인증코드", example = "124578")
         private String code;
 
         @NotNull
+        @Schema(description = "학교 계정 이메일 주소", example = "mingmingmon@kyonggi.ac.kr")
         private String emailAddress;
 
     }
@@ -58,17 +63,30 @@ public class AuthControllerDTO {
     @Getter
     public static class MemberRequestDTO{
 
+        @NotNull
+        @Schema(description = "학교 계정 이메일 주소", example = "mingmingmon@kyonggi.ac.kr")
         private String memberId;
 
+        @NotNull
+        @Schema(description = "닉네임", example = "로그")
         private String nickname;
 
+        @NotNull
+        @Password
+        @Schema(description = "비밀번호", example = "1234asdf!")
         private String password;
 
+        @NotNull
+        @Schema(description = "이메일 인증 토큰", example = "aosdjgr")
         private String emailToken;
 
-        private boolean messageConsent;
+        @NotNull
+        @Schema(description = "서비스 이용약관 동의여부", example = "true")
+        private boolean serviceConsent;
 
-        private boolean marketingConsent;
+        @NotNull
+        @Schema(description = "개인정보 수집 및 이용 동의여부", example = "true")
+        private boolean privacyConsent;
 
     }
 
@@ -76,8 +94,12 @@ public class AuthControllerDTO {
     @Getter
     public static class PasswordResetCodeRequestDTO {
 
+        @NotNull
+        @Schema(description = "학교 계정 이메일 주소", example = "mingmingmon@kyonggi.ac.kr")
         private String emailAddress;
 
+        @NotNull
+        @Schema(description = "인증코드", example = "124578")
         private String code;
 
     }
@@ -86,8 +108,13 @@ public class AuthControllerDTO {
     @Getter
     public static class PasswordResetRequestDTO {
 
+        @NotNull
+        @Schema(description = "계정 인증 토큰", example = "aosdjgr")
         private String passwordResetToken;
 
+        @NotNull
+        @Password
+        @Schema(description = "새로운 비밀번호", example = "asdf1234$")
         private String newPassword;
 
     }
@@ -96,9 +123,24 @@ public class AuthControllerDTO {
     @Builder
     public static class PasswordUpdateRequestDTO {
 
+        @NotNull
+        @Schema(description = "현재 비밀번호", example = "1234asdf!")
         private String currentPassword;
 
+        @NotNull
+        @Password
+        @Schema(description = "새로운 비밀번호", example = "asdf1234$")
         private String newPassword;
+
+    }
+
+    @NoArgsConstructor
+    @Getter
+    public static class DeleteAccountRequestDTO{
+
+        @NotNull
+        @Schema(description = "현재 비밀번호", example = "1234asdf!")
+        private String currentPassword;
 
     }
 
@@ -106,7 +148,7 @@ public class AuthControllerDTO {
     @Builder
     public static class MemberResponseDTO {
 
-        private Member member;
+        private String id;
 
     }
 
@@ -131,6 +173,14 @@ public class AuthControllerDTO {
     public static class PasswordResetCodeResponseDTO {
 
         private String passwordRestValidationToken;
+
+    }
+
+    @Getter
+    @Builder
+    public static class IsStudentAccountResponseDTO{
+
+        private boolean isStudentAccount;
 
     }
 

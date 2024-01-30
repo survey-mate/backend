@@ -20,7 +20,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
-import uk.jinhy.survey_mate_api.data_comment.DataComment;
 import uk.jinhy.survey_mate_api.auth.domain.entity.Member;
 
 
@@ -53,14 +52,6 @@ public class Data {
 
     @NotNull
     private Long price;
-
-    @Builder.Default
-    @OneToMany(mappedBy = "data", cascade = CascadeType.ALL)
-    private List<DataComment> dataCommentList = new ArrayList<>();
-
-    public void addDataComment(DataComment dataComment){
-        dataCommentList.add(dataComment);
-    }
 
     @Builder.Default
     @OneToMany(mappedBy = "data", cascade = CascadeType.ALL)
