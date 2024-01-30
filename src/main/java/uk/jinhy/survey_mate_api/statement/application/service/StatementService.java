@@ -16,7 +16,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Service
 public class StatementService {
-    private StatementRepository statementRepository;
+    private final StatementRepository statementRepository;
 
     public Statement createStatement(Member member, StatementServiceDTO.CreateStatementDTO dto) throws Exception {
         Statement statement = Statement.builder()
