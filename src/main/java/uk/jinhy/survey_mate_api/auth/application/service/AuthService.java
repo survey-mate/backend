@@ -77,8 +77,7 @@ public class AuthService {
 
         if (emailAddress.matches(".*\\.(ac\\.kr|edu)$")) {
             member.setIsStudent(true);
-        }
-        else {
+        } else {
             member.setIsStudent(false);
         }
 
