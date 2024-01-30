@@ -62,6 +62,10 @@ public class AuthService {
             throw new GeneralException(Status.MAIL_TOKEN_INVALID);
         }
 
+        if (memberRepository.existsByMemberId(emailAddress)) {
+            throw new GeneralException(Status.MEMBER_ALREADY_EXIST);
+        }
+
         Member member = Member.builder()
                 .memberId(requestDTO.getMemberId())
                 .nickname(requestDTO.getNickname())
@@ -218,6 +222,19 @@ public class AuthService {
         member.changePassword(passwordEncoder.encode(requestDto.getNewPassword()));
 
         memberRepository.save(member);
+    }
+
+    public void deleteAccount(AuthControllerDTO.DeleteAccountRequestDTO requestDTO){
+        Member member = getCurrentMember();
+
+        log.info(requestDTO.getCurrentPassword());
+        String emailAddress = member.getMemberId();
+        if (!passwordEncoder.matches(requestDTO.getCurrentPassword(), member.getPassword())) {
+            throw new GeneralException(Status.PASSWORD_INCORRECT);
+        }
+
+        memberRepository.deleteById(emailAddress);
+
     }
 
     public Member getCurrentMember() {

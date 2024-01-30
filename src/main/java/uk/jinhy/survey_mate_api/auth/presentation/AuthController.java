@@ -3,6 +3,7 @@ package uk.jinhy.survey_mate_api.auth.presentation;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -99,4 +100,15 @@ public class AuthController {
         return ApiResponse.onSuccess(Status.OK.getCode(),
                 Status.OK.getMessage(), null);
     }
+
+    @DeleteMapping("/account")
+    @Operation(summary = "회원 탈퇴")
+    public ApiResponse<?> deleteAccount(
+            @RequestBody AuthControllerDTO.DeleteAccountRequestDTO requestDTO
+    ){
+        authService.deleteAccount(requestDTO);
+        return ApiResponse.onSuccess(Status.OK.getCode(),
+                Status.OK.getMessage(), null);
+    }
+
 }

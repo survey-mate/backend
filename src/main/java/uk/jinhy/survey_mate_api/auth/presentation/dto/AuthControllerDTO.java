@@ -7,7 +7,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import uk.jinhy.survey_mate_api.auth.domain.entity.Member;
 import uk.jinhy.survey_mate_api.auth.domain.entity.Password;
 import uk.jinhy.survey_mate_api.auth.domain.entity.StudentEmail;
 
@@ -138,6 +137,16 @@ public class AuthControllerDTO {
         @Password
         @Schema(description = "새로운 비밀번호", example = "asdf1234$")
         private String newPassword;
+
+    }
+
+    @NoArgsConstructor
+    @Getter
+    public static class DeleteAccountRequestDTO{
+
+        @NotNull
+        @Schema(description = "현재 비밀번호", example = "1234asdf!")
+        private String currentPassword;
 
     }
 
