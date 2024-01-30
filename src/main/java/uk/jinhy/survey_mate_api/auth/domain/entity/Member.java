@@ -43,6 +43,9 @@ public class Member {
     @NotNull
     private boolean privacyConsent;
 
+    @NotNull
+    private boolean isStudent;
+
     private Long point;
 
     private String profileUrl;
@@ -93,6 +96,10 @@ public class Member {
 
     public void changePassword(String newPassword){
         password = newPassword;
+    }
+
+    public void setIsStudent(boolean isStudent){
+        this.isStudent = isStudent;
     }
 
 }

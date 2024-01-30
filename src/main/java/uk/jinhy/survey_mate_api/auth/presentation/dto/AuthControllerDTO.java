@@ -8,7 +8,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import uk.jinhy.survey_mate_api.auth.domain.entity.Password;
-import uk.jinhy.survey_mate_api.auth.domain.entity.StudentEmail;
 
 public class AuthControllerDTO {
 
@@ -19,7 +18,6 @@ public class AuthControllerDTO {
     @Builder
     public static class CertificateCodeRequestDTO {
 
-        @StudentEmail
         @NotNull
         @Schema(description = "받는 사람 이메일 주소", example = "mingmingmon@kyonggi.ac.kr")
         private String receiver;
@@ -36,7 +34,6 @@ public class AuthControllerDTO {
     @Getter
     public static class LoginRequestDTO {
 
-        @StudentEmail
         @Schema(description = "아이디(학교 계정 이메일 주소)", example = "mingmingmon@kyonggi.ac.kr")
         private String id;
 
@@ -57,7 +54,6 @@ public class AuthControllerDTO {
         private String code;
 
         @NotNull
-        @StudentEmail
         @Schema(description = "학교 계정 이메일 주소", example = "mingmingmon@kyonggi.ac.kr")
         private String emailAddress;
 
@@ -68,7 +64,6 @@ public class AuthControllerDTO {
     public static class MemberRequestDTO{
 
         @NotNull
-        @StudentEmail
         @Schema(description = "학교 계정 이메일 주소", example = "mingmingmon@kyonggi.ac.kr")
         private String memberId;
 
@@ -100,7 +95,6 @@ public class AuthControllerDTO {
     public static class PasswordResetCodeRequestDTO {
 
         @NotNull
-        @StudentEmail
         @Schema(description = "학교 계정 이메일 주소", example = "mingmingmon@kyonggi.ac.kr")
         private String emailAddress;
 
@@ -179,6 +173,14 @@ public class AuthControllerDTO {
     public static class PasswordResetCodeResponseDTO {
 
         private String passwordRestValidationToken;
+
+    }
+
+    @Getter
+    @Builder
+    public static class IsStudentAccountResponseDTO{
+
+        private boolean isStudentAccount;
 
     }
 

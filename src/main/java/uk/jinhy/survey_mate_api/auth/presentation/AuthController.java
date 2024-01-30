@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -109,6 +110,18 @@ public class AuthController {
         authService.deleteAccount(requestDTO);
         return ApiResponse.onSuccess(Status.OK.getCode(),
                 Status.OK.getMessage(), null);
+    }
+
+    @GetMapping("/account/isStudent")
+    @Operation(summary = "학생 계정 확인")
+    public ApiResponse<?> isStudentAccount(){
+        boolean isStudentAccount = authService.isStudentAccount();
+        AuthControllerDTO.IsStudentAccountResponseDTO responseDto
+                = AuthControllerDTO.IsStudentAccountResponseDTO.builder()
+                .isStudentAccount(isStudentAccount)
+                .build();
+        return ApiResponse.onSuccess(Status.OK.getCode(),
+                Status.OK.getMessage(), responseDto);
     }
 
 }
