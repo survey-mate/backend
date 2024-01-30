@@ -66,8 +66,8 @@ public class AuthService {
                 .memberId(requestDTO.getMemberId())
                 .nickname(requestDTO.getNickname())
                 .password(passwordEncoder.encode(requestDTO.getPassword()))
-                .messageConsent(requestDTO.isMessageConsent())
-                .marketingConsent(requestDTO.isMarketingConsent())
+                .serviceConsent(requestDTO.isServiceConsent())
+                .privacyConsent(requestDTO.isPrivacyConsent())
                 .point(0L)
                 .profileUrl(null)
                 .build();
@@ -75,7 +75,7 @@ public class AuthService {
         memberRepository.save(member);
 
         AuthControllerDTO.MemberResponseDTO memberResponseDTO = AuthControllerDTO.MemberResponseDTO.builder()
-                .member(member)
+                .id(member.getMemberId())
                 .build();
 
         return memberResponseDTO;
@@ -108,8 +108,8 @@ public class AuthService {
             throw new GeneralException(Status.DUPLICATE_MAIL);
         }
 
-        requestDTO.setMailSubject("!썰매! 회원가입 전 학교 이메일을 인증해주세요. 이메일 인증 코드 전송");
-        requestDTO.setMailTitle("학교 이메일 확인용 인증코드");
+        requestDTO.setMailSubject("[썰매 (Survey Mate)] 회원가입을 위한 인증 코드입니다.");
+        requestDTO.setMailTitle("인증코드");
 
         String mailValidationCode = CreateCodeUtil.createCode(6);
         MailCode mailCode = MailCode.builder()
@@ -152,8 +152,8 @@ public class AuthService {
         String memberId = requestDTO.getReceiver();
         Member member = getMemberById(memberId);
 
-        requestDTO.setMailSubject("!썰매! 비밀번호를 잊으셨나요? 비밀번호 재설정을 도와드리겠습니다. 계정 인증 코드 전송");
-        requestDTO.setMailTitle("계정 확인용 인증코드");
+        requestDTO.setMailSubject("[썰매 (Survey Mate)] 계정 비밀번호 재설정을 위한 인증 코드입니다.");
+        requestDTO.setMailTitle("인증코드");
 
         String accountValidationCode = CreateCodeUtil.createCode(6);
         PasswordResetCode passwordResetCode = PasswordResetCode.builder()
