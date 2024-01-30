@@ -3,6 +3,7 @@ package uk.jinhy.survey_mate_api.auth.presentation;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.aspectj.apache.bcel.classfile.Code;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import uk.jinhy.survey_mate_api.auth.application.service.AuthService;
 import uk.jinhy.survey_mate_api.auth.domain.entity.Member;
 import uk.jinhy.survey_mate_api.auth.presentation.dto.AuthControllerDTO;
+import uk.jinhy.survey_mate_api.auth.presentation.dto.CodeResponseDTO;
 import uk.jinhy.survey_mate_api.common.response.ApiResponse;
 import uk.jinhy.survey_mate_api.common.response.Status;
 
@@ -46,9 +48,12 @@ public class AuthController {
     public ApiResponse<?> sendEmailCode(
             @RequestBody @Valid AuthControllerDTO.CertificateCodeRequestDTO requestDTO
             ){
-        authService.sendMailCode(requestDTO);
+        String mailValidationCode = authService.sendMailCode(requestDTO);
+        CodeResponseDTO responseDTO = CodeResponseDTO.builder()
+                .code(mailValidationCode)
+                .build();
         return ApiResponse.onSuccess(Status.OK.getCode(),
-                Status.OK.getMessage(), null);
+                Status.OK.getMessage(), responseDTO);
     }
 
     @PostMapping("/email/certification")
@@ -66,9 +71,12 @@ public class AuthController {
     public ApiResponse<?> sendPasswordResetCode(
             @RequestBody @Valid AuthControllerDTO.CertificateCodeRequestDTO requestDTO
     ){
-        authService.sendPasswordResetCode(requestDTO);
+        String accountValidationCode = authService.sendPasswordResetCode(requestDTO);
+        CodeResponseDTO responseDTO = CodeResponseDTO.builder()
+                .code(accountValidationCode)
+                .build();
         return ApiResponse.onSuccess(Status.OK.getCode(),
-                Status.OK.getMessage(), null);
+                Status.OK.getMessage(), responseDTO);
     }
 
     @PostMapping("/password/certification")
