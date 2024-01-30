@@ -111,7 +111,7 @@ public class AuthService {
 
     }
 
-    public void sendMailCode(AuthControllerDTO.CertificateCodeRequestDTO requestDTO){
+    public String sendMailCode(AuthControllerDTO.CertificateCodeRequestDTO requestDTO){
         String memberId = requestDTO.getReceiver();
         if (memberRepository.existsByMemberId(memberId)) {
             throw new GeneralException(Status.DUPLICATE_MAIL);
@@ -127,7 +127,8 @@ public class AuthService {
                 .createdAt(LocalDateTime.now())
                 .build();
         mailCodeRepository.save(mailCode);
-        mailService.sendEmail(requestDTO, mailValidationCode);
+        return mailValidationCode;
+        //mailService.sendEmail(requestDTO, mailValidationCode);
     }
 
     public AuthControllerDTO.EmailCodeResponseDTO checkEmailCode(AuthControllerDTO.MailCodeRequestDTO mailCodeDto){
@@ -157,7 +158,7 @@ public class AuthService {
                 .build();
     }
 
-    public void sendPasswordResetCode(AuthControllerDTO.CertificateCodeRequestDTO requestDTO){
+    public String sendPasswordResetCode(AuthControllerDTO.CertificateCodeRequestDTO requestDTO){
         String memberId = requestDTO.getReceiver();
         Member member = getMemberById(memberId);
 
@@ -172,7 +173,8 @@ public class AuthService {
                 .build();
 
         passwordResetCodeRepository.save(passwordResetCode);
-        mailService.sendEmail(requestDTO, accountValidationCode);
+        return accountValidationCode;
+        //mailService.sendEmail(requestDTO, accountValidationCode);
     }
 
     public AuthControllerDTO.PasswordResetCodeResponseDTO checkPasswordResetCode(AuthControllerDTO.PasswordResetCodeRequestDTO resetDTO){
