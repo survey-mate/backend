@@ -20,6 +20,7 @@ public class StatementService {
 
     public Statement createStatement(Member member, StatementServiceDTO.CreateStatementDTO dto) throws Exception {
         Statement statement = Statement.builder()
+                .member(member)
                 .amount(dto.getAmount())
                 .description(dto.getDescription())
                 .build();
