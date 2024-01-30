@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import uk.jinhy.survey_mate_api.auth.application.service.AuthService;
 import uk.jinhy.survey_mate_api.auth.domain.entity.Member;
 import uk.jinhy.survey_mate_api.auth.presentation.dto.AuthControllerDTO;
+import uk.jinhy.survey_mate_api.auth.presentation.dto.CodeResponseDTO;
 import uk.jinhy.survey_mate_api.common.response.ApiResponse;
 import uk.jinhy.survey_mate_api.common.response.Status;
 
@@ -46,9 +47,12 @@ public class AuthController {
     public ApiResponse<?> sendEmailCode(
             @RequestBody @Valid AuthControllerDTO.CertificateCodeRequestDTO requestDTO
             ){
-        authService.sendMailCode(requestDTO);
+        String mailValidationCode = authService.sendMailCode(requestDTO);
+        CodeResponseDTO codeResponseDTO = CodeResponseDTO.builder()
+                .code(mailValidationCode)
+                .build();
         return ApiResponse.onSuccess(Status.OK.getCode(),
-                Status.OK.getMessage(), null);
+                Status.OK.getMessage(), codeResponseDTO);
     }
 
     @PostMapping("/email/certification")
@@ -66,9 +70,12 @@ public class AuthController {
     public ApiResponse<?> sendPasswordResetCode(
             @RequestBody @Valid AuthControllerDTO.CertificateCodeRequestDTO requestDTO
     ){
-        authService.sendPasswordResetCode(requestDTO);
+        String accountValidationCode = authService.sendPasswordResetCode(requestDTO);
+        CodeResponseDTO codeResponseDTO = CodeResponseDTO.builder()
+                .code(accountValidationCode)
+                .build();
         return ApiResponse.onSuccess(Status.OK.getCode(),
-                Status.OK.getMessage(), null);
+                Status.OK.getMessage(), codeResponseDTO);
     }
 
     @PostMapping("/password/certification")
