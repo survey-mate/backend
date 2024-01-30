@@ -1,6 +1,6 @@
 package uk.jinhy.survey_mate_api.auth.application.service;
 
-import com.amazonaws.services.kms.model.NotFoundException;
+import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -9,11 +9,23 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import uk.jinhy.survey_mate_api.auth.domain.entity.EmailToken;
+import uk.jinhy.survey_mate_api.auth.domain.entity.MailCode;
 import uk.jinhy.survey_mate_api.auth.domain.entity.Member;
+import uk.jinhy.survey_mate_api.auth.domain.entity.PasswordResetCode;
+import uk.jinhy.survey_mate_api.auth.domain.entity.PasswordResetToken;
+import uk.jinhy.survey_mate_api.auth.domain.repository.EmailTokenRepository;
+import uk.jinhy.survey_mate_api.auth.domain.repository.MailCodeRepository;
 import uk.jinhy.survey_mate_api.auth.domain.repository.MemberRepository;
-import uk.jinhy.survey_mate_api.auth.presentation.dto.LoginControllerDTO;
-import uk.jinhy.survey_mate_api.auth.presentation.dto.MemberControllerDTO;
+import uk.jinhy.survey_mate_api.auth.domain.repository.PasswordResetCodeRepository;
+import uk.jinhy.survey_mate_api.auth.domain.repository.PasswordResetTokenRepository;
+import uk.jinhy.survey_mate_api.auth.presentation.dto.AuthControllerDTO;
 import uk.jinhy.survey_mate_api.common.auth.AuthProvider;
+import uk.jinhy.survey_mate_api.common.email.service.MailService;
+import uk.jinhy.survey_mate_api.common.response.Status;
+import uk.jinhy.survey_mate_api.common.response.exception.GeneralException;
+import uk.jinhy.survey_mate_api.common.util.CreateCodeUtil;
+import uk.jinhy.survey_mate_api.common.util.CreateRandomStringUtil;
 import uk.jinhy.survey_mate_api.jwt.JwtTokenProvider;
 
 @RequiredArgsConstructor
@@ -30,39 +42,218 @@ public class AuthService {
 
     private final PasswordEncoder passwordEncoder;
 
-    public Member join(MemberControllerDTO.MemberRequestDTO requestDTO){
+    private final MailService mailService;
+
+    private final MailCodeRepository mailCodeRepository;
+
+    private final EmailTokenRepository emailTokenRepository;
+
+    private final PasswordResetCodeRepository passwordResetCodeRepository;
+
+    private final PasswordResetTokenRepository passwordResetTokenRepository;
+
+    public AuthControllerDTO.MemberResponseDTO join(AuthControllerDTO.MemberRequestDTO requestDTO){
+
+        String emailAddress = requestDTO.getMemberId();
+        String emailToken = requestDTO.getEmailToken();
+
+        if (!emailTokenRepository.existsByEmailAddressAndToken(emailAddress, emailToken)) {
+            throw new GeneralException(Status.MAIL_TOKEN_INVALID);
+        }
+
+        if (memberRepository.existsByMemberId(emailAddress)) {
+            throw new GeneralException(Status.MEMBER_ALREADY_EXIST);
+        }
+
         Member member = Member.builder()
                 .memberId(requestDTO.getMemberId())
                 .nickname(requestDTO.getNickname())
                 .password(passwordEncoder.encode(requestDTO.getPassword()))
-                .messageConsent(requestDTO.isMessageConsent())
-                .marketingConsent(requestDTO.isMarketingConsent())
+                .serviceConsent(requestDTO.isServiceConsent())
+                .privacyConsent(requestDTO.isPrivacyConsent())
                 .point(0L)
                 .profileUrl(null)
                 .build();
 
+        if (emailAddress.matches(".*\\.(ac\\.kr|edu)$")) {
+            member.setIsStudent(true);
+        } else {
+            member.setIsStudent(false);
+        }
+
         memberRepository.save(member);
-        return member;
+
+        AuthControllerDTO.MemberResponseDTO memberResponseDTO = AuthControllerDTO.MemberResponseDTO.builder()
+                .id(member.getMemberId())
+                .build();
+
+        return memberResponseDTO;
     }
 
-    public String login(LoginControllerDTO requestDTO){
+    public AuthControllerDTO.JwtResponseDTO login(AuthControllerDTO.LoginRequestDTO requestDTO){
         String id = requestDTO.getId();
         String password = requestDTO.getPassword();
+
+        if (!memberRepository.existsByMemberId(id)) {
+            throw new GeneralException(Status.MEMBER_NOT_FOUND);
+        }
 
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(id, password);
 
         Authentication authentication = authenticationManager.authenticate(authenticationToken);
         String jwtToken = jwtTokenProvider.createToken(authentication);
 
-        return jwtToken;
+        AuthControllerDTO.JwtResponseDTO jwtResponseDTO = AuthControllerDTO.JwtResponseDTO.builder().
+                jwt(jwtToken)
+                .build();
 
+        return jwtResponseDTO;
+
+    }
+
+    public void sendMailCode(AuthControllerDTO.CertificateCodeRequestDTO requestDTO){
+        String memberId = requestDTO.getReceiver();
+        if (memberRepository.existsByMemberId(memberId)) {
+            throw new GeneralException(Status.DUPLICATE_MAIL);
+        }
+
+        requestDTO.setMailSubject("[썰매 (Survey Mate)] 회원가입을 위한 인증 코드입니다.");
+        requestDTO.setMailTitle("인증코드");
+
+        String mailValidationCode = CreateCodeUtil.createCode(6);
+        MailCode mailCode = MailCode.builder()
+                .code(mailValidationCode)
+                .emailAddress(requestDTO.getReceiver())
+                .createdAt(LocalDateTime.now())
+                .build();
+        mailCodeRepository.save(mailCode);
+        mailService.sendEmail(requestDTO, mailValidationCode);
+    }
+
+    public AuthControllerDTO.EmailCodeResponseDTO checkEmailCode(AuthControllerDTO.MailCodeRequestDTO mailCodeDto){
+        String id = mailCodeDto.getEmailAddress();
+        String mailValidationCode = mailCodeDto.getCode();
+
+        MailCode mailCode = mailCodeRepository.findByCodeAndEmailAddress(mailValidationCode, id)
+                .orElseThrow(() -> new GeneralException(Status.MAIL_CODE_DIFFERENT));
+
+        LocalDateTime currentTime = LocalDateTime.now();
+        LocalDateTime expirationTime = mailCode.getCreatedAt().plusMinutes(3);
+        if (currentTime.isAfter(expirationTime)) {
+            throw new GeneralException(Status.MAIL_CODE_TIME_OUT);
+        }
+
+        String accountValidationToken = CreateRandomStringUtil.createRandomStr();
+
+        EmailToken emailToken = EmailToken.builder()
+                .token(accountValidationToken)
+                .emailAddress(id)
+                .build();
+
+        emailTokenRepository.save(emailToken);
+
+        return AuthControllerDTO.EmailCodeResponseDTO.builder()
+                .emailValidationToken(accountValidationToken)
+                .build();
+    }
+
+    public void sendPasswordResetCode(AuthControllerDTO.CertificateCodeRequestDTO requestDTO){
+        String memberId = requestDTO.getReceiver();
+        Member member = getMemberById(memberId);
+
+        requestDTO.setMailSubject("[썰매 (Survey Mate)] 계정 비밀번호 재설정을 위한 인증 코드입니다.");
+        requestDTO.setMailTitle("인증코드");
+
+        String accountValidationCode = CreateCodeUtil.createCode(6);
+        PasswordResetCode passwordResetCode = PasswordResetCode.builder()
+                .code(accountValidationCode)
+                .emailAddress(memberId)
+                .createdAt(LocalDateTime.now())
+                .build();
+
+        passwordResetCodeRepository.save(passwordResetCode);
+        mailService.sendEmail(requestDTO, accountValidationCode);
+    }
+
+    public AuthControllerDTO.PasswordResetCodeResponseDTO checkPasswordResetCode(AuthControllerDTO.PasswordResetCodeRequestDTO resetDTO){
+        String id = resetDTO.getEmailAddress();
+        String code = resetDTO.getCode();
+
+        PasswordResetCode resetCode = passwordResetCodeRepository.findByCodeAndEmailAddress(code, id)
+                .orElseThrow(() -> new GeneralException(Status.PASSWORD_RESET_CODE_DIFFERENT));
+
+        LocalDateTime currentTime = LocalDateTime.now();
+        LocalDateTime expirationTime = resetCode.getCreatedAt().plusMinutes(3);
+        if (currentTime.isAfter(expirationTime)) {
+            throw new GeneralException(Status.PASSWORD_RESET_CODE_TIME_OUT);
+        }
+
+        String passwordRestValidationToken = CreateRandomStringUtil.createRandomStr();
+
+        PasswordResetToken resetToken = PasswordResetToken.builder()
+                .token(passwordRestValidationToken)
+                .emailAddress(id)
+                .build();
+
+        passwordResetTokenRepository.save(resetToken);
+
+        return AuthControllerDTO.PasswordResetCodeResponseDTO.builder()
+                .passwordRestValidationToken(passwordRestValidationToken)
+                .build();
+    }
+
+    public void resetPassword(AuthControllerDTO.PasswordResetRequestDTO requestDto){
+        Member member = getCurrentMember();
+        String emailAddress = member.getMemberId();
+        String resetToken = requestDto.getPasswordResetToken();
+
+        if (!passwordResetTokenRepository.existsByEmailAddressAndToken(emailAddress, resetToken)) {
+            throw new GeneralException(Status.PASSWORD_TOKEN_INVALID);
+        }
+
+        member.changePassword(passwordEncoder.encode(requestDto.getNewPassword()));
+
+        memberRepository.save(member);
+    }
+
+    public void updatePassword(AuthControllerDTO.PasswordUpdateRequestDTO requestDto){
+        Member member = getCurrentMember();
+        String currentPassword = requestDto.getCurrentPassword();
+
+        if (!passwordEncoder.matches(currentPassword, member.getPassword())) {
+            throw new GeneralException(Status.CURRENT_PASSWORD_INCORRECT);
+        }
+
+        member.changePassword(passwordEncoder.encode(requestDto.getNewPassword()));
+
+        memberRepository.save(member);
+    }
+
+    public void deleteAccount(AuthControllerDTO.DeleteAccountRequestDTO requestDTO){
+        Member member = getCurrentMember();
+
+        log.info(requestDTO.getCurrentPassword());
+        String emailAddress = member.getMemberId();
+        if (!passwordEncoder.matches(requestDTO.getCurrentPassword(), member.getPassword())) {
+            throw new GeneralException(Status.PASSWORD_INCORRECT);
+        }
+
+        memberRepository.deleteById(emailAddress);
+    }
+
+    public boolean isStudentAccount(){
+        return getCurrentMember().isStudent();
     }
 
     public Member getCurrentMember() {
         String memberId = AuthProvider.getAuthenticationInfoMemberId();
         return memberRepository.findById(memberId)
-                .orElseThrow(() -> new NotFoundException("해당 유저가 없습니다."));
+                .orElseThrow(() -> new GeneralException(Status.MEMBER_NOT_FOUND));
     }
 
+    public Member getMemberById(String id){
+        return memberRepository.findById(id)
+                .orElseThrow(() -> new GeneralException(Status.MEMBER_NOT_FOUND));
+    }
 
 }

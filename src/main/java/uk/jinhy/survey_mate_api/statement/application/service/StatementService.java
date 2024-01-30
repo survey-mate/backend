@@ -18,7 +18,7 @@ import java.util.Optional;
 public class StatementService {
     private final StatementRepository statementRepository;
 
-    public Statement createStatement(Member member, StatementServiceDTO.CreateStatementDTO dto) throws Exception {
+    public Statement createStatement(Member member, StatementServiceDTO.CreateStatementDTO dto) {
         Statement statement = Statement.builder()
                 .member(member)
                 .amount(dto.getAmount())
