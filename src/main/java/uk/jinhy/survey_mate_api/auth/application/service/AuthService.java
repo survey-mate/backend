@@ -25,7 +25,6 @@ import uk.jinhy.survey_mate_api.common.jwt.JwtTokenProvider;
 import uk.jinhy.survey_mate_api.common.response.Status;
 import uk.jinhy.survey_mate_api.common.response.exception.GeneralException;
 import uk.jinhy.survey_mate_api.common.util.Util;
-import uk.jinhy.survey_mate_api.jwt.JwtTokenProvider;
 
 @RequiredArgsConstructor
 @Service
@@ -197,7 +196,7 @@ public class AuthService {
     public void resetPassword(AuthControllerDTO.PasswordResetRequestDTO requestDto) {
         String emailAddress = requestDto.getEmailAddress();
         Member member = memberRepository.findById(emailAddress)
-                .orElseThrow(() -> new GeneralException(Status.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new GeneralException(Status.MEMBER_NOT_FOUND));
 
         String resetToken = requestDto.getPasswordResetToken();
 
