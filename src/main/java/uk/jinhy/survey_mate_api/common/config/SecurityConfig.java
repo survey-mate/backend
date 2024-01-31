@@ -57,7 +57,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public org.springframework.security.authentication.AuthenticationProvider authenticationProvider() {
+    public AuthenticationProvider authenticationProvider() {
         return new AuthenticationProvider(userDetailsService, passwordEncoder());
     }
 
