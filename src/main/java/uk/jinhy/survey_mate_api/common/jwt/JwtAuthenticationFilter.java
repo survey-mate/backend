@@ -1,4 +1,4 @@
-package uk.jinhy.survey_mate_api.jwt;
+package uk.jinhy.survey_mate_api.common.jwt;
 
 import io.jsonwebtoken.MalformedJwtException;
 import jakarta.servlet.FilterChain;
@@ -32,24 +32,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        String jwt = null;
         try {
-            jwt = extractJwtToken(request.getHeader("Authorization"));
-        } catch (Exception e) {
-            request.setAttribute("exception", Status.JWT_NULL.getCode());
-        }
-
-        try {
+            String jwt = extractJwtToken(request.getHeader("Authorization"));
             if (jwt != null && jwtTokenProvider.validateToken(jwt)) {
                 Authentication authentication = jwtTokenProvider.getAuthentication(jwt);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         } catch (MalformedJwtException e) {
             request.setAttribute("exception", Status.JWT_INVALID.getCode());
+        } catch (Exception e) {
+            request.setAttribute("exception", Status.JWT_NULL.getCode());
         }
 
         filterChain.doFilter(request, response);
-
     }
 
     private boolean isSwaggerUiRequest(HttpServletRequest request) {

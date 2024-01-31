@@ -1,4 +1,4 @@
-package uk.jinhy.survey_mate_api.jwt;
+package uk.jinhy.survey_mate_api.common.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,20 +18,15 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
     public void commence(HttpServletRequest request, HttpServletResponse response,
         AuthenticationException authException) throws IOException {
 
-        Status status = null;
-
         String exception = (String) request.getAttribute("exception");
 
         if (exception.equals(Status.JWT_NULL.getCode())) {
-            status = Status.JWT_NULL;
-            setResponse(response, status);
+            setResponse(response, Status.JWT_NULL);
         }
 
         if (exception.equals(Status.JWT_INVALID.getCode())) {
-            status = Status.JWT_INVALID;
-            setResponse(response, status);
+            setResponse(response, Status.JWT_INVALID);
         }
-
     }
 
     private void setResponse(HttpServletResponse response, Status status) throws IOException {

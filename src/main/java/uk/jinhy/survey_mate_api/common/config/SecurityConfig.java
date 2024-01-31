@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
@@ -18,11 +17,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import uk.jinhy.survey_mate_api.jwt.CustomAuthenticationProvider;
-import uk.jinhy.survey_mate_api.jwt.JwtAccessDeniedHandler;
-import uk.jinhy.survey_mate_api.jwt.JwtAuthenticationEntryPoint;
-import uk.jinhy.survey_mate_api.jwt.JwtAuthenticationFilter;
-import uk.jinhy.survey_mate_api.jwt.JwtTokenProvider;
+import uk.jinhy.survey_mate_api.common.jwt.AuthenticationProvider;
+import uk.jinhy.survey_mate_api.common.jwt.JwtAccessDeniedHandler;
+import uk.jinhy.survey_mate_api.common.jwt.JwtAuthenticationEntryPoint;
+import uk.jinhy.survey_mate_api.common.jwt.JwtAuthenticationFilter;
+import uk.jinhy.survey_mate_api.common.jwt.JwtTokenProvider;
 
 @RequiredArgsConstructor
 @Configuration
@@ -43,6 +42,9 @@ public class SecurityConfig {
         "/auth/login",
         "/auth/join",
         "/auth/email/**",
+        "/auth/password/certification",
+        "/auth/password/certification-request",
+        "/auth/password/reset",
         "/error",
         "/v2/api-docs",
         "/swagger-resources/**",
@@ -59,7 +61,7 @@ public class SecurityConfig {
 
     @Bean
     public AuthenticationProvider authenticationProvider() {
-        return new CustomAuthenticationProvider(userDetailsService, passwordEncoder());
+        return new AuthenticationProvider(userDetailsService, passwordEncoder());
     }
 
     @Bean(name = "AuthenticationManager")

@@ -22,12 +22,6 @@ public class AuthControllerDTO {
         @Schema(description = "받는 사람 이메일 주소", example = "mingmingmon@kyonggi.ac.kr")
         private String receiver;
 
-        @Schema(description = "이메일 제목", example = "[썰매 (Survey Mate)] 회원가입을 위한 인증 코드입니다.")
-        private String mailSubject;
-
-        @Schema(description = "템플릿 속 제목", example = "인증 코드")
-        private String mailTitle;
-
     }
 
     @Builder
@@ -107,6 +101,10 @@ public class AuthControllerDTO {
     @Builder
     @Getter
     public static class PasswordResetRequestDTO {
+
+        @NotNull
+        @Schema(description = "이메일 주소", example = "mingmingmon@kyonggi.ac.kr")
+        private String emailAddress;
 
         @NotNull
         @Schema(description = "계정 인증 토큰", example = "aosdjgr")

@@ -1,4 +1,4 @@
-package uk.jinhy.survey_mate_api.common.auth;
+package uk.jinhy.survey_mate_api.auth.application.service;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
