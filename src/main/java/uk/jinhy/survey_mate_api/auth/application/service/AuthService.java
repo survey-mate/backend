@@ -20,7 +20,7 @@ import uk.jinhy.survey_mate_api.auth.domain.repository.MemberRepository;
 import uk.jinhy.survey_mate_api.auth.domain.repository.PasswordResetCodeRepository;
 import uk.jinhy.survey_mate_api.auth.domain.repository.PasswordResetTokenRepository;
 import uk.jinhy.survey_mate_api.auth.presentation.dto.AuthControllerDTO;
-import uk.jinhy.survey_mate_api.common.email.MailService;
+import uk.jinhy.survey_mate_api.common.email.service.MailService;
 import uk.jinhy.survey_mate_api.common.jwt.JwtTokenProvider;
 import uk.jinhy.survey_mate_api.common.response.Status;
 import uk.jinhy.survey_mate_api.common.response.exception.GeneralException;
