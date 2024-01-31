@@ -1,9 +1,16 @@
 package uk.jinhy.survey_mate_api.data.presentation;
 
 import io.swagger.v3.oas.annotations.Operation;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import uk.jinhy.survey_mate_api.auth.application.service.AuthService;
 import uk.jinhy.survey_mate_api.auth.domain.entity.Member;
 import uk.jinhy.survey_mate_api.common.response.ApiResponse;
@@ -15,15 +22,12 @@ import uk.jinhy.survey_mate_api.data.application.service.DataServiceFacade;
 import uk.jinhy.survey_mate_api.data.domain.entity.Data;
 import uk.jinhy.survey_mate_api.data.presentation.converter.DataConverter;
 import uk.jinhy.survey_mate_api.data.presentation.dto.DataControllerDTO;
-import uk.jinhy.survey_mate_api.statement.presentation.dto.StatementControllerDTO;
-import uk.jinhy.survey_mate_api.survey.presentation.dto.SurveyControllerDTO;
-
-import java.util.List;
 
 @RequiredArgsConstructor
 @RequestMapping("/data")
 @Controller
 public class DataController {
+
     private final DataService dataService;
     private final DataServiceFacade dataServiceFacade;
     private final AuthService authService;
@@ -44,8 +48,8 @@ public class DataController {
     @PatchMapping(value = "/{dataId}")
     @Operation(summary = "설문장터 수정")
     public ApiResponse<?> editData(
-            @ModelAttribute DataControllerDTO.EditDataRequestDTO requestDTO,
-            @PathVariable("dataId") Long dataId
+        @ModelAttribute DataControllerDTO.EditDataRequestDTO requestDTO,
+        @PathVariable("dataId") Long dataId
     ) {
         DataServiceDTO.EditDataDTO serviceDTO = converter.toServiceEditDataDto(requestDTO);
         Member member = authService.getCurrentMember();
@@ -66,12 +70,12 @@ public class DataController {
     @GetMapping(value = "/buy/{dataId}")
     @Operation(summary = "설문장터 구매")
     public ApiResponse<?> buyData(
-            @ModelAttribute DataControllerDTO.BuyDataRequestDTO requestDTO,
-            @PathVariable("dataId") Long dataId
+        @ModelAttribute DataControllerDTO.BuyDataRequestDTO requestDTO,
+        @PathVariable("dataId") Long dataId
     ) {
         Member member = requestDTO.getMember();
 
-        if(!authService.getCurrentMember().equals(member)) {
+        if (!authService.getCurrentMember().equals(member)) {
             throw new GeneralException(Status.UNAUTHORIZED);
         }
 

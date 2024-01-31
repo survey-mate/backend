@@ -21,6 +21,7 @@ import uk.jinhy.survey_mate_api.auth.domain.entity.Member;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Statement {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long statementId;
@@ -36,7 +37,7 @@ public class Statement {
     @NotNull
     private String description;
 
-    public void confirmMember(Member member){
+    public void confirmMember(Member member) {
         this.member = member;
         member.addStatement(this);
     }

@@ -1,12 +1,19 @@
 package uk.jinhy.survey_mate_api.survey.domain.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotNull;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,6 +30,7 @@ import uk.jinhy.survey_mate_api.auth.domain.entity.Member;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
 public class Survey {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long surveyId;
@@ -56,11 +64,11 @@ public class Survey {
     @OneToMany(mappedBy = "survey", cascade = CascadeType.ALL)
     private List<Answer> answerList = new ArrayList<>();
 
-    public void addAnswer(Answer answer){
+    public void addAnswer(Answer answer) {
         answerList.add(answer);
     }
 
-    public void confirmRegistrant(Member registrant){
+    public void confirmRegistrant(Member registrant) {
         this.registrant = registrant;
         registrant.addSurvey(this);
     }
@@ -72,7 +80,7 @@ public class Survey {
 
     public boolean isAnswered(Member member) {
         return answerList.stream()
-                .anyMatch(a -> a.getRespondent().equals(member));
+            .anyMatch(a -> a.getRespondent().equals(member));
     }
 
     public void updateTitle(String newTitle) {
