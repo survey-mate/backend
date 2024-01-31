@@ -24,8 +24,8 @@ import uk.jinhy.survey_mate_api.common.email.MailService;
 import uk.jinhy.survey_mate_api.common.jwt.JwtTokenProvider;
 import uk.jinhy.survey_mate_api.common.response.Status;
 import uk.jinhy.survey_mate_api.common.response.exception.GeneralException;
-import uk.jinhy.survey_mate_api.common.util.CreateCodeUtil;
-import uk.jinhy.survey_mate_api.common.util.CreateRandomStringUtil;
+import uk.jinhy.survey_mate_api.common.util.Util;
+import uk.jinhy.survey_mate_api.jwt.JwtTokenProvider;
 
 @RequiredArgsConstructor
 @Service
@@ -112,7 +112,7 @@ public class AuthService {
             throw new GeneralException(Status.DUPLICATE_MAIL);
         }
 
-        String mailValidationCode = CreateCodeUtil.createCode(6);
+        String mailValidationCode = Util.generateRandomNumberString(6);
         MailCode mailCode = MailCode.builder()
             .code(mailValidationCode)
             .emailAddress(requestDTO.getReceiver())
@@ -136,7 +136,7 @@ public class AuthService {
             throw new GeneralException(Status.MAIL_CODE_TIME_OUT);
         }
 
-        String accountValidationToken = CreateRandomStringUtil.createRandomStr();
+        String accountValidationToken = Util.generateRandomString(10);
 
         EmailToken emailToken = EmailToken.builder()
             .token(accountValidationToken)
@@ -154,7 +154,7 @@ public class AuthService {
         String memberId = requestDTO.getReceiver();
         Member member = getMemberById(memberId);
 
-        String accountValidationCode = CreateCodeUtil.createCode(6);
+        String accountValidationCode = Util.generateRandomNumberString(6);
         PasswordResetCode passwordResetCode = PasswordResetCode.builder()
             .code(accountValidationCode)
             .emailAddress(memberId)
@@ -180,7 +180,7 @@ public class AuthService {
             throw new GeneralException(Status.PASSWORD_RESET_CODE_TIME_OUT);
         }
 
-        String passwordRestValidationToken = CreateRandomStringUtil.createRandomStr();
+        String passwordRestValidationToken = Util.generateRandomNumberString(10);
 
         PasswordResetToken resetToken = PasswordResetToken.builder()
             .token(passwordRestValidationToken)
