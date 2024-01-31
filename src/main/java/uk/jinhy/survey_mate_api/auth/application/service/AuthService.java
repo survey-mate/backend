@@ -24,7 +24,8 @@ import uk.jinhy.survey_mate_api.common.auth.AuthProvider;
 import uk.jinhy.survey_mate_api.common.email.service.MailService;
 import uk.jinhy.survey_mate_api.common.response.Status;
 import uk.jinhy.survey_mate_api.common.response.exception.GeneralException;
-import uk.jinhy.survey_mate_api.common.util.Util;
+import uk.jinhy.survey_mate_api.common.util.CreateCodeUtil;
+import uk.jinhy.survey_mate_api.common.util.CreateRandomStringUtil;
 import uk.jinhy.survey_mate_api.jwt.JwtTokenProvider;
 
 @RequiredArgsConstructor
@@ -115,7 +116,7 @@ public class AuthService {
         requestDTO.setMailSubject("[썰매 (Survey Mate)] 회원가입을 위한 인증 코드입니다.");
         requestDTO.setMailTitle("인증코드");
 
-        String mailValidationCode = Util.generateRandomNumberString(6);
+        String mailValidationCode = CreateCodeUtil.createCode(6);
         MailCode mailCode = MailCode.builder()
             .code(mailValidationCode)
             .emailAddress(requestDTO.getReceiver())
@@ -140,7 +141,7 @@ public class AuthService {
             throw new GeneralException(Status.MAIL_CODE_TIME_OUT);
         }
 
-        String accountValidationToken = Util.generateRandomString(10);
+        String accountValidationToken = CreateRandomStringUtil.createRandomStr();
 
         EmailToken emailToken = EmailToken.builder()
             .token(accountValidationToken)
@@ -161,7 +162,7 @@ public class AuthService {
         requestDTO.setMailSubject("[썰매 (Survey Mate)] 계정 비밀번호 재설정을 위한 인증 코드입니다.");
         requestDTO.setMailTitle("인증코드");
 
-        String accountValidationCode = Util.generateRandomNumberString(6);
+        String accountValidationCode = CreateCodeUtil.createCode(6);
         PasswordResetCode passwordResetCode = PasswordResetCode.builder()
             .code(accountValidationCode)
             .emailAddress(memberId)
@@ -188,7 +189,7 @@ public class AuthService {
             throw new GeneralException(Status.PASSWORD_RESET_CODE_TIME_OUT);
         }
 
-        String passwordRestValidationToken = Util.generateRandomNumberString(10);
+        String passwordRestValidationToken = CreateRandomStringUtil.createRandomStr();
 
         PasswordResetToken resetToken = PasswordResetToken.builder()
             .token(passwordRestValidationToken)

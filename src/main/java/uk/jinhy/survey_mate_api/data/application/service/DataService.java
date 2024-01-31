@@ -23,7 +23,7 @@ public class DataService {
     public Data createData(Member seller, DataServiceDTO.CreateDataDTO dto) {
         MultipartFile file = dto.getFile();
         String fileURL = s3Service.uploadFile(
-            s3Service.generateDataFileKeyName(Util.generateRandomString(10)), file);
+            s3Service.generateDataFileKeyName(Util.generateRandomString()), file);
 
         Data data = Data.builder()
             .seller(seller)
