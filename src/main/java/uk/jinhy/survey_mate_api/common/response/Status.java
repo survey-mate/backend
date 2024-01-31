@@ -24,24 +24,24 @@ public enum Status {
 
     MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "MEMBER404", "해당 아이디는 존재하지 않습니다."),
     PASSWORD_INCORRECT(HttpStatus.BAD_REQUEST, "MEMBER400", "비밀번호가 틀렸습니다."),
+    MEMBER_ALREADY_EXIST(HttpStatus.CONFLICT, "MEMBER409", "이미 가입된 아이디 입니다."),
 
     JWT_NULL(HttpStatus.UNAUTHORIZED, "JWT401", "JWT가 NULL입니다."),
     JWT_INVALID(HttpStatus.FORBIDDEN, "JWT404", "JWT가 유효하지 않습니다."),
 
     UNAUTHENTICATED_USER(HttpStatus.UNAUTHORIZED, "AUTH401", "인증 정보가 없습니다."),
 
-    MAIL_SEND_FAIL(HttpStatus.BAD_REQUEST, "MAIL400", "메일 전송에 실패했습니다."),
+    MAIL_SEND_FAIL(HttpStatus.BAD_REQUEST, "MAIL4000", "메일 전송에 실패했습니다."),
+    BAD_MAIL_ADDRESS(HttpStatus.BAD_REQUEST, "MAIL4001", "이메일이 학교 계정이 아닙니다."),
     DUPLICATE_MAIL(HttpStatus.CONFLICT, "MAIL409", "이미 가입된 이메일 입니다."),
     MAIL_CODE_DIFFERENT(HttpStatus.NOT_FOUND, "MAILCODE404", "이메일 인증 코드가 일치하지 않습니다."),
     MAIL_CODE_TIME_OUT(HttpStatus.UNAUTHORIZED, "MAILCODE401", "이메일 인증 코드 유효시간이 지났습니다."),
     MAIL_TOKEN_INVALID(HttpStatus.BAD_REQUEST, "MAILTOKEN400", "이메일 인증 토큰이 유효하지 않습니다."),
     NO_SUCH_ALGORITHM(HttpStatus.NOT_FOUND, "MAIL404", "코드 생성 알고리즘을 선택하지 못했습니다."),
 
-
-    PASSWORD_RESET_CODE_DIFFERENT(HttpStatus.NOT_FOUND, "PASSWORDRESET404",
-        "비밀번호 재설정 인증 코드가 일치하지 않습니다."),
-    PASSWORD_RESET_CODE_TIME_OUT(HttpStatus.UNAUTHORIZED, "PASSWORDRESET401",
-        "비밀번호 재설정 인증 코드 유효시간이 지났습니다."),
+    BAD_PASSWORD(HttpStatus.BAD_REQUEST, "PASSWORD400", "비밀번호 형식에 맞지 않습니다."),
+    PASSWORD_RESET_CODE_DIFFERENT(HttpStatus.NOT_FOUND, "PASSWORDRESET404", "비밀번호 재설정 인증 코드가 일치하지 않습니다."),
+    PASSWORD_RESET_CODE_TIME_OUT(HttpStatus.UNAUTHORIZED, "PASSWORDRESET401", "비밀번호 재설정 인증 코드 유효시간이 지났습니다."),
     PASSWORD_TOKEN_INVALID(HttpStatus.BAD_REQUEST, "PASSWORDRESET400", "비밀번호 재설정 토큰이 유효하지 않습니다."),
 
     CURRENT_PASSWORD_INCORRECT(HttpStatus.UNAUTHORIZED, "PASSWORDUPDATE401",

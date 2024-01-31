@@ -56,14 +56,6 @@ public class Data {
 
     @Builder.Default
     @OneToMany(mappedBy = "data", cascade = CascadeType.ALL)
-    private List<DataComment> dataCommentList = new ArrayList<>();
-
-    public void addDataComment(DataComment dataComment) {
-        dataCommentList.add(dataComment);
-    }
-
-    @Builder.Default
-    @OneToMany(mappedBy = "data", cascade = CascadeType.ALL)
     private List<PurchaseHistory> purchaseHistoryList = new ArrayList<>();
 
     public void addPurchaseHistory(PurchaseHistory purchaseHistory) {

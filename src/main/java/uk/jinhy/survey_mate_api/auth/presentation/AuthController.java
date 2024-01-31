@@ -1,7 +1,11 @@
 package uk.jinhy.survey_mate_api.auth.presentation;
 
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.aspectj.apache.bcel.classfile.Code;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -9,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import uk.jinhy.survey_mate_api.auth.application.service.AuthService;
 import uk.jinhy.survey_mate_api.auth.presentation.dto.AuthControllerDTO;
+import uk.jinhy.survey_mate_api.auth.presentation.dto.CodeResponseDTO;
 import uk.jinhy.survey_mate_api.common.response.ApiResponse;
 import uk.jinhy.survey_mate_api.common.response.Status;
 
@@ -22,7 +27,8 @@ public class AuthController {
 
     @PostMapping("/join")
     @Operation(summary = "회원가입")
-    public ApiResponse<?> join(AuthControllerDTO.MemberRequestDTO requestDTO) {
+    public ApiResponse<?> join(
+            @RequestBody @Valid AuthControllerDTO.MemberRequestDTO requestDTO){
         AuthControllerDTO.MemberResponseDTO memberResponseDTO = authService.join(requestDTO);
         return ApiResponse.onSuccess(Status.CREATED.getCode(),
             Status.CREATED.getMessage(), memberResponseDTO);
@@ -30,7 +36,8 @@ public class AuthController {
 
     @PostMapping("/login")
     @Operation(summary = "로그인")
-    public ApiResponse<?> login(AuthControllerDTO.LoginRequestDTO requestDTO) {
+    public ApiResponse<?> login(
+            @RequestBody @Valid AuthControllerDTO.LoginRequestDTO requestDTO){
         AuthControllerDTO.JwtResponseDTO jwtResponseDTO = authService.login(requestDTO);
         return ApiResponse.onSuccess(Status.OK.getCode(),
             Status.CREATED.getMessage(), jwtResponseDTO);
@@ -39,20 +46,22 @@ public class AuthController {
     @PostMapping("/email/certification-request")
     @Operation(summary = "이메일 인증 코드 요청")
     public ApiResponse<?> sendEmailCode(
-        @RequestBody AuthControllerDTO.CertificateCodeRequestDTO requestDTO
-    ) {
-        authService.sendMailCode(requestDTO);
+            @RequestBody @Valid AuthControllerDTO.CertificateCodeRequestDTO requestDTO
+            ){
+        String mailValidationCode = authService.sendMailCode(requestDTO);
+        CodeResponseDTO responseDTO = CodeResponseDTO.builder()
+                .code(mailValidationCode)
+                .build();
         return ApiResponse.onSuccess(Status.OK.getCode(),
-            Status.OK.getMessage(), null);
+                Status.OK.getMessage(), responseDTO);
     }
 
     @PostMapping("/email/certification")
     @Operation(summary = "이메일 인증 코드 확인")
     public ApiResponse<?> checkEmailCode(
-        @RequestBody AuthControllerDTO.MailCodeRequestDTO mailCodeDto
-    ) {
-        AuthControllerDTO.EmailCodeResponseDTO emailCodeResponseDTO = authService.checkEmailCode(
-            mailCodeDto);
+            @RequestBody @Valid AuthControllerDTO.MailCodeRequestDTO mailCodeDto
+            ){
+        AuthControllerDTO.EmailCodeResponseDTO emailCodeResponseDTO = authService.checkEmailCode(mailCodeDto);
         return ApiResponse.onSuccess(Status.CREATED.getCode(),
             Status.CREATED.getMessage(), emailCodeResponseDTO);
     }
@@ -60,18 +69,21 @@ public class AuthController {
     @PostMapping("/password/certification-request")
     @Operation(summary = "비밀번호 재설정 인증 코드 요청")
     public ApiResponse<?> sendPasswordResetCode(
-        @RequestBody AuthControllerDTO.CertificateCodeRequestDTO requestDTO
-    ) {
-        authService.sendPasswordResetCode(requestDTO);
+            @RequestBody @Valid AuthControllerDTO.CertificateCodeRequestDTO requestDTO
+    ){
+        String accountValidationCode = authService.sendPasswordResetCode(requestDTO);
+        CodeResponseDTO responseDTO = CodeResponseDTO.builder()
+                .code(accountValidationCode)
+                .build();
         return ApiResponse.onSuccess(Status.OK.getCode(),
-            Status.OK.getMessage(), null);
+                Status.OK.getMessage(), responseDTO);
     }
 
     @PostMapping("/password/certification")
     @Operation(summary = "비밀번호 재설정 인증코드 확인")
     public ApiResponse<?> checkPasswordResetCode(
-        @RequestBody AuthControllerDTO.PasswordResetCodeRequestDTO resetDTO
-    ) {
+            @RequestBody @Valid AuthControllerDTO.PasswordResetCodeRequestDTO resetDTO
+    ){
         AuthControllerDTO.PasswordResetCodeResponseDTO passwordResetCodeResponseDTO
             = authService.checkPasswordResetCode(resetDTO);
         return ApiResponse.onSuccess(Status.CREATED.getCode(),
@@ -81,9 +93,9 @@ public class AuthController {
     @PatchMapping("/password/reset")
     @Operation(summary = "비밀번호 재설정")
     public ApiResponse<?> resetPassword(
-        @RequestBody AuthControllerDTO.PasswordResetRequestDTO requstDTO
-    ) {
-        authService.resetPassword(requstDTO);
+            @RequestBody @Valid AuthControllerDTO.PasswordResetRequestDTO requestDTO
+    ){
+        authService.resetPassword(requestDTO);
         return ApiResponse.onSuccess(Status.OK.getCode(),
             Status.OK.getMessage(), null);
     }
@@ -91,10 +103,33 @@ public class AuthController {
     @PatchMapping("/password/update")
     @Operation(summary = "비밀번호 변경")
     public ApiResponse<?> updatePassword(
-        @RequestBody AuthControllerDTO.PasswordUpdateRequestDTO requestDto
-    ) {
+            @RequestBody @Valid AuthControllerDTO.PasswordUpdateRequestDTO requestDto
+    ){
         authService.updatePassword(requestDto);
         return ApiResponse.onSuccess(Status.OK.getCode(),
             Status.OK.getMessage(), null);
     }
+
+    @DeleteMapping("/account")
+    @Operation(summary = "회원 탈퇴")
+    public ApiResponse<?> deleteAccount(
+            @RequestBody AuthControllerDTO.DeleteAccountRequestDTO requestDTO
+    ){
+        authService.deleteAccount(requestDTO);
+        return ApiResponse.onSuccess(Status.OK.getCode(),
+                Status.OK.getMessage(), null);
+    }
+
+    @GetMapping("/account/isStudent")
+    @Operation(summary = "학생 계정 확인")
+    public ApiResponse<?> isStudentAccount(){
+        boolean isStudentAccount = authService.isStudentAccount();
+        AuthControllerDTO.IsStudentAccountResponseDTO responseDto
+                = AuthControllerDTO.IsStudentAccountResponseDTO.builder()
+                .isStudentAccount(isStudentAccount)
+                .build();
+        return ApiResponse.onSuccess(Status.OK.getCode(),
+                Status.OK.getMessage(), responseDto);
+    }
+
 }

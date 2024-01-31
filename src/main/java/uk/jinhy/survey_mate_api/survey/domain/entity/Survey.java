@@ -68,15 +68,7 @@ public class Survey {
         answerList.add(answer);
     }
 
-    @Builder.Default
-    @OneToMany(mappedBy = "survey", cascade = CascadeType.ALL)
-    private List<SurveyComment> surveyCommentList = new ArrayList<>();
-
-    public void addSurveyComment(SurveyComment surveyComment) {
-        surveyCommentList.add(surveyComment);
-    }
-
-    public void confirmRegistrant(Member registrant) {
+    public void confirmRegistrant(Member registrant){
         this.registrant = registrant;
         registrant.addSurvey(this);
     }
