@@ -20,13 +20,12 @@ import uk.jinhy.survey_mate_api.auth.domain.repository.MemberRepository;
 import uk.jinhy.survey_mate_api.auth.domain.repository.PasswordResetCodeRepository;
 import uk.jinhy.survey_mate_api.auth.domain.repository.PasswordResetTokenRepository;
 import uk.jinhy.survey_mate_api.auth.presentation.dto.AuthControllerDTO;
-import uk.jinhy.survey_mate_api.common.auth.AuthProvider;
-import uk.jinhy.survey_mate_api.common.email.service.MailService;
+import uk.jinhy.survey_mate_api.common.email.MailService;
+import uk.jinhy.survey_mate_api.common.jwt.JwtTokenProvider;
 import uk.jinhy.survey_mate_api.common.response.Status;
 import uk.jinhy.survey_mate_api.common.response.exception.GeneralException;
 import uk.jinhy.survey_mate_api.common.util.CreateCodeUtil;
 import uk.jinhy.survey_mate_api.common.util.CreateRandomStringUtil;
-import uk.jinhy.survey_mate_api.jwt.JwtTokenProvider;
 
 @RequiredArgsConstructor
 @Service
@@ -113,9 +112,6 @@ public class AuthService {
             throw new GeneralException(Status.DUPLICATE_MAIL);
         }
 
-        requestDTO.setMailSubject("[썰매 (Survey Mate)] 회원가입을 위한 인증 코드입니다.");
-        requestDTO.setMailTitle("인증코드");
-
         String mailValidationCode = CreateCodeUtil.createCode(6);
         MailCode mailCode = MailCode.builder()
             .code(mailValidationCode)
@@ -124,7 +120,6 @@ public class AuthService {
             .build();
         mailCodeRepository.save(mailCode);
         return mailValidationCode;
-        //mailService.sendEmail(requestDTO, mailValidationCode);
     }
 
     public AuthControllerDTO.EmailCodeResponseDTO checkEmailCode(
@@ -159,9 +154,6 @@ public class AuthService {
         String memberId = requestDTO.getReceiver();
         Member member = getMemberById(memberId);
 
-        requestDTO.setMailSubject("[썰매 (Survey Mate)] 계정 비밀번호 재설정을 위한 인증 코드입니다.");
-        requestDTO.setMailTitle("인증코드");
-
         String accountValidationCode = CreateCodeUtil.createCode(6);
         PasswordResetCode passwordResetCode = PasswordResetCode.builder()
             .code(accountValidationCode)
@@ -171,7 +163,6 @@ public class AuthService {
 
         passwordResetCodeRepository.save(passwordResetCode);
         return accountValidationCode;
-        //mailService.sendEmail(requestDTO, accountValidationCode);
     }
 
     public AuthControllerDTO.PasswordResetCodeResponseDTO checkPasswordResetCode(
