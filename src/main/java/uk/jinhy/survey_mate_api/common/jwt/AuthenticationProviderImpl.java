@@ -13,7 +13,7 @@ import uk.jinhy.survey_mate_api.common.response.exception.GeneralException;
 
 @RequiredArgsConstructor
 @Component
-public class AuthenticationProvider implements
+public class AuthenticationProviderImpl implements
     org.springframework.security.authentication.AuthenticationProvider {
 
     private final UserDetailsService userDetailsService;

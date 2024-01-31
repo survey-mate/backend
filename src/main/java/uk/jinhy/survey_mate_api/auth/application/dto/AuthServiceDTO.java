@@ -1,12 +1,8 @@
 package uk.jinhy.survey_mate_api.auth.application.dto;
 
-import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
-import uk.jinhy.survey_mate_api.auth.domain.entity.Password;
 
 public class AuthServiceDTO {
 
@@ -74,6 +70,8 @@ public class AuthServiceDTO {
     @Builder
     @Getter
     public static class PasswordResetDTO {
+
+        private String emailAddress;
 
         private String passwordResetToken;
 

@@ -20,7 +20,6 @@ import uk.jinhy.survey_mate_api.auth.domain.repository.MemberRepository;
 import uk.jinhy.survey_mate_api.auth.domain.repository.PasswordResetCodeRepository;
 import uk.jinhy.survey_mate_api.auth.domain.repository.PasswordResetTokenRepository;
 import uk.jinhy.survey_mate_api.auth.presentation.dto.AuthControllerDTO;
-import uk.jinhy.survey_mate_api.common.auth.AuthProvider;
 import uk.jinhy.survey_mate_api.common.email.MailService;
 import uk.jinhy.survey_mate_api.common.jwt.JwtTokenProvider;
 import uk.jinhy.survey_mate_api.common.response.Status;
@@ -192,12 +191,12 @@ public class AuthService {
             .build();
     }
 
-    public void resetPassword(AuthControllerDTO.PasswordResetRequestDTO requestDto) {
-        String emailAddress = requestDto.getEmailAddress();
+    public void resetPassword(AuthServiceDTO.PasswordResetDTO dto) {
+        String emailAddress = dto.getEmailAddress();
         Member member = memberRepository.findById(emailAddress)
             .orElseThrow(() -> new GeneralException(Status.MEMBER_NOT_FOUND));
 
-        String resetToken = requestDto.getPasswordResetToken();
+        String resetToken = dto.getPasswordResetToken();
 
         if (!passwordResetTokenRepository.existsByEmailAddressAndToken(emailAddress, resetToken)) {
             throw new GeneralException(Status.PASSWORD_TOKEN_INVALID);
