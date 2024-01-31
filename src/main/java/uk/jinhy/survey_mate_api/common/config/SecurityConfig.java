@@ -43,6 +43,8 @@ public class SecurityConfig {
         "/auth/login",
         "/auth/join",
         "/auth/email/**",
+        "/auth/password/certification-request",
+        "/auth/password/certification",
         "/error",
         "/v2/api-docs",
         "/swagger-resources/**",
