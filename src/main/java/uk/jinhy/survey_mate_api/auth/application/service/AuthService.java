@@ -2,7 +2,6 @@ package uk.jinhy.survey_mate_api.auth.application.service;
 
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,12 +21,12 @@ import uk.jinhy.survey_mate_api.auth.domain.repository.PasswordResetCodeReposito
 import uk.jinhy.survey_mate_api.auth.domain.repository.PasswordResetTokenRepository;
 import uk.jinhy.survey_mate_api.auth.presentation.dto.AuthControllerDTO;
 import uk.jinhy.survey_mate_api.common.auth.AuthProvider;
-import uk.jinhy.survey_mate_api.common.email.service.MailService;
+import uk.jinhy.survey_mate_api.common.email.MailService;
+import uk.jinhy.survey_mate_api.common.jwt.JwtTokenProvider;
 import uk.jinhy.survey_mate_api.common.response.Status;
 import uk.jinhy.survey_mate_api.common.response.exception.GeneralException;
 import uk.jinhy.survey_mate_api.common.util.CreateCodeUtil;
 import uk.jinhy.survey_mate_api.common.util.CreateRandomStringUtil;
-import uk.jinhy.survey_mate_api.jwt.JwtTokenProvider;
 
 @RequiredArgsConstructor
 @Service
@@ -173,7 +172,8 @@ public class AuthService {
         //mailService.sendEmail(requestDTO, accountValidationCode);
     }
 
-    public AuthControllerDTO.PasswordResetCodeResponseDTO checkPasswordResetCode(AuthServiceDTO.PasswordResetCodeDTO dto) {
+    public AuthControllerDTO.PasswordResetCodeResponseDTO checkPasswordResetCode(
+        AuthServiceDTO.PasswordResetCodeDTO dto) {
         String id = dto.getEmailAddress();
         String code = dto.getCode();
 
