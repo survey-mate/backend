@@ -1,4 +1,4 @@
-package uk.jinhy.survey_mate_api.jwt;
+package uk.jinhy.survey_mate_api.common.config;
 
 import io.jsonwebtoken.security.Keys;
 import java.util.Base64;
@@ -6,6 +6,7 @@ import javax.crypto.SecretKey;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import uk.jinhy.survey_mate_api.common.jwt.JwtTokenProvider;
 
 @Configuration
 public class JwtConfig {
