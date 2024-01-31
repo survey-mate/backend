@@ -27,7 +27,7 @@ public class SurveyService {
             .reward(dto.getReward())
             .endedAt(LocalDateTime.now().plusDays(dto.getPeriod()))
             .linkUrl(dto.getLinkUrl())
-            .rewardUrl(Util.generateRandomString(10))
+            .rewardUrl(Util.generateRandomString())
             .title(dto.getTitle())
             .description(dto.getDescription())
             .registrant(registrant)
