@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import uk.jinhy.survey_mate_api.auth.application.dto.AuthServiceDTO;
 import uk.jinhy.survey_mate_api.auth.application.service.AuthService;
+import uk.jinhy.survey_mate_api.auth.presentation.converter.AuthConverter;
 import uk.jinhy.survey_mate_api.auth.presentation.dto.AuthControllerDTO;
 import uk.jinhy.survey_mate_api.auth.presentation.dto.CodeResponseDTO;
 import uk.jinhy.survey_mate_api.common.response.ApiResponse;
@@ -24,11 +26,14 @@ public class AuthController {
 
     private final AuthService authService;
 
+    private final AuthConverter authConverter;
+
     @PostMapping("/join")
     @Operation(summary = "회원가입")
     public ApiResponse<?> join(
         @RequestBody @Valid AuthControllerDTO.MemberRequestDTO requestDTO) {
-        AuthControllerDTO.MemberResponseDTO memberResponseDTO = authService.join(requestDTO);
+        AuthServiceDTO.MemberDTO memberDTO = authConverter.toServiceMemberDTO(requestDTO);
+        AuthControllerDTO.MemberResponseDTO memberResponseDTO = authService.join(memberDTO);
         return ApiResponse.onSuccess(Status.CREATED.getCode(),
             Status.CREATED.getMessage(), memberResponseDTO);
     }
@@ -37,7 +42,8 @@ public class AuthController {
     @Operation(summary = "로그인")
     public ApiResponse<?> login(
         @RequestBody @Valid AuthControllerDTO.LoginRequestDTO requestDTO) {
-        AuthControllerDTO.JwtResponseDTO jwtResponseDTO = authService.login(requestDTO);
+        AuthServiceDTO.LoginDTO loginDTO = authConverter.toServiceLoginDTO(requestDTO);
+        AuthControllerDTO.JwtResponseDTO jwtResponseDTO = authService.login(loginDTO);
         return ApiResponse.onSuccess(Status.OK.getCode(),
             Status.CREATED.getMessage(), jwtResponseDTO);
     }
@@ -47,7 +53,8 @@ public class AuthController {
     public ApiResponse<?> sendEmailCode(
         @RequestBody @Valid AuthControllerDTO.CertificateCodeRequestDTO requestDTO
     ) {
-        String mailValidationCode = authService.sendMailCode(requestDTO);
+        AuthServiceDTO.CertificateCodeDTO certificateCodeDTO = authConverter.toServiceCertificateCodeDTO(requestDTO);
+        String mailValidationCode = authService.sendMailCode(certificateCodeDTO);
         CodeResponseDTO responseDTO = CodeResponseDTO.builder()
             .code(mailValidationCode)
             .build();
@@ -58,10 +65,10 @@ public class AuthController {
     @PostMapping("/email/certification")
     @Operation(summary = "이메일 인증 코드 확인")
     public ApiResponse<?> checkEmailCode(
-        @RequestBody @Valid AuthControllerDTO.MailCodeRequestDTO mailCodeDto
+        @RequestBody @Valid AuthControllerDTO.MailCodeRequestDTO requestDTO
     ) {
-        AuthControllerDTO.EmailCodeResponseDTO emailCodeResponseDTO = authService.checkEmailCode(
-            mailCodeDto);
+        AuthServiceDTO.MailCodeDTO mailCodeDTO = authConverter.toServiceMailCodeDTO(requestDTO);
+        AuthControllerDTO.EmailCodeResponseDTO emailCodeResponseDTO = authService.checkEmailCode(mailCodeDTO);
         return ApiResponse.onSuccess(Status.CREATED.getCode(),
             Status.CREATED.getMessage(), emailCodeResponseDTO);
     }
@@ -71,7 +78,8 @@ public class AuthController {
     public ApiResponse<?> sendPasswordResetCode(
         @RequestBody @Valid AuthControllerDTO.CertificateCodeRequestDTO requestDTO
     ) {
-        String accountValidationCode = authService.sendPasswordResetCode(requestDTO);
+        AuthServiceDTO.CertificateCodeDTO certificateCodeDTO = authConverter.toServiceCertificateCodeDTO(requestDTO);
+        String accountValidationCode = authService.sendPasswordResetCode(certificateCodeDTO);
         CodeResponseDTO responseDTO = CodeResponseDTO.builder()
             .code(accountValidationCode)
             .build();
@@ -84,8 +92,9 @@ public class AuthController {
     public ApiResponse<?> checkPasswordResetCode(
         @RequestBody @Valid AuthControllerDTO.PasswordResetCodeRequestDTO resetDTO
     ) {
+        AuthServiceDTO.PasswordResetCodeDTO passwordResetCodeDTO = authConverter.toServicePasswordResetCodeDTO(resetDTO);
         AuthControllerDTO.PasswordResetCodeResponseDTO passwordResetCodeResponseDTO
-            = authService.checkPasswordResetCode(resetDTO);
+            = authService.checkPasswordResetCode(passwordResetCodeDTO);
         return ApiResponse.onSuccess(Status.CREATED.getCode(),
             Status.CREATED.getMessage(), passwordResetCodeResponseDTO);
     }
@@ -95,7 +104,8 @@ public class AuthController {
     public ApiResponse<?> resetPassword(
         @RequestBody @Valid AuthControllerDTO.PasswordResetRequestDTO requestDTO
     ) {
-        authService.resetPassword(requestDTO);
+        AuthServiceDTO.PasswordResetDTO passwordResetDTO = authConverter.toServicePasswordResetDTO(requestDTO);
+        authService.resetPassword(passwordResetDTO);
         return ApiResponse.onSuccess(Status.OK.getCode(),
             Status.OK.getMessage(), null);
     }
@@ -105,7 +115,8 @@ public class AuthController {
     public ApiResponse<?> updatePassword(
         @RequestBody @Valid AuthControllerDTO.PasswordUpdateRequestDTO requestDto
     ) {
-        authService.updatePassword(requestDto);
+        AuthServiceDTO.PasswordUpdateDTO passwordUpdateDTO = authConverter.toServicePasswordUpdateDTO(requestDto);
+        authService.updatePassword(passwordUpdateDTO);
         return ApiResponse.onSuccess(Status.OK.getCode(),
             Status.OK.getMessage(), null);
     }
@@ -115,7 +126,8 @@ public class AuthController {
     public ApiResponse<?> deleteAccount(
         @RequestBody AuthControllerDTO.DeleteAccountRequestDTO requestDTO
     ) {
-        authService.deleteAccount(requestDTO);
+        AuthServiceDTO.DeleteAccountDTO deleteAccountDTO = authConverter.toServiceDeleteAccountDTO(requestDTO);
+        authService.deleteAccount(deleteAccountDTO);
         return ApiResponse.onSuccess(Status.OK.getCode(),
             Status.OK.getMessage(), null);
     }
