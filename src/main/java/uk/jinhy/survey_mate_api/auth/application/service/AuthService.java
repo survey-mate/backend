@@ -204,8 +204,10 @@ public class AuthService {
     }
 
     public void resetPassword(AuthControllerDTO.PasswordResetRequestDTO requestDto) {
-        Member member = getCurrentMember();
-        String emailAddress = member.getMemberId();
+        String emailAddress = requestDto.getEmailAddress();
+        Member member = memberRepository.findById(emailAddress)
+                .orElseThrow(() -> new GeneralException(Status.MEMBER_NOT_FOUND));
+
         String resetToken = requestDto.getPasswordResetToken();
 
         if (!passwordResetTokenRepository.existsByEmailAddressAndToken(emailAddress, resetToken)) {

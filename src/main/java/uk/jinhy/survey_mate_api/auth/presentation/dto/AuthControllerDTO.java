@@ -109,6 +109,10 @@ public class AuthControllerDTO {
     public static class PasswordResetRequestDTO {
 
         @NotNull
+        @Schema(description = "이메일 주소", example = "mingmingmon@kyonggi.ac.kr")
+        private String emailAddress;
+
+        @NotNull
         @Schema(description = "계정 인증 토큰", example = "aosdjgr")
         private String passwordResetToken;
 
