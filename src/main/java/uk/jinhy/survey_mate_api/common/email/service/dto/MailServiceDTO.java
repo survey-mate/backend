@@ -1,13 +1,13 @@
-package uk.jinhy.survey_mate_api.common.email;
+package uk.jinhy.survey_mate_api.common.email.service.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
+import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.thymeleaf.context.Context;
 
 public class MailServiceDTO {
 
@@ -28,7 +28,7 @@ public class MailServiceDTO {
 
         @NotNull
         @Schema(description = "이메일 템플릿 Context")
-        private Context templateContext;
+        private Map<String, Object> templateContext;
 
         @Schema(description = "이메일 제목", example = "[썰매 (Survey Mate)] 회원가입을 위한 인증 코드입니다.")
         private String subject;
