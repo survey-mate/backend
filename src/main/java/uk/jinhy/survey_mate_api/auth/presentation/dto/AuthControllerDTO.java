@@ -61,7 +61,7 @@ public class AuthControllerDTO {
 
     @Builder
     @Getter
-    public static class MemberRequestDTO{
+    public static class MemberRequestDTO {
 
         @NotNull
         @Schema(description = "학교 계정 이메일 주소", example = "mingmingmon@kyonggi.ac.kr")
@@ -136,7 +136,7 @@ public class AuthControllerDTO {
 
     @NoArgsConstructor
     @Getter
-    public static class DeleteAccountRequestDTO{
+    public static class DeleteAccountRequestDTO {
 
         @NotNull
         @Schema(description = "현재 비밀번호", example = "1234asdf!")
@@ -178,7 +178,7 @@ public class AuthControllerDTO {
 
     @Getter
     @Builder
-    public static class IsStudentAccountResponseDTO{
+    public static class IsStudentAccountResponseDTO {
 
         private boolean isStudentAccount;
 

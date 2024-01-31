@@ -1,11 +1,10 @@
 package uk.jinhy.survey_mate_api.survey.application.service;
 
+import java.util.Arrays;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import uk.jinhy.survey_mate_api.common.response.Status;
 import uk.jinhy.survey_mate_api.common.response.exception.GeneralException;
-
-import java.util.Arrays;
 
 @AllArgsConstructor
 @Getter
@@ -23,9 +22,9 @@ public enum SurveyRegistrationFee {
 
     public static Long getFee(Long period) {
         return Arrays.stream(SurveyRegistrationFee.values())
-                .filter(value -> value.periodOfSurvey.equals(period))
-                .findAny()
-                .orElseThrow(() -> new GeneralException(Status.WRONG_PERIOD_VALUE))
-                .getFee();
+            .filter(value -> value.periodOfSurvey.equals(period))
+            .findAny()
+            .orElseThrow(() -> new GeneralException(Status.WRONG_PERIOD_VALUE))
+            .getFee();
     }
 }

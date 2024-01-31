@@ -16,13 +16,13 @@ import lombok.NoArgsConstructor;
 import uk.jinhy.survey_mate_api.auth.domain.entity.Member;
 
 
-
 @Entity
 @Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PurchaseHistory {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long purchaseHistoryId;
@@ -37,12 +37,12 @@ public class PurchaseHistory {
     @NotNull
     private Data data;
 
-    public void confirmBuyer(Member buyer){
+    public void confirmBuyer(Member buyer) {
         this.buyer = buyer;
         buyer.addPurchaseHistory(this);
     }
 
-    public void confirmData(Data data){
+    public void confirmData(Data data) {
         this.data = data;
         data.addPurchaseHistory(this);
     }

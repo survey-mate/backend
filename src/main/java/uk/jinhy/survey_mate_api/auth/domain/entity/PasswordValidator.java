@@ -18,7 +18,7 @@ public class PasswordValidator implements ConstraintValidator<Password, String> 
 
     @Override
     public boolean isValid(String values, ConstraintValidatorContext context) {
-        if(values == null){
+        if (values == null) {
             throw new GeneralException(Status.BAD_PASSWORD);
         }
 

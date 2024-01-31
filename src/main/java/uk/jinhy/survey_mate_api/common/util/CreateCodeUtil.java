@@ -11,8 +11,8 @@ public class CreateCodeUtil {
         Random random = new Random();
 
         String code = random.ints(length, 0, 10)
-                .mapToObj(Integer::toString)
-                .collect(Collectors.joining());
+            .mapToObj(Integer::toString)
+            .collect(Collectors.joining());
 
         return code;
     }

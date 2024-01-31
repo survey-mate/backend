@@ -5,9 +5,11 @@ import lombok.Getter;
 import org.springframework.web.multipart.MultipartFile;
 
 public class DataServiceDTO {
+
     @Builder
     @Getter
     public static class CreateDataDTO {
+
         private String title;
         private String description;
         private Long price;
@@ -17,6 +19,7 @@ public class DataServiceDTO {
     @Builder
     @Getter
     public static class EditDataDTO {
+
         private Long dataId;
         private String title;
         private String description;

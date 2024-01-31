@@ -21,6 +21,7 @@ import uk.jinhy.survey_mate_api.auth.domain.entity.Member;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Answer {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long answerId;
@@ -35,12 +36,12 @@ public class Answer {
     @NotNull
     private Survey survey;
 
-    public void confirmWriter(Member respondent){
+    public void confirmWriter(Member respondent) {
         this.respondent = respondent;
         respondent.addAnswer(this);
     }
 
-    public void confirmSurvey(Survey survey){
+    public void confirmSurvey(Survey survey) {
         this.survey = survey;
         survey.addAnswer(this);
     }

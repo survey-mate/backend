@@ -12,6 +12,7 @@ import uk.jinhy.survey_mate_api.survey.application.dto.SurveyServiceDTO;
 @RequiredArgsConstructor
 @Service
 public class SurveyServiceFacade {
+
 	private final SurveyService surveyService;
 	private final StatementService statementService;
 
