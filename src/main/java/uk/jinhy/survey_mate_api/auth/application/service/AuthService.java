@@ -25,8 +25,7 @@ import uk.jinhy.survey_mate_api.common.email.MailService;
 import uk.jinhy.survey_mate_api.common.jwt.JwtTokenProvider;
 import uk.jinhy.survey_mate_api.common.response.Status;
 import uk.jinhy.survey_mate_api.common.response.exception.GeneralException;
-import uk.jinhy.survey_mate_api.common.util.CreateCodeUtil;
-import uk.jinhy.survey_mate_api.common.util.CreateRandomStringUtil;
+import uk.jinhy.survey_mate_api.common.util.Util;
 
 @RequiredArgsConstructor
 @Service
@@ -112,10 +111,7 @@ public class AuthService {
             throw new GeneralException(Status.DUPLICATE_MAIL);
         }
 
-        dto.setMailSubject("[썰매 (Survey Mate)] 회원가입을 위한 인증 코드입니다.");
-        dto.setMailTitle("인증코드");
-
-        String mailValidationCode = CreateCodeUtil.createCode(6);
+        String mailValidationCode = Util.generateRandomNumberString(6);
         MailCode mailCode = MailCode.builder()
             .code(mailValidationCode)
             .emailAddress(dto.getReceiver())
@@ -123,7 +119,6 @@ public class AuthService {
             .build();
         mailCodeRepository.save(mailCode);
         return mailValidationCode;
-        //mailService.sendEmail(requestDTO, mailValidationCode);
     }
 
     public AuthControllerDTO.EmailCodeResponseDTO checkEmailCode(AuthServiceDTO.MailCodeDTO dto) {
@@ -139,7 +134,7 @@ public class AuthService {
             throw new GeneralException(Status.MAIL_CODE_TIME_OUT);
         }
 
-        String accountValidationToken = CreateRandomStringUtil.createRandomStr();
+        String accountValidationToken = Util.generateRandomString(10);
 
         EmailToken emailToken = EmailToken.builder()
             .token(accountValidationToken)
@@ -157,10 +152,7 @@ public class AuthService {
         String memberId = dto.getReceiver();
         Member member = getMemberById(memberId);
 
-        dto.setMailSubject("[썰매 (Survey Mate)] 계정 비밀번호 재설정을 위한 인증 코드입니다.");
-        dto.setMailTitle("인증코드");
-
-        String accountValidationCode = CreateCodeUtil.createCode(6);
+        String accountValidationCode = Util.generateRandomNumberString(6);
         PasswordResetCode passwordResetCode = PasswordResetCode.builder()
             .code(accountValidationCode)
             .emailAddress(memberId)
@@ -169,7 +161,6 @@ public class AuthService {
 
         passwordResetCodeRepository.save(passwordResetCode);
         return accountValidationCode;
-        //mailService.sendEmail(requestDTO, accountValidationCode);
     }
 
     public AuthControllerDTO.PasswordResetCodeResponseDTO checkPasswordResetCode(
@@ -187,7 +178,7 @@ public class AuthService {
             throw new GeneralException(Status.PASSWORD_RESET_CODE_TIME_OUT);
         }
 
-        String passwordRestValidationToken = CreateRandomStringUtil.createRandomStr();
+        String passwordRestValidationToken = Util.generateRandomNumberString(10);
 
         PasswordResetToken resetToken = PasswordResetToken.builder()
             .token(passwordRestValidationToken)
@@ -201,10 +192,12 @@ public class AuthService {
             .build();
     }
 
-    public void resetPassword(AuthServiceDTO.PasswordResetDTO dto) {
-        Member member = getCurrentMember();
-        String emailAddress = member.getMemberId();
-        String resetToken = dto.getPasswordResetToken();
+    public void resetPassword(AuthControllerDTO.PasswordResetRequestDTO requestDto) {
+        String emailAddress = requestDto.getEmailAddress();
+        Member member = memberRepository.findById(emailAddress)
+            .orElseThrow(() -> new GeneralException(Status.MEMBER_NOT_FOUND));
+
+        String resetToken = requestDto.getPasswordResetToken();
 
         if (!passwordResetTokenRepository.existsByEmailAddressAndToken(emailAddress, resetToken)) {
             throw new GeneralException(Status.PASSWORD_TOKEN_INVALID);
