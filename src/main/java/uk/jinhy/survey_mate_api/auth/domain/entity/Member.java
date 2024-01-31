@@ -99,5 +99,4 @@ public class Member {
     public void setIsStudent(boolean isStudent) {
         this.isStudent = isStudent;
     }
-
 }

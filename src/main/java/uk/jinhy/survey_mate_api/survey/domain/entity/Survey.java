@@ -68,7 +68,7 @@ public class Survey {
         answerList.add(answer);
     }
 
-    public void confirmRegistrant(Member registrant){
+    public void confirmRegistrant(Member registrant) {
         this.registrant = registrant;
         registrant.addSurvey(this);
     }

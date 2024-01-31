@@ -13,14 +13,15 @@ import uk.jinhy.survey_mate_api.statement.domain.repository.StatementRepository;
 @RequiredArgsConstructor
 @Service
 public class StatementService {
+
     private final StatementRepository statementRepository;
 
     public Statement createStatement(Member member, StatementServiceDTO.CreateStatementDTO dto) {
         Statement statement = Statement.builder()
-                .member(member)
-                .amount(dto.getAmount())
-                .description(dto.getDescription())
-                .build();
+            .member(member)
+            .amount(dto.getAmount())
+            .description(dto.getDescription())
+            .build();
 
         if (getTotalAmount(member) + statement.getAmount() < 0) {
             throw new GeneralException(Status.STATEMENT_NOT_ENOUGH);

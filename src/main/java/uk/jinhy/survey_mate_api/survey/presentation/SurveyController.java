@@ -73,7 +73,8 @@ public class SurveyController {
 
     @GetMapping("/{surveyId}")
     @Operation(summary = "설문 상세정보 불러오기")
-    public ApiResponse<SurveyControllerDTO.SurveyDetailDTO> getSurveyDetail(@PathVariable("surveyId") Long surveyId) {
+    public ApiResponse<SurveyControllerDTO.SurveyDetailDTO> getSurveyDetail(
+        @PathVariable("surveyId") Long surveyId) {
         Survey survey = surveyService.getSurvey(surveyId);
         boolean isResponded = surveyService.isResponded(survey, null);
         SurveyControllerDTO.SurveyDetailDTO dto = surveyConverter.toSurveyDetailDto(isResponded,
@@ -83,7 +84,8 @@ public class SurveyController {
 
     @GetMapping("")
     @Operation(summary = "설문 불러오기")
-    public ApiResponse<SurveyControllerDTO.SurveyListDTO> getSurveysList(@RequestParam("page") int pageNumber) {
+    public ApiResponse<SurveyControllerDTO.SurveyListDTO> getSurveysList(
+        @RequestParam("page") int pageNumber) {
         List<Survey> surveyList = surveyService.getSurveyList(pageNumber);
         List<SurveyControllerDTO.SurveyDTO> dtoList = surveyList.stream()
             .map(surveyConverter::toSurveyDTO)
@@ -94,7 +96,8 @@ public class SurveyController {
 
     @GetMapping("/answer/{rewardUrl}")
     @Operation(summary = "포인트 수령")
-    public ApiResponse<SurveyControllerDTO.RewardResultDTO> earnRewardsAfterAnswerTheSurvey(@PathVariable("rewardUrl") String rewardUrl) {
+    public ApiResponse<SurveyControllerDTO.RewardResultDTO> earnRewardsAfterAnswerTheSurvey(
+        @PathVariable("rewardUrl") String rewardUrl) {
         Member respondent = authService.getCurrentMember();
         surveyServiceFacade.answerSurvey(respondent, rewardUrl);
         return ApiResponse.onSuccess(Status.OK.getCode(), Status.OK.getMessage(), null);

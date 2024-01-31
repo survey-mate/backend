@@ -136,7 +136,7 @@ public class AuthControllerDTO {
 
     @NoArgsConstructor
     @Getter
-    public static class DeleteAccountRequestDTO{
+    public static class DeleteAccountRequestDTO {
 
         @NotNull
         @Schema(description = "현재 비밀번호", example = "1234asdf!")
@@ -178,7 +178,7 @@ public class AuthControllerDTO {
 
     @Getter
     @Builder
-    public static class IsStudentAccountResponseDTO{
+    public static class IsStudentAccountResponseDTO {
 
         private boolean isStudentAccount;
 

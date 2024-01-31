@@ -40,8 +40,10 @@ public enum Status {
     NO_SUCH_ALGORITHM(HttpStatus.NOT_FOUND, "MAIL404", "코드 생성 알고리즘을 선택하지 못했습니다."),
 
     BAD_PASSWORD(HttpStatus.BAD_REQUEST, "PASSWORD400", "비밀번호 형식에 맞지 않습니다."),
-    PASSWORD_RESET_CODE_DIFFERENT(HttpStatus.NOT_FOUND, "PASSWORDRESET404", "비밀번호 재설정 인증 코드가 일치하지 않습니다."),
-    PASSWORD_RESET_CODE_TIME_OUT(HttpStatus.UNAUTHORIZED, "PASSWORDRESET401", "비밀번호 재설정 인증 코드 유효시간이 지났습니다."),
+    PASSWORD_RESET_CODE_DIFFERENT(HttpStatus.NOT_FOUND, "PASSWORDRESET404",
+        "비밀번호 재설정 인증 코드가 일치하지 않습니다."),
+    PASSWORD_RESET_CODE_TIME_OUT(HttpStatus.UNAUTHORIZED, "PASSWORDRESET401",
+        "비밀번호 재설정 인증 코드 유효시간이 지났습니다."),
     PASSWORD_TOKEN_INVALID(HttpStatus.BAD_REQUEST, "PASSWORDRESET400", "비밀번호 재설정 토큰이 유효하지 않습니다."),
 
     CURRENT_PASSWORD_INCORRECT(HttpStatus.UNAUTHORIZED, "PASSWORDUPDATE401",
