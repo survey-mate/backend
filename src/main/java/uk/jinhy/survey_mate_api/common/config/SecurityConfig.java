@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
@@ -17,7 +18,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import uk.jinhy.survey_mate_api.common.jwt.AuthenticationProvider;
+import uk.jinhy.survey_mate_api.common.jwt.AuthenticationProviderImpl;
 import uk.jinhy.survey_mate_api.common.jwt.JwtAccessDeniedHandler;
 import uk.jinhy.survey_mate_api.common.jwt.JwtAuthenticationEntryPoint;
 import uk.jinhy.survey_mate_api.common.jwt.JwtAuthenticationFilter;
@@ -61,7 +62,7 @@ public class SecurityConfig {
 
     @Bean
     public AuthenticationProvider authenticationProvider() {
-        return new AuthenticationProvider(userDetailsService, passwordEncoder());
+        return new AuthenticationProviderImpl(userDetailsService, passwordEncoder());
     }
 
     @Bean(name = "AuthenticationManager")
