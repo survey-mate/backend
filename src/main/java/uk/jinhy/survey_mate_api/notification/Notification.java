@@ -21,6 +21,7 @@ import uk.jinhy.survey_mate_api.auth.domain.entity.Member;
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Notification {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long notificationId;
@@ -33,7 +34,7 @@ public class Notification {
     @NotNull
     private String content;
 
-    public void confirmReceiver(Member receiver){
+    public void confirmReceiver(Member receiver) {
         this.receiver = receiver;
         receiver.addNotification(this);
     }

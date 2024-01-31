@@ -28,6 +28,7 @@ import uk.jinhy.survey_mate_api.data.domain.entity.Data;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class DataComment {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long commentId;
@@ -56,12 +57,12 @@ public class DataComment {
     @CreatedDate
     private LocalDateTime createdAt;
 
-    public void confirmDataCommenter(Member dataCommenter){
+    public void confirmDataCommenter(Member dataCommenter) {
         this.dataCommenter = dataCommenter;
         dataCommenter.addDataComment(this);
     }
 
-    public void confirmData(Data data){
+    public void confirmData(Data data) {
         this.data = data;
         data.addDataComment(this);
     }

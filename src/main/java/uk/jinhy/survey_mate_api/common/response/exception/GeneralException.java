@@ -8,9 +8,10 @@ import uk.jinhy.survey_mate_api.common.response.Status;
 @Getter
 @AllArgsConstructor
 public class GeneralException extends RuntimeException {
+
     private Status status;
 
-    public Body getBody(){
+    public Body getBody() {
         return this.status.getBody();
     }
 }

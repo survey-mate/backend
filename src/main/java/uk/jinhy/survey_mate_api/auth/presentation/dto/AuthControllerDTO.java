@@ -56,7 +56,7 @@ public class AuthControllerDTO {
 
     @Builder
     @Getter
-    public static class MemberRequestDTO{
+    public static class MemberRequestDTO {
 
         private String memberId;
 

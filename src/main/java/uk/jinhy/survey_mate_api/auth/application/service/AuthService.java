@@ -52,7 +52,7 @@ public class AuthService {
 
     private final PasswordResetTokenRepository passwordResetTokenRepository;
 
-    public AuthControllerDTO.MemberResponseDTO join(AuthControllerDTO.MemberRequestDTO requestDTO){
+    public AuthControllerDTO.MemberResponseDTO join(AuthControllerDTO.MemberRequestDTO requestDTO) {
 
         String emailAddress = requestDTO.getMemberId();
         String emailToken = requestDTO.getEmailToken();
@@ -62,25 +62,23 @@ public class AuthService {
         }
 
         Member member = Member.builder()
-                .memberId(requestDTO.getMemberId())
-                .nickname(requestDTO.getNickname())
-                .password(passwordEncoder.encode(requestDTO.getPassword()))
-                .messageConsent(requestDTO.isMessageConsent())
-                .marketingConsent(requestDTO.isMarketingConsent())
-                .point(0L)
-                .profileUrl(null)
-                .build();
+            .memberId(requestDTO.getMemberId())
+            .nickname(requestDTO.getNickname())
+            .password(passwordEncoder.encode(requestDTO.getPassword()))
+            .messageConsent(requestDTO.isMessageConsent())
+            .marketingConsent(requestDTO.isMarketingConsent())
+            .point(0L)
+            .profileUrl(null)
+            .build();
 
         memberRepository.save(member);
 
-        AuthControllerDTO.MemberResponseDTO memberResponseDTO = AuthControllerDTO.MemberResponseDTO.builder()
-                .member(member)
-                .build();
-
-        return memberResponseDTO;
+        return AuthControllerDTO.MemberResponseDTO.builder()
+            .member(member)
+            .build();
     }
 
-    public AuthControllerDTO.JwtResponseDTO login(AuthControllerDTO.LoginRequestDTO requestDTO){
+    public AuthControllerDTO.JwtResponseDTO login(AuthControllerDTO.LoginRequestDTO requestDTO) {
         String id = requestDTO.getId();
         String password = requestDTO.getPassword();
 
@@ -88,20 +86,18 @@ public class AuthService {
             throw new GeneralException(Status.MEMBER_NOT_FOUND);
         }
 
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(id, password);
+        UsernamePasswordAuthenticationToken authenticationToken =
+            new UsernamePasswordAuthenticationToken(id, password);
 
         Authentication authentication = authenticationManager.authenticate(authenticationToken);
         String jwtToken = jwtTokenProvider.createToken(authentication);
 
-        AuthControllerDTO.JwtResponseDTO jwtResponseDTO = AuthControllerDTO.JwtResponseDTO.builder().
-                jwt(jwtToken)
-                .build();
-
-        return jwtResponseDTO;
-
+        return AuthControllerDTO.JwtResponseDTO.builder()
+            .jwt(jwtToken)
+            .build();
     }
 
-    public void sendMailCode(AuthControllerDTO.CertificateCodeRequestDTO requestDTO){
+    public void sendMailCode(AuthControllerDTO.CertificateCodeRequestDTO requestDTO) {
         String memberId = requestDTO.getReceiver();
         if (memberRepository.existsByMemberId(memberId)) {
             throw new GeneralException(Status.DUPLICATE_MAIL);
@@ -112,20 +108,21 @@ public class AuthService {
 
         String mailValidationCode = CreateCodeUtil.createCode(6);
         MailCode mailCode = MailCode.builder()
-                .code(mailValidationCode)
-                .emailAddress(requestDTO.getReceiver())
-                .createdAt(LocalDateTime.now())
-                .build();
+            .code(mailValidationCode)
+            .emailAddress(requestDTO.getReceiver())
+            .createdAt(LocalDateTime.now())
+            .build();
         mailCodeRepository.save(mailCode);
         mailService.sendEmail(requestDTO, mailValidationCode);
     }
 
-    public AuthControllerDTO.EmailCodeResponseDTO checkEmailCode(AuthControllerDTO.MailCodeRequestDTO mailCodeDto){
+    public AuthControllerDTO.EmailCodeResponseDTO checkEmailCode(
+        AuthControllerDTO.MailCodeRequestDTO mailCodeDto) {
         String id = mailCodeDto.getEmailAddress();
         String mailValidationCode = mailCodeDto.getCode();
 
         MailCode mailCode = mailCodeRepository.findByCodeAndEmailAddress(mailValidationCode, id)
-                .orElseThrow(() -> new GeneralException(Status.MAIL_CODE_DIFFERENT));
+            .orElseThrow(() -> new GeneralException(Status.MAIL_CODE_DIFFERENT));
 
         LocalDateTime currentTime = LocalDateTime.now();
         LocalDateTime expirationTime = mailCode.getCreatedAt().plusMinutes(3);
@@ -136,18 +133,18 @@ public class AuthService {
         String accountValidationToken = CreateRandomStringUtil.createRandomStr();
 
         EmailToken emailToken = EmailToken.builder()
-                .token(accountValidationToken)
-                .emailAddress(id)
-                .build();
+            .token(accountValidationToken)
+            .emailAddress(id)
+            .build();
 
         emailTokenRepository.save(emailToken);
 
         return AuthControllerDTO.EmailCodeResponseDTO.builder()
-                .emailValidationToken(accountValidationToken)
-                .build();
+            .emailValidationToken(accountValidationToken)
+            .build();
     }
 
-    public void sendPasswordResetCode(AuthControllerDTO.CertificateCodeRequestDTO requestDTO){
+    public void sendPasswordResetCode(AuthControllerDTO.CertificateCodeRequestDTO requestDTO) {
         String memberId = requestDTO.getReceiver();
         Member member = getMemberById(memberId);
 
@@ -156,21 +153,23 @@ public class AuthService {
 
         String accountValidationCode = CreateCodeUtil.createCode(6);
         PasswordResetCode passwordResetCode = PasswordResetCode.builder()
-                .code(accountValidationCode)
-                .emailAddress(memberId)
-                .createdAt(LocalDateTime.now())
-                .build();
+            .code(accountValidationCode)
+            .emailAddress(memberId)
+            .createdAt(LocalDateTime.now())
+            .build();
 
         passwordResetCodeRepository.save(passwordResetCode);
         mailService.sendEmail(requestDTO, accountValidationCode);
     }
 
-    public AuthControllerDTO.PasswordResetCodeResponseDTO checkPasswordResetCode(AuthControllerDTO.PasswordResetCodeRequestDTO resetDTO){
+    public AuthControllerDTO.PasswordResetCodeResponseDTO checkPasswordResetCode(
+        AuthControllerDTO.PasswordResetCodeRequestDTO resetDTO) {
         String id = resetDTO.getEmailAddress();
         String code = resetDTO.getCode();
 
-        PasswordResetCode resetCode = passwordResetCodeRepository.findByCodeAndEmailAddress(code, id)
-                .orElseThrow(() -> new GeneralException(Status.PASSWORD_RESET_CODE_DIFFERENT));
+        PasswordResetCode resetCode = passwordResetCodeRepository.findByCodeAndEmailAddress(code,
+                id)
+            .orElseThrow(() -> new GeneralException(Status.PASSWORD_RESET_CODE_DIFFERENT));
 
         LocalDateTime currentTime = LocalDateTime.now();
         LocalDateTime expirationTime = resetCode.getCreatedAt().plusMinutes(3);
@@ -181,18 +180,18 @@ public class AuthService {
         String passwordRestValidationToken = CreateRandomStringUtil.createRandomStr();
 
         PasswordResetToken resetToken = PasswordResetToken.builder()
-                .token(passwordRestValidationToken)
-                .emailAddress(id)
-                .build();
+            .token(passwordRestValidationToken)
+            .emailAddress(id)
+            .build();
 
         passwordResetTokenRepository.save(resetToken);
 
         return AuthControllerDTO.PasswordResetCodeResponseDTO.builder()
-                .passwordRestValidationToken(passwordRestValidationToken)
-                .build();
+            .passwordRestValidationToken(passwordRestValidationToken)
+            .build();
     }
 
-    public void resetPassword(AuthControllerDTO.PasswordResetRequestDTO requestDto){
+    public void resetPassword(AuthControllerDTO.PasswordResetRequestDTO requestDto) {
         Member member = getCurrentMember();
         String emailAddress = member.getMemberId();
         String resetToken = requestDto.getPasswordResetToken();
@@ -206,7 +205,7 @@ public class AuthService {
         memberRepository.save(member);
     }
 
-    public void updatePassword(AuthControllerDTO.PasswordUpdateRequestDTO requestDto){
+    public void updatePassword(AuthControllerDTO.PasswordUpdateRequestDTO requestDto) {
         Member member = getCurrentMember();
         String currentPassword = requestDto.getCurrentPassword();
 
@@ -222,12 +221,12 @@ public class AuthService {
     public Member getCurrentMember() {
         String memberId = AuthProvider.getAuthenticationInfoMemberId();
         return memberRepository.findById(memberId)
-                .orElseThrow(() -> new GeneralException(Status.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new GeneralException(Status.MEMBER_NOT_FOUND));
     }
 
-    public Member getMemberById(String id){
+    public Member getMemberById(String id) {
         return memberRepository.findById(id)
-                .orElseThrow(() -> new GeneralException(Status.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new GeneralException(Status.MEMBER_NOT_FOUND));
     }
 
 }

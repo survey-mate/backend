@@ -21,6 +21,7 @@ import uk.jinhy.survey_mate_api.auth.domain.entity.Member;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class DeviceToken {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long deviceTokenId;
@@ -33,7 +34,7 @@ public class DeviceToken {
     @NotNull
     private String deviceToken;
 
-    public void confirmMember(Member member){
+    public void confirmMember(Member member) {
         this.member = member;
         member.addDeviceToken(this);
     }

@@ -10,7 +10,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotNull;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,8 +19,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
-import uk.jinhy.survey_mate_api.data_comment.DataComment;
 import uk.jinhy.survey_mate_api.auth.domain.entity.Member;
+import uk.jinhy.survey_mate_api.data_comment.DataComment;
 
 
 @Entity
@@ -30,6 +29,7 @@ import uk.jinhy.survey_mate_api.auth.domain.entity.Member;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Data {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long dataId;
@@ -58,7 +58,7 @@ public class Data {
     @OneToMany(mappedBy = "data", cascade = CascadeType.ALL)
     private List<DataComment> dataCommentList = new ArrayList<>();
 
-    public void addDataComment(DataComment dataComment){
+    public void addDataComment(DataComment dataComment) {
         dataCommentList.add(dataComment);
     }
 
@@ -66,16 +66,24 @@ public class Data {
     @OneToMany(mappedBy = "data", cascade = CascadeType.ALL)
     private List<PurchaseHistory> purchaseHistoryList = new ArrayList<>();
 
-    public void addPurchaseHistory(PurchaseHistory purchaseHistory){
+    public void addPurchaseHistory(PurchaseHistory purchaseHistory) {
         purchaseHistoryList.add(purchaseHistory);
     }
 
-    public void confirmSeller(Member seller){
+    public void confirmSeller(Member seller) {
         this.seller = seller;
         seller.addData(this);
     }
 
-    public void updateTitle(String newTitle) { title = newTitle; }
-    public void updateDescription(String newDescription) { title = newDescription; }
-    public void updateFileUrl(String newFileUrl) { title = newFileUrl; }
+    public void updateTitle(String newTitle) {
+        title = newTitle;
+    }
+
+    public void updateDescription(String newDescription) {
+        title = newDescription;
+    }
+
+    public void updateFileUrl(String newFileUrl) {
+        title = newFileUrl;
+    }
 }

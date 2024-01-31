@@ -1,6 +1,8 @@
 package uk.jinhy.survey_mate_api.survey.application.service;
 
 import jakarta.transaction.Transactional;
+import java.time.LocalDateTime;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -14,33 +16,31 @@ import uk.jinhy.survey_mate_api.survey.domain.entity.Answer;
 import uk.jinhy.survey_mate_api.survey.domain.entity.Survey;
 import uk.jinhy.survey_mate_api.survey.domain.repository.SurveyRepository;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
 @RequiredArgsConstructor
 @Service
 public class SurveyService {
+
     private final SurveyRepository surveyRepository;
 
-     public Survey createSurvey(Member registrant, SurveyServiceDTO.CreateSurveyDTO dto) {
-         Survey survey = Survey.builder()
-                 .reward(dto.getReward())
-                 .endedAt(LocalDateTime.now().plusDays(dto.getPeriod()))
-                 .linkUrl(dto.getLinkUrl())
-                 .rewardUrl(Util.generateRandomString())
-                 .title(dto.getTitle())
-                 .description(dto.getDescription())
-                 .registrant(registrant)
-                 .build();
-         surveyRepository.save(survey);
-         return survey;
-     }
+    public Survey createSurvey(Member registrant, SurveyServiceDTO.CreateSurveyDTO dto) {
+        Survey survey = Survey.builder()
+            .reward(dto.getReward())
+            .endedAt(LocalDateTime.now().plusDays(dto.getPeriod()))
+            .linkUrl(dto.getLinkUrl())
+            .rewardUrl(Util.generateRandomString())
+            .title(dto.getTitle())
+            .description(dto.getDescription())
+            .registrant(registrant)
+            .build();
+        surveyRepository.save(survey);
+        return survey;
+    }
 
     @Transactional
     public void editSurvey(Member registrant, SurveyServiceDTO.EditSurveyDTO dto) {
         Long surveyId = dto.getSurveyId();
         Survey survey = surveyRepository.findBySurveyId(surveyId).orElseThrow(
-                () -> new GeneralException(Status.SURVEY_NOT_FOUND)
+            () -> new GeneralException(Status.SURVEY_NOT_FOUND)
         );
 
         if (!survey.getRegistrant().equals(registrant)) {
@@ -66,7 +66,7 @@ public class SurveyService {
     @Transactional
     public void deleteSurvey(Member registrant, Long surveyId) {
         Survey survey = surveyRepository.findBySurveyId(surveyId).orElseThrow(
-                () -> new GeneralException(Status.SURVEY_NOT_FOUND)
+            () -> new GeneralException(Status.SURVEY_NOT_FOUND)
         );
 
         if (!survey.getRegistrant().equals(registrant)) {
@@ -78,26 +78,28 @@ public class SurveyService {
 
     public void addAnswer(Member respondent, String rewardUrl) {
         Survey survey = surveyRepository.findByRewardUrl(rewardUrl).orElseThrow(
-                () -> new GeneralException(Status.SURVEY_NOT_FOUND)
+            () -> new GeneralException(Status.SURVEY_NOT_FOUND)
         );
         if (!survey.isAnswered(respondent)) {
             throw new GeneralException(Status.ALREADY_ANSWERED);
         }
         Answer answer = Answer.builder()
-                .survey(survey)
-                .respondent(respondent)
-                .build();
+            .survey(survey)
+            .respondent(respondent)
+            .build();
         survey.addAnswer(answer);
         surveyRepository.save(survey);
     }
 
     public Survey getSurvey(Long surveyId) {
-        return surveyRepository.findBySurveyId(surveyId).orElseThrow(() -> new GeneralException(Status.SURVEY_NOT_FOUND));
+        return surveyRepository.findBySurveyId(surveyId)
+            .orElseThrow(() -> new GeneralException(Status.SURVEY_NOT_FOUND));
     }
 
     public List<Survey> getSurveyList(int pageNumber) {
         Pageable pageable = PageRequest.of(pageNumber, 10);
-        return surveyRepository.findByEndedAtIsBeforeOrderByCreatedAtDesc(pageable, LocalDateTime.now());
+        return surveyRepository.findByEndedAtIsBeforeOrderByCreatedAtDesc(pageable,
+            LocalDateTime.now());
     }
 
     public List<Survey> getMySurveyList(Member registrant) {
@@ -113,6 +115,6 @@ public class SurveyService {
     }
 
     public boolean isResponded(Survey survey, Member member) {
-         return survey.isAnswered(member);
+        return survey.isAnswered(member);
     }
 }

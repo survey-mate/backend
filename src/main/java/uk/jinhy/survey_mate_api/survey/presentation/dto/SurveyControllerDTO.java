@@ -3,20 +3,20 @@ package uk.jinhy.survey_mate_api.survey.presentation.dto;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import java.time.LocalDateTime;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import org.hibernate.validator.constraints.URL;
 import uk.jinhy.survey_mate_api.survey.domain.entity.SurveyFormLink;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
 public class SurveyControllerDTO {
+
     @Getter
     @Builder
     @AllArgsConstructor
     public static class CreateSurveyRequestDTO {
+
         @NotBlank
         public String title;
         @NotBlank
@@ -32,6 +32,7 @@ public class SurveyControllerDTO {
     @Builder
     @AllArgsConstructor
     public static class EditSurveyRequestDTO {
+
         @NotBlank
         public String title;
         @NotBlank
@@ -44,6 +45,7 @@ public class SurveyControllerDTO {
     @Builder
     @AllArgsConstructor
     public static class SurveyDTO {
+
         public Long surveyId;
         public String title;
         public String description;
@@ -54,6 +56,7 @@ public class SurveyControllerDTO {
     @Builder
     @AllArgsConstructor
     public static class SurveyListDTO {
+
         public List<SurveyDTO> surveys;
     }
 
@@ -61,6 +64,7 @@ public class SurveyControllerDTO {
     @Builder
     @AllArgsConstructor
     public static class SurveyDetailDTO {
+
         public Long surveyId;
         public String title;
         public String description;
@@ -74,6 +78,7 @@ public class SurveyControllerDTO {
     @Builder
     @AllArgsConstructor
     public static class RewardResultDTO {
+
         public Long reward;
     }
 }

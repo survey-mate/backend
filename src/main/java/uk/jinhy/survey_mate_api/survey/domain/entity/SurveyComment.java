@@ -26,6 +26,7 @@ import uk.jinhy.survey_mate_api.auth.domain.entity.Member;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class SurveyComment {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long commentId;
@@ -54,12 +55,12 @@ public class SurveyComment {
     @OneToMany(mappedBy = "parentSurveyComment", orphanRemoval = true)
     private List<SurveyComment> children = new ArrayList<>();
 
-    public void confirmSurveyCommenter(Member surveyCommenter){
+    public void confirmSurveyCommenter(Member surveyCommenter) {
         this.surveyCommenter = surveyCommenter;
         surveyCommenter.addSurveyComment(this);
     }
 
-    public void confirmSurvey(Survey survey){
+    public void confirmSurvey(Survey survey) {
         this.survey = survey;
         survey.addSurveyComment(this);
     }

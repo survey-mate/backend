@@ -6,15 +6,13 @@ import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.beans.factory.annotation.Value;
-
 import org.springframework.mail.javamail.MimeMessageHelper;
-import org.thymeleaf.context.Context;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 import uk.jinhy.survey_mate_api.auth.presentation.dto.AuthControllerDTO;
 import uk.jinhy.survey_mate_api.common.response.Status;
@@ -54,7 +52,7 @@ public class MailService {
         }
     }
 
-    private String generateEmailContent(String code, String title){
+    private String generateEmailContent(String code, String title) {
         Context context = new Context();
         context.setVariable("code", code);
         context.setVariable("title", title);
