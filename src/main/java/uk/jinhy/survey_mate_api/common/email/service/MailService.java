@@ -2,11 +2,13 @@ package uk.jinhy.survey_mate_api.common.email.service;
 
 
 import lombok.RequiredArgsConstructor;
+import org.hibernate.validator.constraints.CodePointLength;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import uk.jinhy.survey_mate_api.common.email.service.dto.MailSenderDTO;
 import uk.jinhy.survey_mate_api.common.email.service.dto.MailServiceDTO.SendEmailDTO;
 
-
+@Component
 @RequiredArgsConstructor
 public class MailService {
 
