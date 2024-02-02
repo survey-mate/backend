@@ -59,6 +59,7 @@ public class AuthConverter {
         AuthControllerDTO.PasswordResetRequestDTO dto
     ) {
         return AuthServiceDTO.PasswordResetDTO.builder()
+            .emailAddress(dto.getEmailAddress())
             .passwordResetToken(dto.getPasswordResetToken())
             .newPassword(dto.getNewPassword())
             .build();
