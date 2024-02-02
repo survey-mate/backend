@@ -62,6 +62,12 @@ public class AuthService {
             throw new GeneralException(Status.MEMBER_ALREADY_EXIST);
         }
 
+        String nickname = dto.getNickname();
+
+        if (memberRepository.existsByNickname(nickname)) {
+            throw new GeneralException(Status.NICKNAME_ALREADY_EXIST);
+        }
+
         Member member = Member.builder()
             .memberId(dto.getMemberId())
             .nickname(dto.getNickname())

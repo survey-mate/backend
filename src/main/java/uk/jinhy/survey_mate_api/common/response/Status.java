@@ -26,6 +26,8 @@ public enum Status {
     PASSWORD_INCORRECT(HttpStatus.BAD_REQUEST, "MEMBER400", "비밀번호가 틀렸습니다."),
     MEMBER_ALREADY_EXIST(HttpStatus.CONFLICT, "MEMBER409", "이미 가입된 아이디 입니다."),
 
+    NICKNAME_ALREADY_EXIST(HttpStatus.CONFLICT, "NICKNAME409", "이미 사용 중인 닉네임 입니다."),
+
     JWT_NULL(HttpStatus.UNAUTHORIZED, "JWT401", "JWT가 NULL입니다."),
     JWT_INVALID(HttpStatus.FORBIDDEN, "JWT404", "JWT가 유효하지 않습니다."),
 
