@@ -99,4 +99,13 @@ public class Member {
     public void setIsStudent(boolean isStudent) {
         this.isStudent = isStudent;
     }
+
+    public void setIsStudent(String emailAddress) {
+        if (emailAddress.matches(".*\\.(ac\\.kr|edu)$")) {
+            this.setIsStudent(true);
+        } else {
+            this.setIsStudent(false);
+        }
+    }
+
 }

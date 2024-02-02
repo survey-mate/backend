@@ -78,11 +78,7 @@ public class AuthService {
             .profileUrl(null)
             .build();
 
-        if (emailAddress.matches(".*\\.(ac\\.kr|edu)$")) {
-            member.setIsStudent(true);
-        } else {
-            member.setIsStudent(false);
-        }
+        member.setIsStudent(emailAddress);
 
         memberRepository.save(member);
 
