@@ -177,7 +177,7 @@ public class AuthService {
             throw new GeneralException(Status.PASSWORD_RESET_CODE_TIME_OUT);
         }
 
-        String passwordRestValidationToken = Util.generateRandomNumberString(10);
+        String passwordRestValidationToken = Util.generateRandomString(10);
 
         PasswordResetToken resetToken = PasswordResetToken.builder()
             .token(passwordRestValidationToken)
