@@ -135,7 +135,7 @@ public class AuthService {
             throw new GeneralException(Status.MAIL_CODE_TIME_OUT);
         }
 
-        String accountValidationToken = Util.generateRandomString(10);
+        String accountValidationToken = CreateRandomStringUtil.createRandomStr();
 
         EmailToken emailToken = EmailToken.builder()
             .token(accountValidationToken)
