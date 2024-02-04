@@ -51,6 +51,8 @@ public class SurveyConverter {
             .linkUrl(survey.getLinkUrl())
             .description(survey.getDescription())
             .title(survey.getTitle())
+            .rewardUrl(survey.getRewardUrl())
+            .reward(survey.getReward())
             .build();
     }
 }

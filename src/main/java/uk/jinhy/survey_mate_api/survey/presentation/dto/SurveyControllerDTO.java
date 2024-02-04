@@ -71,6 +71,8 @@ public class SurveyControllerDTO {
         public LocalDateTime createdAt;
         public String registrantName;
         public String linkUrl;
+        public Long reward;
+        public String rewardUrl;
         public boolean isResponded;
     }
 
