@@ -149,9 +149,13 @@ public class AuthController {
     @Operation(summary = "닉네임 중복 확인")
     public ApiResponse<?> checkNickname(
             @PathVariable("nickname") String nickname) {
-        authService.checkNickname(nickname);
+        boolean isExist = authService.checkNickname(nickname);
+        AuthControllerDTO.IsNicknameExistResponseDTO responseDTO
+                = AuthControllerDTO.IsNicknameExistResponseDTO.builder()
+                .isNicknameExist(isExist)
+                .build();
         return ApiResponse.onSuccess(Status.OK.getCode(),
-                Status.OK.getMessage(), null);
+                Status.OK.getMessage(), responseDTO);
     }
 
 }
