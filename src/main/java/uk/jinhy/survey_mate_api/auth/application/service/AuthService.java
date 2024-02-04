@@ -233,6 +233,12 @@ public class AuthService {
         memberRepository.deleteById(emailAddress);
     }
 
+    public void checkNickname(String nickname){
+        if (memberRepository.existsByNickname(nickname)) {
+            throw new GeneralException(Status.NICKNAME_ALREADY_EXIST);
+        }
+    }
+
     public boolean isStudentAccount() {
         return getCurrentMember().isStudent();
     }

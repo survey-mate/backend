@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -142,6 +143,15 @@ public class AuthController {
             .build();
         return ApiResponse.onSuccess(Status.OK.getCode(),
             Status.OK.getMessage(), responseDto);
+    }
+
+    @GetMapping("/nickname/{nickname}")
+    @Operation(summary = "닉네임 중복 확인")
+    public ApiResponse<?> checkNickname(
+            @PathVariable("nickname") String nickname) {
+        authService.checkNickname(nickname);
+        return ApiResponse.onSuccess(Status.OK.getCode(),
+                Status.OK.getMessage(), null);
     }
 
 }
