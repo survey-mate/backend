@@ -182,4 +182,12 @@ public class AuthControllerDTO {
 
     }
 
+    @Getter
+    @Builder
+    public static class IsNicknameExistResponseDTO {
+
+        private boolean isNicknameExist;
+
+    }
+
 }
