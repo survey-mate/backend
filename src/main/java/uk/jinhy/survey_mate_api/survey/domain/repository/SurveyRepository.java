@@ -11,7 +11,7 @@ import uk.jinhy.survey_mate_api.survey.domain.entity.Survey;
 
 public interface SurveyRepository extends JpaRepository<Survey, Long> {
 
-    List<Survey> findByEndedAtIsBeforeOrderByCreatedAtDesc(Pageable pageable, LocalDateTime time);
+    List<Survey> findByEndedAtAfterOrderByEndedAt(LocalDateTime time, Pageable pageable);
 
     Optional<Survey> findBySurveyId(Long id);
 
