@@ -19,12 +19,12 @@ public class DataServiceFacade {
     public void buyData(Member buyer, Long dataId) {
         Long price = dataService.buyData(buyer, dataId);
 
-        StatementServiceDTO.CreateStatementDTO createStatementDTO = StatementServiceDTO
-            .CreateStatementDTO
+        StatementServiceDTO.PayPointDTO payPointDTO = StatementServiceDTO
+            .PayPointDTO
             .builder()
             .description("설문조사 구매")
-            .amount(price * -1)
+            .amount(price)
             .build();
-        statementService.createStatement(buyer, createStatementDTO);
+        statementService.payPoint(buyer, payPointDTO);
     }
 }

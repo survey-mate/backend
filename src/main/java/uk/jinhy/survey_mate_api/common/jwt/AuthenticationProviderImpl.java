@@ -1,7 +1,6 @@
-package uk.jinhy.survey_mate_api.jwt;
+package uk.jinhy.survey_mate_api.common.jwt;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -14,7 +13,8 @@ import uk.jinhy.survey_mate_api.common.response.exception.GeneralException;
 
 @RequiredArgsConstructor
 @Component
-public class CustomAuthenticationProvider implements AuthenticationProvider {
+public class AuthenticationProviderImpl implements
+    org.springframework.security.authentication.AuthenticationProvider {
 
     private final UserDetailsService userDetailsService;
 

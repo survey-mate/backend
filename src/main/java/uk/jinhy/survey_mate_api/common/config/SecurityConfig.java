@@ -18,11 +18,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import uk.jinhy.survey_mate_api.jwt.CustomAuthenticationProvider;
-import uk.jinhy.survey_mate_api.jwt.JwtAccessDeniedHandler;
-import uk.jinhy.survey_mate_api.jwt.JwtAuthenticationEntryPoint;
-import uk.jinhy.survey_mate_api.jwt.JwtAuthenticationFilter;
-import uk.jinhy.survey_mate_api.jwt.JwtTokenProvider;
+import uk.jinhy.survey_mate_api.common.jwt.AuthenticationProviderImpl;
+import uk.jinhy.survey_mate_api.common.jwt.JwtAccessDeniedHandler;
+import uk.jinhy.survey_mate_api.common.jwt.JwtAuthenticationEntryPoint;
+import uk.jinhy.survey_mate_api.common.jwt.JwtAuthenticationFilter;
+import uk.jinhy.survey_mate_api.common.jwt.JwtTokenProvider;
 
 @RequiredArgsConstructor
 @Configuration
@@ -43,6 +43,10 @@ public class SecurityConfig {
         "/auth/login",
         "/auth/join",
         "/auth/email/**",
+        "/auth/password/certification",
+        "/auth/password/certification-request",
+        "/auth/password/reset",
+        "/auth/nickname/**",
         "/error",
         "/v2/api-docs",
         "/swagger-resources/**",
@@ -59,7 +63,7 @@ public class SecurityConfig {
 
     @Bean
     public AuthenticationProvider authenticationProvider() {
-        return new CustomAuthenticationProvider(userDetailsService, passwordEncoder());
+        return new AuthenticationProviderImpl(userDetailsService, passwordEncoder());
     }
 
     @Bean(name = "AuthenticationManager")

@@ -27,7 +27,7 @@ public class SurveyService {
             .reward(dto.getReward())
             .endedAt(LocalDateTime.now().plusDays(dto.getPeriod()))
             .linkUrl(dto.getLinkUrl())
-            .rewardUrl(Util.generateRandomString())
+            .rewardUrl(Util.generateRandomString(10))
             .title(dto.getTitle())
             .description(dto.getDescription())
             .registrant(registrant)
@@ -98,8 +98,10 @@ public class SurveyService {
 
     public List<Survey> getSurveyList(int pageNumber) {
         Pageable pageable = PageRequest.of(pageNumber, 10);
-        return surveyRepository.findByEndedAtIsBeforeOrderByCreatedAtDesc(pageable,
-            LocalDateTime.now());
+        return surveyRepository.findByEndedAtAfterOrderByEndedAt(
+            LocalDateTime.now(),
+            pageable
+        );
     }
 
     public List<Survey> getMySurveyList(Member registrant) {

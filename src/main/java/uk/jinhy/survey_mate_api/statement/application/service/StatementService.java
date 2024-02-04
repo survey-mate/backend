@@ -16,10 +16,10 @@ public class StatementService {
 
     private final StatementRepository statementRepository;
 
-    public Statement createStatement(Member member, StatementServiceDTO.CreateStatementDTO dto) {
+    public void payPoint(Member member, StatementServiceDTO.PayPointDTO dto) {
         Statement statement = Statement.builder()
             .member(member)
-            .amount(dto.getAmount())
+            .amount(-1L * dto.getAmount())
             .description(dto.getDescription())
             .build();
 
@@ -28,7 +28,16 @@ public class StatementService {
         }
 
         statementRepository.save(statement);
-        return statement;
+    }
+
+    public void earnPoint(Member member, StatementServiceDTO.EarnPointDTO dto) {
+        Statement statement = Statement.builder()
+            .member(member)
+            .amount(dto.getAmount())
+            .description(dto.getDescription())
+            .build();
+
+        statementRepository.save(statement);
     }
 
     public Statement getStatement(Long statementId) {
