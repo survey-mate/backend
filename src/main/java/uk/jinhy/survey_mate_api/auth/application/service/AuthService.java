@@ -25,6 +25,9 @@ import uk.jinhy.survey_mate_api.common.jwt.JwtTokenProvider;
 import uk.jinhy.survey_mate_api.common.response.Status;
 import uk.jinhy.survey_mate_api.common.response.exception.GeneralException;
 import uk.jinhy.survey_mate_api.common.util.Util;
+import uk.jinhy.survey_mate_api.statement.application.dto.StatementServiceDTO;
+import uk.jinhy.survey_mate_api.statement.application.service.StatementService;
+import uk.jinhy.survey_mate_api.survey.application.service.SurveyRegistrationFee;
 
 @RequiredArgsConstructor
 @Service
@@ -48,6 +51,8 @@ public class AuthService {
     private final PasswordResetCodeRepository passwordResetCodeRepository;
 
     private final PasswordResetTokenRepository passwordResetTokenRepository;
+
+    private final StatementService statementService;
 
     public AuthControllerDTO.MemberResponseDTO join(AuthServiceDTO.MemberDTO dto) {
 
@@ -81,6 +86,15 @@ public class AuthService {
         member.setIsStudent(emailAddress);
 
         memberRepository.save(member);
+
+        StatementServiceDTO.EarnPointDTO earnPointDTO = StatementServiceDTO
+                .EarnPointDTO
+                .builder()
+                .description("회원가입 축하 포인트")
+                .amount(20L)
+                .build();
+
+        statementService.earnPoint(member, earnPointDTO);
 
         return AuthControllerDTO.MemberResponseDTO.builder()
             .id(member.getMemberId())
