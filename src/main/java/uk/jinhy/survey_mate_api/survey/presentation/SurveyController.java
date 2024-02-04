@@ -79,7 +79,7 @@ public class SurveyController {
         boolean isResponded = surveyService.isResponded(survey, null);
         SurveyControllerDTO.SurveyDetailDTO dto = surveyConverter.toSurveyDetailDto(isResponded,
             survey);
-        return ApiResponse.onSuccess(Status.OK.getCode(), Status.OK.getMessage(), null);
+        return ApiResponse.onSuccess(Status.OK.getCode(), Status.OK.getMessage(), dto);
     }
 
     @GetMapping("")
