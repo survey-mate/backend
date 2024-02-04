@@ -135,7 +135,7 @@ public class AuthService {
             throw new GeneralException(Status.MAIL_CODE_TIME_OUT);
         }
 
-        String accountValidationToken = CreateRandomStringUtil.createRandomStr();
+        String accountValidationToken = Util.generateRandomString(10);
 
         EmailToken emailToken = EmailToken.builder()
             .token(accountValidationToken)
@@ -233,7 +233,7 @@ public class AuthService {
         memberRepository.deleteById(emailAddress);
     }
 
-    public boolean checkNickname(String nickname){
+    public boolean checkNickname(String nickname) {
         if (memberRepository.existsByNickname(nickname)) {
             return true;
         } else {
