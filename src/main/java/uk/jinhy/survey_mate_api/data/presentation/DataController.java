@@ -4,13 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import uk.jinhy.survey_mate_api.auth.application.service.AuthService;
 import uk.jinhy.survey_mate_api.auth.domain.entity.Member;
 import uk.jinhy.survey_mate_api.common.response.ApiResponse;
@@ -25,7 +19,7 @@ import uk.jinhy.survey_mate_api.data.presentation.dto.DataControllerDTO;
 
 @RequiredArgsConstructor
 @RequestMapping("/data")
-@Controller
+@RestController
 public class DataController {
 
     private final DataService dataService;
@@ -34,9 +28,9 @@ public class DataController {
 
     private final DataConverter converter;
 
-    @PostMapping(value = "/")
+    @PostMapping(value = "", consumes = { "multipart/form-data" })
     @Operation(summary = "설문장터 등록")
-    public ApiResponse<?> createDataList(DataControllerDTO.CreateDataRequestDTO requestDTO) {
+    public ApiResponse<?> createDataList(@ModelAttribute DataControllerDTO.CreateDataRequestDTO requestDTO) {
         DataServiceDTO.CreateDataDTO serviceDTO = converter.toServiceCreateDataDto(requestDTO);
         Member member = authService.getCurrentMember();
 
