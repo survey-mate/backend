@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import uk.jinhy.survey_mate_api.auth.domain.entity.Member;
 import uk.jinhy.survey_mate_api.common.aws.S3Service;
+import uk.jinhy.survey_mate_api.common.response.Status;
+import uk.jinhy.survey_mate_api.common.response.exception.GeneralException;
 import uk.jinhy.survey_mate_api.common.util.Util;
 import uk.jinhy.survey_mate_api.data.application.dto.DataServiceDTO;
 import uk.jinhy.survey_mate_api.data.domain.entity.Data;
@@ -22,6 +24,11 @@ public class DataService {
 
     public Data createData(Member seller, DataServiceDTO.CreateDataDTO dto) {
         MultipartFile file = dto.getFile();
+
+        if(file == null) {
+            throw new GeneralException(Status.BAD_REQUEST);
+        }
+
         String fileURL = s3Service.uploadFile(
             s3Service.generateDataFileKeyName(Util.generateRandomString(10)), file);
 
