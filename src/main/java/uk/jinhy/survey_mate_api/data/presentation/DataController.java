@@ -45,7 +45,7 @@ public class DataController {
         @ModelAttribute DataControllerDTO.EditDataRequestDTO requestDTO,
         @PathVariable("dataId") Long dataId
     ) {
-        DataServiceDTO.EditDataDTO serviceDTO = converter.toServiceEditDataDto(requestDTO);
+        DataServiceDTO.EditDataDTO serviceDTO = converter.toServiceEditDataDto(dataId, requestDTO);
         Member member = authService.getCurrentMember();
 
         dataService.editData(member, serviceDTO);

@@ -26,7 +26,6 @@ public class DataControllerDTO {
     @AllArgsConstructor
     public static class EditDataRequestDTO {
 
-        private Long dataId;
         private String title;
         private String description;
     }

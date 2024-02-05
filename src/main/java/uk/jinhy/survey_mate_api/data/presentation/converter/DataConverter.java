@@ -19,10 +19,11 @@ public class DataConverter {
     }
 
     public DataServiceDTO.EditDataDTO toServiceEditDataDto(
+        Long dataId,
         DataControllerDTO.EditDataRequestDTO controllerDTO
     ) {
         return DataServiceDTO.EditDataDTO.builder()
-            .dataId(controllerDTO.getDataId())
+            .dataId(dataId)
             .title(controllerDTO.getTitle())
             .description(controllerDTO.getDescription())
             .build();
