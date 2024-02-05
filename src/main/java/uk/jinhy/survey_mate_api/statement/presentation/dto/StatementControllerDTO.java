@@ -11,12 +11,6 @@ import java.util.List;
 public class StatementControllerDTO {
     @Builder
     @Getter
-    public static class GetStatementRequestDTO {
-        private Member member;
-    }
-
-    @Builder
-    @Getter
     @AllArgsConstructor
     public static class StatementListDTO {
         private List<Statement> statements;
