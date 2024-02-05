@@ -81,10 +81,6 @@ public class DataController {
     ) {
         Member member = authService.getCurrentMember();
 
-        if (member == null) {
-            throw new GeneralException(Status.UNAUTHORIZED);
-        }
-
         dataServiceFacade.buyData(member, dataId);
         return ApiResponse.onSuccess(Status.OK.getCode(), Status.OK.getMessage(), null);
     }
