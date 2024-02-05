@@ -4,9 +4,11 @@ import lombok.Builder;
 import lombok.Getter;
 
 public class SurveyServiceDTO {
+
     @Builder
     @Getter
     public static class CreateSurveyDTO {
+
         private String linkUrl;
         private String title;
         private String description;
@@ -17,6 +19,7 @@ public class SurveyServiceDTO {
     @Builder
     @Getter
     public static class EditSurveyDTO {
+
         private Long surveyId;
         private String linkUrl;
         private String title;

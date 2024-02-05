@@ -22,12 +22,6 @@ public class AuthControllerDTO {
         @Schema(description = "받는 사람 이메일 주소", example = "mingmingmon@kyonggi.ac.kr")
         private String receiver;
 
-        @Schema(description = "이메일 제목", example = "[썰매 (Survey Mate)] 회원가입을 위한 인증 코드입니다.")
-        private String mailSubject;
-
-        @Schema(description = "템플릿 속 제목", example = "인증 코드")
-        private String mailTitle;
-
     }
 
     @Builder
@@ -61,7 +55,7 @@ public class AuthControllerDTO {
 
     @Builder
     @Getter
-    public static class MemberRequestDTO{
+    public static class MemberRequestDTO {
 
         @NotNull
         @Schema(description = "학교 계정 이메일 주소", example = "mingmingmon@kyonggi.ac.kr")
@@ -109,6 +103,10 @@ public class AuthControllerDTO {
     public static class PasswordResetRequestDTO {
 
         @NotNull
+        @Schema(description = "이메일 주소", example = "mingmingmon@kyonggi.ac.kr")
+        private String emailAddress;
+
+        @NotNull
         @Schema(description = "계정 인증 토큰", example = "aosdjgr")
         private String passwordResetToken;
 
@@ -136,7 +134,7 @@ public class AuthControllerDTO {
 
     @NoArgsConstructor
     @Getter
-    public static class DeleteAccountRequestDTO{
+    public static class DeleteAccountRequestDTO {
 
         @NotNull
         @Schema(description = "현재 비밀번호", example = "1234asdf!")
@@ -178,9 +176,17 @@ public class AuthControllerDTO {
 
     @Getter
     @Builder
-    public static class IsStudentAccountResponseDTO{
+    public static class IsStudentAccountResponseDTO {
 
         private boolean isStudentAccount;
+
+    }
+
+    @Getter
+    @Builder
+    public static class IsNicknameExistResponseDTO {
+
+        private boolean isNicknameExist;
 
     }
 

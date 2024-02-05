@@ -1,65 +1,34 @@
 package uk.jinhy.survey_mate_api.common.email.service;
 
 
-import jakarta.mail.MessagingException;
-import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.mail.javamail.JavaMailSender;
+import org.hibernate.validator.constraints.CodePointLength;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+import uk.jinhy.survey_mate_api.common.email.service.dto.MailSenderDTO;
+import uk.jinhy.survey_mate_api.common.email.service.dto.MailServiceDTO.SendEmailDTO;
 
-import org.springframework.mail.javamail.MimeMessageHelper;
-import org.thymeleaf.context.Context;
-
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.thymeleaf.spring6.SpringTemplateEngine;
-import uk.jinhy.survey_mate_api.auth.presentation.dto.AuthControllerDTO;
-import uk.jinhy.survey_mate_api.common.response.Status;
-import uk.jinhy.survey_mate_api.common.response.exception.GeneralException;
-
-
-@Service
-@Transactional
+@Component
 @RequiredArgsConstructor
-@Slf4j
 public class MailService {
 
-    @Qualifier("mailSender")
-    private final JavaMailSender emailSender;
-
-    private final SpringTemplateEngine springTemplateEngine;
+    private final MailSender mailSender;
+    private final TemplateRenderer templateRenderer;
 
     @Value("${spring.mail.username}")
     private String sender;
 
-    public void sendEmail(AuthControllerDTO.CertificateCodeRequestDTO requestDTO, String code) {
-        String emailContent = generateEmailContent(code, requestDTO.getMailTitle());
-        try {
-            MimeMessage message = emailSender.createMimeMessage();
-            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(message, true, "UTF-8");
-            mimeMessageHelper.setFrom(sender);
-            mimeMessageHelper.setTo(requestDTO.getReceiver());
-            mimeMessageHelper.setSubject(requestDTO.getMailSubject());
-            mimeMessageHelper.setText(emailContent, true);
-            mimeMessageHelper.addInline("logo", new ClassPathResource("images/logo.png"));
-            emailSender.send(message);
-        } catch (RuntimeException e) {
-            log.info(e.toString());
-            throw new GeneralException(Status.MAIL_SEND_FAIL);
-        } catch (MessagingException e) {
-            throw new RuntimeException(e);
-        }
+    public void sendEmail(SendEmailDTO sendEmailDTO) {
+        String content = templateRenderer.render(
+            sendEmailDTO.getTemplateFileName(),
+            sendEmailDTO.getTemplateContext()
+        );
+        MailSenderDTO.SendMailDTO sendMailDTO = MailSenderDTO.SendMailDTO.builder()
+            .content(content)
+            .from(sender)
+            .to(sendEmailDTO.getReceiver())
+            .subject(sendEmailDTO.getSubject())
+            .build();
+        mailSender.sendMail(sendMailDTO);
     }
-
-    private String generateEmailContent(String code, String title){
-        Context context = new Context();
-        context.setVariable("code", code);
-        context.setVariable("title", title);
-        String emailTemplate = "SurveyEmail.html";
-        return springTemplateEngine.process(emailTemplate, context);
-    }
-
 }

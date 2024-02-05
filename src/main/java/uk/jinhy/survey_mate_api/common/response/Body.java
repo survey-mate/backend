@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 @Builder
 @AllArgsConstructor
 public class Body {
+
     private HttpStatus httpStatus;
 
     private final boolean isSuccess;

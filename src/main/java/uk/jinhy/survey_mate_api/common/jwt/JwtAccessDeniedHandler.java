@@ -1,4 +1,4 @@
-package uk.jinhy.survey_mate_api.jwt;
+package uk.jinhy.survey_mate_api.common.jwt;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -12,7 +12,8 @@ import org.springframework.stereotype.Component;
 public class JwtAccessDeniedHandler implements AccessDeniedHandler {
 
     @Override
-    public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
+    public void handle(HttpServletRequest request, HttpServletResponse response,
+        AccessDeniedException accessDeniedException) throws IOException, ServletException {
         response.sendError(HttpServletResponse.SC_FORBIDDEN);
     }
 }
