@@ -1,12 +1,11 @@
 package uk.jinhy.survey_mate_api.data.presentation.dto;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.web.multipart.MultipartFile;
-import uk.jinhy.survey_mate_api.data.domain.entity.Data;
 
 public class DataControllerDTO {
 
@@ -36,7 +35,7 @@ public class DataControllerDTO {
     public static class DataDTO {
         private String title;
         private String description;
-        private LocalDate createdAt;
+        private LocalDateTime createdAt;
     }
 
     @Builder
@@ -44,7 +43,7 @@ public class DataControllerDTO {
     @AllArgsConstructor
     public static class DataDetailDTO {
         private String seller;
-        private LocalDate createdAt;
+        private LocalDateTime createdAt;
         private String title;
         private String description;
         private Long price;

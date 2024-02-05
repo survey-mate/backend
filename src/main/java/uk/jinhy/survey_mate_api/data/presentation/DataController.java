@@ -3,6 +3,7 @@ package uk.jinhy.survey_mate_api.data.presentation;
 import io.swagger.v3.oas.annotations.Operation;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import uk.jinhy.survey_mate_api.auth.application.service.AuthService;
@@ -28,6 +29,7 @@ public class DataController {
 
     private final DataConverter converter;
 
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value = "", consumes = { "multipart/form-data" })
     @Operation(summary = "설문장터 등록")
     public ApiResponse<?> createDataList(@ModelAttribute DataControllerDTO.CreateDataRequestDTO requestDTO) {
@@ -36,7 +38,7 @@ public class DataController {
 
         dataService.createData(member, serviceDTO);
 
-        return ApiResponse.onSuccess(Status.OK.getCode(), Status.OK.getMessage(), null);
+        return ApiResponse.onSuccess(Status.CREATED.getCode(), Status.CREATED.getMessage(), null);
     }
 
     @GetMapping(value = "/{dataId}")
