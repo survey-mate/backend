@@ -33,14 +33,6 @@ public class DataControllerDTO {
     @Builder
     @Getter
     @AllArgsConstructor
-    public static class BuyDataRequestDTO {
-
-        private Member member;
-    }
-
-    @Builder
-    @Getter
-    @AllArgsConstructor
     public static class DataDTO {
 
         private Data data;

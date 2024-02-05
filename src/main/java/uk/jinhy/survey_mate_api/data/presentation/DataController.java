@@ -64,12 +64,11 @@ public class DataController {
     @GetMapping(value = "/buy/{dataId}")
     @Operation(summary = "설문장터 구매")
     public ApiResponse<?> buyData(
-        @ModelAttribute DataControllerDTO.BuyDataRequestDTO requestDTO,
         @PathVariable("dataId") Long dataId
     ) {
-        Member member = requestDTO.getMember();
+        Member member = authService.getCurrentMember();
 
-        if (!authService.getCurrentMember().equals(member)) {
+        if (member == null) {
             throw new GeneralException(Status.UNAUTHORIZED);
         }
 
