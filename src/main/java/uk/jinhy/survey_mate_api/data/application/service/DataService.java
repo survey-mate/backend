@@ -91,7 +91,7 @@ public class DataService {
     }
 
     public List<Data> getDataListAsSeller(Member seller) {
-        return dataRepository.findByBuyer(seller);
+        return dataRepository.findBySeller(seller);
     }
 
     public List<Data> getRecentDataList() {

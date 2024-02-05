@@ -39,6 +39,17 @@ public class DataController {
         return ApiResponse.onSuccess(Status.OK.getCode(), Status.OK.getMessage(), null);
     }
 
+    @GetMapping(value = "/{dataId}")
+    @Operation(summary = "설문장터 상세 조회")
+    public ApiResponse<?> getData(
+            @PathVariable("dataId") Long dataId
+    ) {
+        Data data = dataService.getData(dataId);
+        DataControllerDTO.DataDetailDTO responseDTO = converter.toControllerDataDetailDto(data);
+
+        return ApiResponse.onSuccess(Status.OK.getCode(), Status.OK.getMessage(), responseDTO);
+    }
+
     @PatchMapping(value = "/{dataId}")
     @Operation(summary = "설문장터 수정")
     public ApiResponse<?> editData(
@@ -80,7 +91,7 @@ public class DataController {
     @Operation(summary = "전체 설문장터 조회")
     public ApiResponse<?> getDataList() {
         List<Data> dataList = dataService.getRecentDataList();
-        DataControllerDTO.DataListDTO responseDTO = new DataControllerDTO.DataListDTO(dataList);
+        DataControllerDTO.DataListDTO responseDTO = converter.toControllerDataListDto(dataList);
         return ApiResponse.onSuccess(Status.OK.getCode(), Status.OK.getMessage(), responseDTO);
     }
 
@@ -89,7 +100,7 @@ public class DataController {
     public ApiResponse<?> getDataListAsBuyer() {
         Member member = authService.getCurrentMember();
         List<Data> dataList = dataService.getDataListAsBuyer(member);
-        DataControllerDTO.DataListDTO responseDTO = new DataControllerDTO.DataListDTO(dataList);
+        DataControllerDTO.DataListDTO responseDTO = converter.toControllerDataListDto(dataList);
         return ApiResponse.onSuccess(Status.OK.getCode(), Status.OK.getMessage(), responseDTO);
     }
 
@@ -98,17 +109,7 @@ public class DataController {
     public ApiResponse<?> getDataListAsSeller() {
         Member member = authService.getCurrentMember();
         List<Data> dataList = dataService.getDataListAsSeller(member);
-        DataControllerDTO.DataListDTO responseDTO = new DataControllerDTO.DataListDTO(dataList);
+        DataControllerDTO.DataListDTO responseDTO = converter.toControllerDataListDto(dataList);
         return ApiResponse.onSuccess(Status.OK.getCode(), Status.OK.getMessage(), responseDTO);
     }
-
-    @GetMapping("/{dataId}")
-    @Operation(summary = "판매 등록한 설문장터 조회")
-    public ApiResponse<?> getDataDetail(@PathVariable("dataId") Long dataId) {
-        Data data = dataService.getData(dataId);
-        DataControllerDTO.DataDTO responseDTO = new DataControllerDTO.DataDTO(data);
-        return ApiResponse.onSuccess(Status.OK.getCode(), Status.OK.getMessage(), responseDTO);
-    }
-
-
 }
