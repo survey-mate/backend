@@ -45,10 +45,6 @@ public class StatementController {
     public ApiResponse<?> getTotalAmount() {
         Member member = authService.getCurrentMember();
 
-        if(member == null) {
-            throw new GeneralException(Status.UNAUTHORIZED);
-        }
-
         Long totalAmount = statementService.getTotalAmount(member);
         StatementControllerDTO.TotalAmountDTO responseDTO =
             new StatementControllerDTO.TotalAmountDTO(totalAmount);
