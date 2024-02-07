@@ -79,8 +79,6 @@ public class DataService {
 
             data.updateFileUrl(fileURL);
         }
-
-        dataRepository.save(data);
     }
 
     @Transactional
@@ -89,8 +87,7 @@ public class DataService {
                 .orElseThrow(() -> new GeneralException(Status.DATA_NOT_FOUND));
 
         if (data.getSeller().equals(seller)) {
-            data.updateIsDeleted(false);
-            dataRepository.save(data);
+            data.updateIsDeleted(true);
         }
     }
 
