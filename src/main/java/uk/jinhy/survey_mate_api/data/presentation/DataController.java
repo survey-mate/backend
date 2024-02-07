@@ -54,7 +54,7 @@ public class DataController {
         return ApiResponse.onSuccess(Status.OK.getCode(), Status.OK.getMessage(), responseDTO);
     }
 
-    @PatchMapping(value = "/{dataId}")
+    @PatchMapping(value = "/{dataId}", consumes = { "multipart/form-data" })
     @Operation(summary = "설문장터 수정")
     public ApiResponse<?> editData(
         @ModelAttribute DataControllerDTO.EditDataRequestDTO requestDTO,
