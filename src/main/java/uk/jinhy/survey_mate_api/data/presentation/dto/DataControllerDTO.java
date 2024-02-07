@@ -34,6 +34,7 @@ public class DataControllerDTO {
     @Getter
     @AllArgsConstructor
     public static class DataDTO {
+        private Long dataId;
         private String title;
         private String description;
         private LocalDateTime createdAt;

@@ -37,6 +37,7 @@ public class DataConverter {
 
     public DataControllerDTO.DataDTO toControllerDataDto(Data data) {
         return DataControllerDTO.DataDTO.builder()
+                .dataId(data.getDataId())
                 .title(data.getTitle())
                 .description(data.getDescription())
                 .createdAt(data.getCreatedAt())
