@@ -23,5 +23,7 @@ public class DataServiceDTO {
         private Long dataId;
         private String title;
         private String description;
+        private Long price;
+        private MultipartFile file;
     }
 }

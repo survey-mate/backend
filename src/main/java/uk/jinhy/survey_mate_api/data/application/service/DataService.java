@@ -65,6 +65,19 @@ public class DataService {
             data.updateDescription(newDescription);
         }
 
+        Long newPrice = dto.getPrice();
+        if (newPrice != null) {
+            data.updatePrice(newPrice);
+        }
+
+        MultipartFile newFile = dto.getFile();
+        if (newFile != null) {
+            String fileURL = s3Service.uploadFile(
+                    s3Service.generateDataFileKeyName(Util.generateRandomString(10)), newFile);
+
+            data.updateFileUrl(fileURL);
+        }
+
         dataRepository.save(data);
     }
 

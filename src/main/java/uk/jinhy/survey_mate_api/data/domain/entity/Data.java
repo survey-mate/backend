@@ -81,6 +81,8 @@ public class Data {
         title = newDescription;
     }
 
+    public void updatePrice(Long newPrice) { price = newPrice; }
+
     public void updateIsDeleted(Boolean newIsDeleted) { isDeleted = newIsDeleted;}
 
     public void updateFileUrl(String newFileUrl) {

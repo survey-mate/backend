@@ -24,9 +24,10 @@ public class DataControllerDTO {
     @Getter
     @AllArgsConstructor
     public static class EditDataRequestDTO {
-
         private String title;
         private String description;
+        private Long amount;
+        private MultipartFile file;
     }
 
     @Builder
