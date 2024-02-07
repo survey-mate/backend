@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import uk.jinhy.survey_mate_api.auth.domain.entity.Member;
 import uk.jinhy.survey_mate_api.common.aws.S3Service;
@@ -29,8 +30,9 @@ public class DataService {
             throw new GeneralException(Status.BAD_REQUEST);
         }
 
+        String extension = StringUtils.getFilenameExtension(file.getOriginalFilename());
         String fileURL = s3Service.uploadFile(
-            s3Service.generateDataFileKeyName(Util.generateRandomString(10)), file);
+            s3Service.generateDataFileKeyName(Util.generateRandomString(10)) + extension, file);
 
         Data data = Data.builder()
             .seller(seller)
