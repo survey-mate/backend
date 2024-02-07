@@ -39,6 +39,7 @@ public class DataService {
             .description(dto.getDescription())
             .price(dto.getPrice())
             .seller(seller)
+            .isDeleted(false)
             .build();
 
         dataRepository.save(data);
@@ -69,15 +70,19 @@ public class DataService {
 
     @Transactional
     public void deleteData(Member seller, Long dataId) {
-        Data data = dataRepository.findByDataId(dataId).get();
+        Data data = dataRepository.findByDataId(dataId)
+                .orElseThrow(() -> new GeneralException(Status.DATA_NOT_FOUND));
+
         if (data.getSeller().equals(seller)) {
-            dataRepository.deleteById(dataId);
+            data.updateIsDeleted(false);
+            dataRepository.save(data);
         }
     }
 
     @Transactional
     public Long buyData(Member buyer, Long dataId) {
-        Data data = dataRepository.findByDataId(dataId).get();
+        Data data = dataRepository.findByDataId(dataId)
+                .orElseThrow(() -> new GeneralException(Status.DATA_NOT_FOUND));
 
         PurchaseHistory purchaseHistory = PurchaseHistory.builder()
             .data(data)

@@ -52,6 +52,9 @@ public class Data {
     @NotNull
     private Long price;
 
+    @NotNull
+    private Boolean isDeleted;
+
     @Builder.Default
     @OneToMany(mappedBy = "data", cascade = CascadeType.ALL)
     private List<PurchaseHistory> purchaseHistoryList = new ArrayList<>();
@@ -77,6 +80,8 @@ public class Data {
     public void updateDescription(String newDescription) {
         title = newDescription;
     }
+
+    public void updateIsDeleted(Boolean newIsDeleted) { isDeleted = newIsDeleted;}
 
     public void updateFileUrl(String newFileUrl) {
         title = newFileUrl;
