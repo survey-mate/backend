@@ -90,7 +90,8 @@ public class DataService {
     }
 
     public Data getData(Long dataId) {
-        return dataRepository.findByDataId(dataId).get();
+        return dataRepository.findByDataId(dataId)
+                .orElseThrow(() -> new GeneralException(Status.DATA_NOT_FOUND));
     }
 
     public List<Data> getDataListAsBuyer(Member buyer) {
