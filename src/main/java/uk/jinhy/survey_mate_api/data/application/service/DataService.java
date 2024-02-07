@@ -32,7 +32,7 @@ public class DataService {
 
         String extension = StringUtils.getFilenameExtension(file.getOriginalFilename());
         String fileURL = s3Service.uploadFile(
-            s3Service.generateDataFileKeyName(Util.generateRandomString(10)) + extension, file);
+            s3Service.generateDataFileKeyName(Util.generateRandomString(10), extension), file);
 
         Data data = Data.builder()
             .seller(seller)
@@ -74,8 +74,9 @@ public class DataService {
 
         MultipartFile newFile = dto.getFile();
         if (newFile != null) {
+            String extension = StringUtils.getFilenameExtension(newFile.getOriginalFilename());
             String fileURL = s3Service.uploadFile(
-                    s3Service.generateDataFileKeyName(Util.generateRandomString(10)), newFile);
+                    s3Service.generateDataFileKeyName(Util.generateRandomString(10), extension), newFile);
 
             data.updateFileUrl(fileURL);
         }
