@@ -30,6 +30,8 @@ public class DataConverter {
             .dataId(dataId)
             .title(controllerDTO.getTitle())
             .description(controllerDTO.getDescription())
+            .price(controllerDTO.getAmount())
+            .file(controllerDTO.getFile())
             .build();
     }
 

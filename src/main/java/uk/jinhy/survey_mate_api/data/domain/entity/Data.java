@@ -78,7 +78,7 @@ public class Data {
     }
 
     public void updateDescription(String newDescription) {
-        title = newDescription;
+        description = newDescription;
     }
 
     public void updatePrice(Long newPrice) { price = newPrice; }
@@ -86,6 +86,6 @@ public class Data {
     public void updateIsDeleted(Boolean newIsDeleted) { isDeleted = newIsDeleted;}
 
     public void updateFileUrl(String newFileUrl) {
-        title = newFileUrl;
+        fileUrl = newFileUrl;
     }
 }
