@@ -65,6 +65,11 @@ public class Data {
         seller.addData(this);
     }
 
+    public boolean isPurchased(Member member) {
+        return purchaseHistoryList.stream()
+                .anyMatch(a -> a.getBuyer().equals(member));
+    }
+
     public void updateTitle(String newTitle) {
         title = newTitle;
     }

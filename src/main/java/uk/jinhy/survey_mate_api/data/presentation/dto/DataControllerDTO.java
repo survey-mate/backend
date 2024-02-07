@@ -48,6 +48,7 @@ public class DataControllerDTO {
         private String description;
         private Long price;
         private String fileUrl;
+        private Boolean isPurchased;
     }
 
     @Builder

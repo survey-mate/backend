@@ -47,7 +47,7 @@ public class DataConverter {
                 .build();
     }
 
-    public DataControllerDTO.DataDetailDTO toControllerDataDetailDto(Data data) {
+    public DataControllerDTO.DataDetailDTO toControllerDataDetailDto(Data data, Boolean isPurchased) {
         return DataControllerDTO.DataDetailDTO.builder()
                 .seller(data.getSeller().getNickname())
                 .createdAt(data.getCreatedAt())
@@ -55,6 +55,7 @@ public class DataConverter {
                 .description(data.getDescription())
                 .price(data.getPrice())
                 .fileUrl(data.getFileUrl())
+                .isPurchased(isPurchased)
                 .build();
     }
 }
