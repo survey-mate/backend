@@ -1,5 +1,6 @@
 package uk.jinhy.survey_mate_api.statement.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -26,6 +27,7 @@ public class Statement {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long statementId;
 
+    @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     @NotNull

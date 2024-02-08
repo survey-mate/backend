@@ -4,9 +4,12 @@ import jakarta.transaction.Transactional;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import uk.jinhy.survey_mate_api.auth.domain.entity.Member;
 import uk.jinhy.survey_mate_api.common.aws.S3Service;
+import uk.jinhy.survey_mate_api.common.response.Status;
+import uk.jinhy.survey_mate_api.common.response.exception.GeneralException;
 import uk.jinhy.survey_mate_api.common.util.Util;
 import uk.jinhy.survey_mate_api.data.application.dto.DataServiceDTO;
 import uk.jinhy.survey_mate_api.data.domain.entity.Data;
@@ -22,8 +25,14 @@ public class DataService {
 
     public Data createData(Member seller, DataServiceDTO.CreateDataDTO dto) {
         MultipartFile file = dto.getFile();
+
+        if(file == null) {
+            throw new GeneralException(Status.BAD_REQUEST);
+        }
+
+        String extension = StringUtils.getFilenameExtension(file.getOriginalFilename());
         String fileURL = s3Service.uploadFile(
-            s3Service.generateDataFileKeyName(Util.generateRandomString(10)), file);
+            s3Service.generateDataFileKeyName(Util.generateRandomString(10), extension), file);
 
         Data data = Data.builder()
             .seller(seller)
@@ -32,6 +41,7 @@ public class DataService {
             .description(dto.getDescription())
             .price(dto.getPrice())
             .seller(seller)
+            .isDeleted(false)
             .build();
 
         dataRepository.save(data);
@@ -57,20 +67,35 @@ public class DataService {
             data.updateDescription(newDescription);
         }
 
-        dataRepository.save(data);
+        Long newPrice = dto.getPrice();
+        if (newPrice != null) {
+            data.updatePrice(newPrice);
+        }
+
+        MultipartFile newFile = dto.getFile();
+        if (newFile != null) {
+            String extension = StringUtils.getFilenameExtension(newFile.getOriginalFilename());
+            String fileURL = s3Service.uploadFile(
+                    s3Service.generateDataFileKeyName(Util.generateRandomString(10), extension), newFile);
+
+            data.updateFileUrl(fileURL);
+        }
     }
 
     @Transactional
     public void deleteData(Member seller, Long dataId) {
-        Data data = dataRepository.findByDataId(dataId).get();
+        Data data = dataRepository.findByDataId(dataId)
+                .orElseThrow(() -> new GeneralException(Status.DATA_NOT_FOUND));
+
         if (data.getSeller().equals(seller)) {
-            dataRepository.deleteById(dataId);
+            data.updateIsDeleted(true);
         }
     }
 
     @Transactional
     public Long buyData(Member buyer, Long dataId) {
-        Data data = dataRepository.findByDataId(dataId).get();
+        Data data = dataRepository.findByDataId(dataId)
+                .orElseThrow(() -> new GeneralException(Status.DATA_NOT_FOUND));
 
         PurchaseHistory purchaseHistory = PurchaseHistory.builder()
             .data(data)
@@ -83,7 +108,8 @@ public class DataService {
     }
 
     public Data getData(Long dataId) {
-        return dataRepository.findByDataId(dataId).get();
+        return dataRepository.findByDataId(dataId)
+                .orElseThrow(() -> new GeneralException(Status.DATA_NOT_FOUND));
     }
 
     public List<Data> getDataListAsBuyer(Member buyer) {
@@ -91,7 +117,7 @@ public class DataService {
     }
 
     public List<Data> getDataListAsSeller(Member seller) {
-        return dataRepository.findByBuyer(seller);
+        return dataRepository.findBySeller(seller);
     }
 
     public List<Data> getRecentDataList() {

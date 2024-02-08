@@ -3,14 +3,9 @@ package uk.jinhy.survey_mate_api.data.presentation;
 import io.swagger.v3.oas.annotations.Operation;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import uk.jinhy.survey_mate_api.auth.application.service.AuthService;
 import uk.jinhy.survey_mate_api.auth.domain.entity.Member;
 import uk.jinhy.survey_mate_api.common.response.ApiResponse;
@@ -25,7 +20,7 @@ import uk.jinhy.survey_mate_api.data.presentation.dto.DataControllerDTO;
 
 @RequiredArgsConstructor
 @RequestMapping("/data")
-@Controller
+@RestController
 public class DataController {
 
     private final DataService dataService;
@@ -34,24 +29,38 @@ public class DataController {
 
     private final DataConverter converter;
 
-    @PostMapping(value = "/")
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping(value = "", consumes = { "multipart/form-data" })
     @Operation(summary = "설문장터 등록")
-    public ApiResponse<?> createDataList(DataControllerDTO.CreateDataRequestDTO requestDTO) {
+    public ApiResponse<?> createDataList(@ModelAttribute DataControllerDTO.CreateDataRequestDTO requestDTO) {
         DataServiceDTO.CreateDataDTO serviceDTO = converter.toServiceCreateDataDto(requestDTO);
         Member member = authService.getCurrentMember();
 
         dataService.createData(member, serviceDTO);
 
-        return ApiResponse.onSuccess(Status.OK.getCode(), Status.OK.getMessage(), null);
+        return ApiResponse.onSuccess(Status.CREATED.getCode(), Status.CREATED.getMessage(), null);
     }
 
-    @PatchMapping(value = "/{dataId}")
+    @GetMapping(value = "/{dataId}")
+    @Operation(summary = "설문장터 상세 조회")
+    public ApiResponse<?> getData(
+            @PathVariable("dataId") Long dataId
+    ) {
+        Data data = dataService.getData(dataId);
+        Member member = authService.getCurrentMember();
+
+        DataControllerDTO.DataDetailDTO responseDTO = converter.toControllerDataDetailDto(data, data.isPurchased(member));
+
+        return ApiResponse.onSuccess(Status.OK.getCode(), Status.OK.getMessage(), responseDTO);
+    }
+
+    @PatchMapping(value = "/{dataId}", consumes = { "multipart/form-data" })
     @Operation(summary = "설문장터 수정")
     public ApiResponse<?> editData(
         @ModelAttribute DataControllerDTO.EditDataRequestDTO requestDTO,
         @PathVariable("dataId") Long dataId
     ) {
-        DataServiceDTO.EditDataDTO serviceDTO = converter.toServiceEditDataDto(requestDTO);
+        DataServiceDTO.EditDataDTO serviceDTO = converter.toServiceEditDataDto(dataId, requestDTO);
         Member member = authService.getCurrentMember();
 
         dataService.editData(member, serviceDTO);
@@ -70,14 +79,9 @@ public class DataController {
     @GetMapping(value = "/buy/{dataId}")
     @Operation(summary = "설문장터 구매")
     public ApiResponse<?> buyData(
-        @ModelAttribute DataControllerDTO.BuyDataRequestDTO requestDTO,
         @PathVariable("dataId") Long dataId
     ) {
-        Member member = requestDTO.getMember();
-
-        if (!authService.getCurrentMember().equals(member)) {
-            throw new GeneralException(Status.UNAUTHORIZED);
-        }
+        Member member = authService.getCurrentMember();
 
         dataServiceFacade.buyData(member, dataId);
         return ApiResponse.onSuccess(Status.OK.getCode(), Status.OK.getMessage(), null);
@@ -87,7 +91,7 @@ public class DataController {
     @Operation(summary = "전체 설문장터 조회")
     public ApiResponse<?> getDataList() {
         List<Data> dataList = dataService.getRecentDataList();
-        DataControllerDTO.DataListDTO responseDTO = new DataControllerDTO.DataListDTO(dataList);
+        DataControllerDTO.DataListDTO responseDTO = converter.toControllerDataListDto(dataList);
         return ApiResponse.onSuccess(Status.OK.getCode(), Status.OK.getMessage(), responseDTO);
     }
 
@@ -96,7 +100,7 @@ public class DataController {
     public ApiResponse<?> getDataListAsBuyer() {
         Member member = authService.getCurrentMember();
         List<Data> dataList = dataService.getDataListAsBuyer(member);
-        DataControllerDTO.DataListDTO responseDTO = new DataControllerDTO.DataListDTO(dataList);
+        DataControllerDTO.DataListDTO responseDTO = converter.toControllerDataListDto(dataList);
         return ApiResponse.onSuccess(Status.OK.getCode(), Status.OK.getMessage(), responseDTO);
     }
 
@@ -105,17 +109,7 @@ public class DataController {
     public ApiResponse<?> getDataListAsSeller() {
         Member member = authService.getCurrentMember();
         List<Data> dataList = dataService.getDataListAsSeller(member);
-        DataControllerDTO.DataListDTO responseDTO = new DataControllerDTO.DataListDTO(dataList);
+        DataControllerDTO.DataListDTO responseDTO = converter.toControllerDataListDto(dataList);
         return ApiResponse.onSuccess(Status.OK.getCode(), Status.OK.getMessage(), responseDTO);
     }
-
-    @GetMapping("/{dataId}")
-    @Operation(summary = "판매 등록한 설문장터 조회")
-    public ApiResponse<?> getDataDetail(@PathVariable("dataId") Long dataId) {
-        Data data = dataService.getData(dataId);
-        DataControllerDTO.DataDTO responseDTO = new DataControllerDTO.DataDTO(data);
-        return ApiResponse.onSuccess(Status.OK.getCode(), Status.OK.getMessage(), responseDTO);
-    }
-
-
 }

@@ -26,11 +26,10 @@ public class StatementController {
 
     @GetMapping(value = "/list")
     @Operation(summary = "전체 사용내역 조회")
-    public ApiResponse<?> getStatementList(
-        @ModelAttribute StatementControllerDTO.GetStatementRequestDTO requestDTO) {
-        Member member = requestDTO.getMember();
+    public ApiResponse<?> getStatementList() {
+        Member member = authService.getCurrentMember();
 
-        if (!authService.getCurrentMember().equals(member)) {
+        if(member == null) {
             throw new GeneralException(Status.UNAUTHORIZED);
         }
 
@@ -43,13 +42,8 @@ public class StatementController {
 
     @GetMapping(value = "/total")
     @Operation(summary = "전체 포인트 조회")
-    public ApiResponse<?> getTotalAmount(
-        @ModelAttribute StatementControllerDTO.GetStatementRequestDTO requestDTO) {
-        Member member = requestDTO.getMember();
-
-        if (!authService.getCurrentMember().equals(member)) {
-            throw new GeneralException(Status.UNAUTHORIZED);
-        }
+    public ApiResponse<?> getTotalAmount() {
+        Member member = authService.getCurrentMember();
 
         Long totalAmount = statementService.getTotalAmount(member);
         StatementControllerDTO.TotalAmountDTO responseDTO =
