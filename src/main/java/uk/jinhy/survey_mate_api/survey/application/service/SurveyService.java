@@ -80,7 +80,7 @@ public class SurveyService {
         Survey survey = surveyRepository.findByRewardUrl(rewardUrl).orElseThrow(
             () -> new GeneralException(Status.SURVEY_NOT_FOUND)
         );
-        if (!survey.isAnswered(respondent)) {
+        if (survey.isAnswered(respondent)) {
             throw new GeneralException(Status.ALREADY_ANSWERED);
         }
         Answer answer = Answer.builder()
