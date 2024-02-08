@@ -35,7 +35,7 @@ env:
   ECR_REPOSITORY: survey-mate-ecr           # set this to your Amazon ECR repository name
   ECS_SERVICE: survey-mate-service                # set this to your Amazon ECS service name
   ECS_CLUSTER: survey-mate-ecs-cluster                 # set this to your Amazon ECS cluster name
-  ECS_TASK_DEFINITION: survey-mate-task # set this to the path to your Amazon ECS task definition
+  ECS_TASK_DEFINITION: .aws/task-definition.json # set this to the path to your Amazon ECS task definition
                                                # file, e.g. .aws/task-definition.json
   CONTAINER_NAME: survey-mate-container           # set this to the name of the container in the
                                                # containerDefinitions section of your task definition
