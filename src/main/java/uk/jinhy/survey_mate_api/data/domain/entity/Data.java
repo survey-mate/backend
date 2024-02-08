@@ -52,6 +52,9 @@ public class Data {
     @NotNull
     private Long price;
 
+    @NotNull
+    private Boolean isDeleted;
+
     @Builder.Default
     @OneToMany(mappedBy = "data", cascade = CascadeType.ALL)
     private List<PurchaseHistory> purchaseHistoryList = new ArrayList<>();
@@ -65,15 +68,24 @@ public class Data {
         seller.addData(this);
     }
 
+    public boolean isPurchased(Member member) {
+        return purchaseHistoryList.stream()
+                .anyMatch(a -> a.getBuyer().equals(member));
+    }
+
     public void updateTitle(String newTitle) {
         title = newTitle;
     }
 
     public void updateDescription(String newDescription) {
-        title = newDescription;
+        description = newDescription;
     }
 
+    public void updatePrice(Long newPrice) { price = newPrice; }
+
+    public void updateIsDeleted(Boolean newIsDeleted) { isDeleted = newIsDeleted;}
+
     public void updateFileUrl(String newFileUrl) {
-        title = newFileUrl;
+        fileUrl = newFileUrl;
     }
 }

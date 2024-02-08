@@ -47,12 +47,14 @@ public class DataController {
             @PathVariable("dataId") Long dataId
     ) {
         Data data = dataService.getData(dataId);
-        DataControllerDTO.DataDetailDTO responseDTO = converter.toControllerDataDetailDto(data);
+        Member member = authService.getCurrentMember();
+
+        DataControllerDTO.DataDetailDTO responseDTO = converter.toControllerDataDetailDto(data, data.isPurchased(member));
 
         return ApiResponse.onSuccess(Status.OK.getCode(), Status.OK.getMessage(), responseDTO);
     }
 
-    @PatchMapping(value = "/{dataId}")
+    @PatchMapping(value = "/{dataId}", consumes = { "multipart/form-data" })
     @Operation(summary = "설문장터 수정")
     public ApiResponse<?> editData(
         @ModelAttribute DataControllerDTO.EditDataRequestDTO requestDTO,

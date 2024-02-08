@@ -11,6 +11,8 @@ public interface DataRepository extends JpaRepository<Data, Long> {
 
     Optional<Data> findByDataId(Long id);
 
+    @Query("select data from Data data "
+            + "where data.seller = :member and data.isDeleted = false")
     List<Data> findBySeller(Member member);
 
     @Query("select data from Data data "
@@ -18,6 +20,8 @@ public interface DataRepository extends JpaRepository<Data, Long> {
         + "where purchase_history.buyer = :member")
     List<Data> findByBuyer(Member member);
 
-    @Query("select data from Data data order by data.createdAt limit 15")
+    @Query("select data from Data data "
+            + "where data.isDeleted = false"
+            + " order by data.createdAt limit 15 ")
     List<Data> findRecentData();
 }

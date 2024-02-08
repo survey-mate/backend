@@ -24,15 +24,17 @@ public class DataControllerDTO {
     @Getter
     @AllArgsConstructor
     public static class EditDataRequestDTO {
-
         private String title;
         private String description;
+        private Long amount;
+        private MultipartFile file;
     }
 
     @Builder
     @Getter
     @AllArgsConstructor
     public static class DataDTO {
+        private Long dataId;
         private String title;
         private String description;
         private LocalDateTime createdAt;
@@ -48,6 +50,7 @@ public class DataControllerDTO {
         private String description;
         private Long price;
         private String fileUrl;
+        private Boolean isPurchased;
     }
 
     @Builder

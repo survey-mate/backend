@@ -30,11 +30,14 @@ public class DataConverter {
             .dataId(dataId)
             .title(controllerDTO.getTitle())
             .description(controllerDTO.getDescription())
+            .price(controllerDTO.getAmount())
+            .file(controllerDTO.getFile())
             .build();
     }
 
     public DataControllerDTO.DataDTO toControllerDataDto(Data data) {
         return DataControllerDTO.DataDTO.builder()
+                .dataId(data.getDataId())
                 .title(data.getTitle())
                 .description(data.getDescription())
                 .createdAt(data.getCreatedAt())
@@ -47,7 +50,7 @@ public class DataConverter {
                 .build();
     }
 
-    public DataControllerDTO.DataDetailDTO toControllerDataDetailDto(Data data) {
+    public DataControllerDTO.DataDetailDTO toControllerDataDetailDto(Data data, Boolean isPurchased) {
         return DataControllerDTO.DataDetailDTO.builder()
                 .seller(data.getSeller().getNickname())
                 .createdAt(data.getCreatedAt())
@@ -55,6 +58,7 @@ public class DataConverter {
                 .description(data.getDescription())
                 .price(data.getPrice())
                 .fileUrl(data.getFileUrl())
+                .isPurchased(isPurchased)
                 .build();
     }
 }

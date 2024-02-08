@@ -31,8 +31,8 @@ public class S3Service {
         return amazonS3.getUrl(config.getBucket(), keyName).toString();
     }
 
-    public String generateDataFileKeyName(String uuid) {
-        return config.getDataFilePath() + '/' + uuid;
+    public String generateDataFileKeyName(String uuid, String extension) {
+        return config.getDataFilePath() + '/' + uuid + '.' + extension;
     }
 }
 
