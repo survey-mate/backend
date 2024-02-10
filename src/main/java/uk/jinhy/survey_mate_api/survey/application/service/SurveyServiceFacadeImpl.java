@@ -12,7 +12,7 @@ import uk.jinhy.survey_mate_api.survey.application.dto.SurveyServiceDTO;
 @Service
 public class SurveyServiceFacadeImpl implements SurveyServiceFacade {
 
-    private final SurveyService surveyService;
+    private final SurveyCommandService surveyService;
     private final StatementService statementService;
 
     @Transactional
