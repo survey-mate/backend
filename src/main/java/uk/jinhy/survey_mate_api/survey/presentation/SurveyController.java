@@ -20,7 +20,7 @@ import uk.jinhy.survey_mate_api.auth.application.service.AuthService;
 import uk.jinhy.survey_mate_api.auth.domain.entity.Member;
 import uk.jinhy.survey_mate_api.common.response.ApiResponse;
 import uk.jinhy.survey_mate_api.common.response.Status;
-import uk.jinhy.survey_mate_api.survey.application.dto.SurveyServiceDTO;
+import uk.jinhy.survey_mate_api.survey.application.dto.SurveyCommandServiceDTO;
 import uk.jinhy.survey_mate_api.survey.application.service.SurveyCommandService;
 import uk.jinhy.survey_mate_api.survey.application.service.SurveyQueryService;
 import uk.jinhy.survey_mate_api.survey.application.service.SurveyServiceFacade;
@@ -47,7 +47,8 @@ public class SurveyController {
         @RequestBody @Valid SurveyControllerDTO.CreateSurveyRequestDTO dto
     ) {
         Member registrant = authService.getCurrentMember();
-        SurveyServiceDTO.CreateSurveyDTO serviceDto = surveyConverter.toServiceCreateSurveyDto(dto);
+        SurveyCommandServiceDTO.CreateSurveyDTO serviceDto = surveyConverter.toServiceCreateSurveyDto(
+            dto);
         surveyServiceFacade.createSurvey(registrant, serviceDto);
         return ApiResponse.onSuccess(Status.CREATED.getCode(), Status.CREATED.getMessage(), null);
     }
@@ -59,7 +60,8 @@ public class SurveyController {
         @PathVariable("surveyId") Long surveyId
     ) {
         Member registrant = authService.getCurrentMember();
-        SurveyServiceDTO.EditSurveyDTO serviceDto = surveyConverter.toServiceEditSurveyDto(surveyId,
+        SurveyCommandServiceDTO.EditSurveyDTO serviceDto = surveyConverter.toServiceEditSurveyDto(
+            surveyId,
             dto);
         surveyCommandService.editSurvey(registrant, serviceDto);
         return ApiResponse.onSuccess(Status.OK.getCode(), Status.OK.getMessage(), null);

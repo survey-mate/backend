@@ -3,7 +3,7 @@ package uk.jinhy.survey_mate_api.survey.application.dto;
 import lombok.Builder;
 import lombok.Getter;
 
-public class SurveyServiceDTO {
+public class SurveyCommandServiceDTO {
 
     @Builder
     @Getter

@@ -8,8 +8,8 @@ import uk.jinhy.survey_mate_api.auth.domain.entity.Member;
 import uk.jinhy.survey_mate_api.common.response.Status;
 import uk.jinhy.survey_mate_api.common.response.exception.GeneralException;
 import uk.jinhy.survey_mate_api.common.util.Util;
-import uk.jinhy.survey_mate_api.survey.application.dto.SurveyServiceDTO;
-import uk.jinhy.survey_mate_api.survey.application.dto.SurveyServiceDTO.CreateSurveyDTO;
+import uk.jinhy.survey_mate_api.survey.application.dto.SurveyCommandServiceDTO;
+import uk.jinhy.survey_mate_api.survey.application.dto.SurveyCommandServiceDTO.CreateSurveyDTO;
 import uk.jinhy.survey_mate_api.survey.domain.entity.Answer;
 import uk.jinhy.survey_mate_api.survey.domain.entity.Survey;
 import uk.jinhy.survey_mate_api.survey.domain.repository.SurveyRepository;
@@ -34,7 +34,7 @@ public class SurveyCommandServiceImpl implements SurveyCommandService {
     }
 
     @Transactional
-    public void editSurvey(Member registrant, SurveyServiceDTO.EditSurveyDTO dto) {
+    public void editSurvey(Member registrant, SurveyCommandServiceDTO.EditSurveyDTO dto) {
         Long surveyId = dto.getSurveyId();
         Survey survey = surveyRepository.findBySurveyId(surveyId).orElseThrow(
             () -> new GeneralException(Status.SURVEY_NOT_FOUND)

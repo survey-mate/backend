@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import uk.jinhy.survey_mate_api.auth.domain.entity.Member;
 import uk.jinhy.survey_mate_api.statement.application.dto.StatementServiceDTO;
 import uk.jinhy.survey_mate_api.statement.application.service.StatementService;
-import uk.jinhy.survey_mate_api.survey.application.dto.SurveyServiceDTO;
+import uk.jinhy.survey_mate_api.survey.application.dto.SurveyCommandServiceDTO;
 
 @RequiredArgsConstructor
 @Service
@@ -16,7 +16,7 @@ public class SurveyServiceFacadeImpl implements SurveyServiceFacade {
     private final StatementService statementService;
 
     @Transactional
-    public void createSurvey(Member registrant, SurveyServiceDTO.CreateSurveyDTO dto) {
+    public void createSurvey(Member registrant, SurveyCommandServiceDTO.CreateSurveyDTO dto) {
         StatementServiceDTO.PayPointDTO payPointDTO = StatementServiceDTO
             .PayPointDTO
             .builder()
