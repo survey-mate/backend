@@ -137,16 +137,16 @@ public class AuthService {
             .build();
         mailCodeRepository.save(mailCode);
 
+        Map<String, Object> templateContext = new HashMap<>();
+        templateContext.put("title", "인증코드");
+        templateContext.put("code", mailValidationCode);
+
         MailServiceDTO.SendEmailDTO sendEmailDTO = MailServiceDTO.SendEmailDTO.builder()
                 .receiver(dto.getReceiver())
                 .templateFileName("SurveyEmail.html")
                 .subject("[썰매 (Survey Mate)] 회원가입을 위한 인증 코드입니다.")
+                .templateContext(templateContext)
                 .build();
-
-        Map<String, Object> templateContext = new HashMap<>();
-        templateContext.put("title", "인증코드");
-        templateContext.put("code", mailValidationCode);
-        sendEmailDTO.setTemplateContext(templateContext);
 
         mailService.sendEmail(sendEmailDTO);
     }
@@ -191,16 +191,16 @@ public class AuthService {
 
         passwordResetCodeRepository.save(passwordResetCode);
 
+        Map<String, Object> templateContext = new HashMap<>();
+        templateContext.put("title", "인증코드");
+        templateContext.put("code", accountValidationCode);
+
         MailServiceDTO.SendEmailDTO sendEmailDTO = MailServiceDTO.SendEmailDTO.builder()
                 .receiver(dto.getReceiver())
                 .templateFileName("SurveyEmail.html")
                 .subject("[썰매 (Survey Mate)] 계정 비밀번호 재설정을 위한 인증 코드입니다.")
+                .templateContext(templateContext)
                 .build();
-
-        Map<String, Object> templateContext = new HashMap<>();
-        templateContext.put("title", "인증코드");
-        templateContext.put("code", accountValidationCode);
-        sendEmailDTO.setTemplateContext(templateContext);
 
         mailService.sendEmail(sendEmailDTO);
     }

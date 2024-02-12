@@ -32,11 +32,7 @@ public class MailServiceDTO {
 
         @Schema(description = "이메일 제목", example = "[썰매 (Survey Mate)] 회원가입을 위한 인증 코드입니다.")
         private String subject;
-
-        public void setTemplateContext(Map<String, Object> templateContext) {
-            this.templateContext = templateContext;
-        }
-
+        
     }
 
 }
