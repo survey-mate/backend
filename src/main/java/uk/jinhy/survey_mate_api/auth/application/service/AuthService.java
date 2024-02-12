@@ -1,6 +1,8 @@
 package uk.jinhy.survey_mate_api.auth.application.service;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,6 +23,7 @@ import uk.jinhy.survey_mate_api.auth.domain.repository.PasswordResetCodeReposito
 import uk.jinhy.survey_mate_api.auth.domain.repository.PasswordResetTokenRepository;
 import uk.jinhy.survey_mate_api.auth.presentation.dto.AuthControllerDTO;
 import uk.jinhy.survey_mate_api.common.email.service.MailService;
+import uk.jinhy.survey_mate_api.common.email.service.dto.MailServiceDTO;
 import uk.jinhy.survey_mate_api.common.jwt.JwtTokenProvider;
 import uk.jinhy.survey_mate_api.common.response.Status;
 import uk.jinhy.survey_mate_api.common.response.exception.GeneralException;
@@ -120,7 +123,7 @@ public class AuthService {
             .build();
     }
 
-    public String sendMailCode(AuthServiceDTO.CertificateCodeDTO dto) {
+    public void sendMailCode(AuthServiceDTO.CertificateCodeDTO dto) {
         String memberId = dto.getReceiver();
         if (memberRepository.existsByMemberId(memberId)) {
             throw new GeneralException(Status.DUPLICATE_MAIL);
@@ -133,7 +136,19 @@ public class AuthService {
             .createdAt(LocalDateTime.now())
             .build();
         mailCodeRepository.save(mailCode);
-        return mailValidationCode;
+
+        MailServiceDTO.SendEmailDTO sendEmailDTO = MailServiceDTO.SendEmailDTO.builder()
+                .receiver(dto.getReceiver())
+                .templateFileName("SurveyEmail.html")
+                .subject("[썰매 (Survey Mate)] 회원가입을 위한 인증 코드입니다.")
+                .build();
+
+        Map<String, Object> templateContext = new HashMap<>();
+        templateContext.put("title", "인증코드");
+        templateContext.put("code", mailValidationCode);
+        sendEmailDTO.setTemplateContext(templateContext);
+
+        mailService.sendEmail(sendEmailDTO);
     }
 
     public AuthControllerDTO.EmailCodeResponseDTO checkEmailCode(AuthServiceDTO.MailCodeDTO dto) {
@@ -163,7 +178,7 @@ public class AuthService {
             .build();
     }
 
-    public String sendPasswordResetCode(AuthServiceDTO.CertificateCodeDTO dto) {
+    public void sendPasswordResetCode(AuthServiceDTO.CertificateCodeDTO dto) {
         String memberId = dto.getReceiver();
         Member member = getMemberById(memberId);
 
@@ -175,7 +190,19 @@ public class AuthService {
             .build();
 
         passwordResetCodeRepository.save(passwordResetCode);
-        return accountValidationCode;
+
+        MailServiceDTO.SendEmailDTO sendEmailDTO = MailServiceDTO.SendEmailDTO.builder()
+                .receiver(dto.getReceiver())
+                .templateFileName("SurveyEmail.html")
+                .subject("[썰매 (Survey Mate)] 계정 비밀번호 재설정을 위한 인증 코드입니다.")
+                .build();
+
+        Map<String, Object> templateContext = new HashMap<>();
+        templateContext.put("title", "인증코드");
+        templateContext.put("code", accountValidationCode);
+        sendEmailDTO.setTemplateContext(templateContext);
+
+        mailService.sendEmail(sendEmailDTO);
     }
 
     public AuthControllerDTO.PasswordResetCodeResponseDTO checkPasswordResetCode(
