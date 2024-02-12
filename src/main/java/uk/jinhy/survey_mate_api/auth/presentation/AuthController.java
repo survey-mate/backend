@@ -55,12 +55,9 @@ public class AuthController {
         @RequestBody @Valid AuthControllerDTO.CertificateCodeRequestDTO requestDTO
     ) {
         AuthServiceDTO.CertificateCodeDTO certificateCodeDTO = authConverter.toServiceCertificateCodeDTO(requestDTO);
-        String mailValidationCode = authService.sendMailCode(certificateCodeDTO);
-        CodeResponseDTO responseDTO = CodeResponseDTO.builder()
-            .code(mailValidationCode)
-            .build();
+        authService.sendMailCode(certificateCodeDTO);
         return ApiResponse.onSuccess(Status.OK.getCode(),
-            Status.OK.getMessage(), responseDTO);
+            Status.OK.getMessage(), null);
     }
 
     @PostMapping("/email/certification")
@@ -80,12 +77,9 @@ public class AuthController {
         @RequestBody @Valid AuthControllerDTO.CertificateCodeRequestDTO requestDTO
     ) {
         AuthServiceDTO.CertificateCodeDTO certificateCodeDTO = authConverter.toServiceCertificateCodeDTO(requestDTO);
-        String accountValidationCode = authService.sendPasswordResetCode(certificateCodeDTO);
-        CodeResponseDTO responseDTO = CodeResponseDTO.builder()
-            .code(accountValidationCode)
-            .build();
+        authService.sendPasswordResetCode(certificateCodeDTO);
         return ApiResponse.onSuccess(Status.OK.getCode(),
-            Status.OK.getMessage(), responseDTO);
+            Status.OK.getMessage(), null);
     }
 
     @PostMapping("/password/certification")
