@@ -1,17 +1,17 @@
 package uk.jinhy.survey_mate_api.survey.presentation.converter;
 
 import org.springframework.stereotype.Component;
-import uk.jinhy.survey_mate_api.survey.application.dto.SurveyServiceDTO;
+import uk.jinhy.survey_mate_api.survey.application.dto.SurveyCommandServiceDTO;
 import uk.jinhy.survey_mate_api.survey.domain.entity.Survey;
 import uk.jinhy.survey_mate_api.survey.presentation.dto.SurveyControllerDTO;
 
 @Component
 public class SurveyConverter {
 
-    public SurveyServiceDTO.CreateSurveyDTO toServiceCreateSurveyDto(
+    public SurveyCommandServiceDTO.CreateSurveyDTO toServiceCreateSurveyDto(
         SurveyControllerDTO.CreateSurveyRequestDTO dto
     ) {
-        return SurveyServiceDTO.CreateSurveyDTO.builder()
+        return SurveyCommandServiceDTO.CreateSurveyDTO.builder()
             .title(dto.getTitle())
             .description(dto.getDescription())
             .linkUrl(dto.getLinkUrl())
@@ -20,11 +20,11 @@ public class SurveyConverter {
             .build();
     }
 
-    public SurveyServiceDTO.EditSurveyDTO toServiceEditSurveyDto(
+    public SurveyCommandServiceDTO.EditSurveyDTO toServiceEditSurveyDto(
         Long surveyId,
         SurveyControllerDTO.EditSurveyRequestDTO dto
     ) {
-        return SurveyServiceDTO.EditSurveyDTO.builder()
+        return SurveyCommandServiceDTO.EditSurveyDTO.builder()
             .surveyId(surveyId)
             .title(dto.getTitle())
             .description(dto.getDescription())
