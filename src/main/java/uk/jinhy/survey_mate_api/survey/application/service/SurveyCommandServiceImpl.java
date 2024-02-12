@@ -20,7 +20,7 @@ public class SurveyCommandServiceImpl implements SurveyCommandService {
 
     private final SurveyRepository surveyRepository;
 
-    public void createSurvey(Member registrant, CreateSurveyDTO dto) {
+    public Survey createSurvey(Member registrant, CreateSurveyDTO dto) {
         Survey survey = Survey.builder()
             .reward(dto.getReward())
             .endedAt(LocalDateTime.now().plusDays(dto.getPeriod()))
@@ -31,6 +31,7 @@ public class SurveyCommandServiceImpl implements SurveyCommandService {
             .registrant(registrant)
             .build();
         surveyRepository.save(survey);
+        return survey;
     }
 
     @Transactional

@@ -49,8 +49,10 @@ public class SurveyController {
         Member registrant = authService.getCurrentMember();
         SurveyCommandServiceDTO.CreateSurveyDTO serviceDto = surveyConverter.toServiceCreateSurveyDto(
             dto);
-        surveyServiceFacade.createSurvey(registrant, serviceDto);
-        return ApiResponse.onSuccess(Status.CREATED.getCode(), Status.CREATED.getMessage(), null);
+        Survey survey = surveyServiceFacade.createSurvey(registrant, serviceDto);
+        SurveyControllerDTO.SurveyDTO resultDto = surveyConverter.toSurveyDTO(survey);
+        return ApiResponse.onSuccess(Status.CREATED.getCode(), Status.CREATED.getMessage(),
+            resultDto);
     }
 
     @PatchMapping("/{surveyId}")
