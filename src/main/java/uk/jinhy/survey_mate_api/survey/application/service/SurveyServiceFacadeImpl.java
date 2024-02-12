@@ -7,6 +7,7 @@ import uk.jinhy.survey_mate_api.auth.domain.entity.Member;
 import uk.jinhy.survey_mate_api.statement.application.dto.StatementServiceDTO;
 import uk.jinhy.survey_mate_api.statement.application.service.StatementService;
 import uk.jinhy.survey_mate_api.survey.application.dto.SurveyCommandServiceDTO;
+import uk.jinhy.survey_mate_api.survey.domain.entity.Survey;
 
 @RequiredArgsConstructor
 @Service
@@ -16,15 +17,16 @@ public class SurveyServiceFacadeImpl implements SurveyServiceFacade {
     private final StatementService statementService;
 
     @Transactional
-    public void createSurvey(Member registrant, SurveyCommandServiceDTO.CreateSurveyDTO dto) {
+    public Survey createSurvey(Member registrant, SurveyCommandServiceDTO.CreateSurveyDTO dto) {
         StatementServiceDTO.PayPointDTO payPointDTO = StatementServiceDTO
             .PayPointDTO
             .builder()
             .description("설문조사 추가")
             .amount(SurveyRegistrationFee.getFee(dto.getPeriod()))
             .build();
-        surveyService.createSurvey(registrant, dto);
+        Survey survey = surveyService.createSurvey(registrant, dto);
         statementService.payPoint(registrant, payPointDTO);
+        return survey;
     }
 
     @Transactional
