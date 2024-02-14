@@ -18,17 +18,17 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import uk.jinhy.survey_mate_api.common.jwt.AuthenticationProviderImpl;
-import uk.jinhy.survey_mate_api.common.jwt.JwtAccessDeniedHandler;
-import uk.jinhy.survey_mate_api.common.jwt.JwtAuthenticationEntryPoint;
-import uk.jinhy.survey_mate_api.common.jwt.JwtAuthenticationFilter;
-import uk.jinhy.survey_mate_api.common.jwt.JwtTokenProvider;
+import uk.jinhy.survey_mate_api.auth.application.service.AuthProvider;
+import uk.jinhy.survey_mate_api.auth.application.service.JwtAuthenticationFilter;
+import uk.jinhy.survey_mate_api.auth.infrastructure.AuthenticationProviderImpl;
+import uk.jinhy.survey_mate_api.auth.presentation.JwtAccessDeniedHandler;
+import uk.jinhy.survey_mate_api.auth.presentation.JwtAuthenticationEntryPoint;
 
 @RequiredArgsConstructor
 @Configuration
 public class SecurityConfig {
 
-    private final JwtTokenProvider jwtTokenProvider;
+    private final AuthProvider authProvider;
 
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
@@ -92,7 +92,7 @@ public class SecurityConfig {
                 httpSecurityHeadersConfigurer.frameOptions(
                     HeadersConfigurer.FrameOptionsConfig::disable)
             )
-            .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider),
+            .addFilterBefore(new JwtAuthenticationFilter(authProvider),
                 UsernamePasswordAuthenticationFilter.class)
             .exceptionHandling(
                 exception -> exception.authenticationEntryPoint(jwtAuthenticationEntryPoint)

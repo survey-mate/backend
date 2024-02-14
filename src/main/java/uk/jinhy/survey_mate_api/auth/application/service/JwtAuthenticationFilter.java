@@ -1,6 +1,6 @@
-package uk.jinhy.survey_mate_api.common.jwt;
+package uk.jinhy.survey_mate_api.auth.application.service;
 
-import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -8,8 +8,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import uk.jinhy.survey_mate_api.common.response.Status;
@@ -20,7 +18,7 @@ import uk.jinhy.survey_mate_api.common.response.exception.GeneralException;
 @Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private final JwtTokenProvider jwtTokenProvider;
+    private final AuthProvider authProvider;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -34,11 +32,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         try {
             String jwt = extractJwtToken(request.getHeader("Authorization"));
-            if (jwt != null && jwtTokenProvider.validateToken(jwt)) {
-                Authentication authentication = jwtTokenProvider.getAuthentication(jwt);
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+            if (jwt != null) {
+                authProvider.setAuthentication(jwt);
             }
-        } catch (MalformedJwtException e) {
+        } catch (JwtException e) {
             request.setAttribute("exception", Status.JWT_INVALID.getCode());
         } catch (Exception e) {
             request.setAttribute("exception", Status.JWT_NULL.getCode());

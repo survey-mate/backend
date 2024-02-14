@@ -20,7 +20,6 @@ import uk.jinhy.survey_mate_api.auth.domain.repository.PasswordResetTokenReposit
 import uk.jinhy.survey_mate_api.auth.presentation.dto.AuthControllerDTO;
 import uk.jinhy.survey_mate_api.common.email.service.MailService;
 import uk.jinhy.survey_mate_api.common.email.service.dto.MailServiceDTO;
-import uk.jinhy.survey_mate_api.common.jwt.JwtTokenProvider;
 import uk.jinhy.survey_mate_api.common.response.Status;
 import uk.jinhy.survey_mate_api.common.response.exception.GeneralException;
 import uk.jinhy.survey_mate_api.common.util.Util;
@@ -30,8 +29,6 @@ import uk.jinhy.survey_mate_api.statement.application.service.StatementService;
 @RequiredArgsConstructor
 @Service
 public class AuthService {
-
-    private final JwtTokenProvider jwtTokenProvider;
 
     private final MemberRepository memberRepository;
 
