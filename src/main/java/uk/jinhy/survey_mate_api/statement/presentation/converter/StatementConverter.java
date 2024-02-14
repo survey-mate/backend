@@ -1,5 +1,6 @@
 package uk.jinhy.survey_mate_api.statement.presentation.converter;
 
+import org.springframework.stereotype.Component;
 import uk.jinhy.survey_mate_api.statement.domain.entity.Statement;
 import uk.jinhy.survey_mate_api.statement.presentation.StatementController;
 import uk.jinhy.survey_mate_api.statement.presentation.dto.StatementControllerDTO;
@@ -7,6 +8,7 @@ import uk.jinhy.survey_mate_api.statement.presentation.dto.StatementControllerDT
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Component
 public class StatementConverter {
     public StatementControllerDTO.StatementDTO toControllerStatementDto(Statement statement) {
         return StatementControllerDTO.StatementDTO.builder()
