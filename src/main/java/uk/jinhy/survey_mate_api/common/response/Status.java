@@ -29,7 +29,7 @@ public enum Status {
     NICKNAME_ALREADY_EXIST(HttpStatus.CONFLICT, "NICKNAME409", "이미 사용 중인 닉네임 입니다."),
 
     JWT_NULL(HttpStatus.UNAUTHORIZED, "JWT401", "JWT가 NULL입니다."),
-    JWT_INVALID(HttpStatus.FORBIDDEN, "JWT404", "JWT가 유효하지 않습니다."),
+    JWT_INVALID(HttpStatus.FORBIDDEN, "JWT403", "JWT가 유효하지 않습니다."),
 
     UNAUTHENTICATED_USER(HttpStatus.UNAUTHORIZED, "AUTH401", "인증 정보가 없습니다."),
 
