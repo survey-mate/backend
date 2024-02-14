@@ -11,12 +11,11 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -26,6 +25,8 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import uk.jinhy.survey_mate_api.auth.application.service.AuthProvider;
+import uk.jinhy.survey_mate_api.auth.domain.entity.Member;
+import uk.jinhy.survey_mate_api.auth.domain.repository.MemberRepository;
 import uk.jinhy.survey_mate_api.common.response.Status;
 import uk.jinhy.survey_mate_api.common.response.exception.GeneralException;
 
@@ -33,8 +34,7 @@ import uk.jinhy.survey_mate_api.common.response.exception.GeneralException;
 @Component
 public class AuthProviderImpl implements AuthProvider {
 
-    @Qualifier("AuthenticationManager")
-    private final AuthenticationManager authenticationManager;
+    private final MemberRepository memberRepository;
 
     private static final long ACCESS_TOKEN_DURATION = 30L * 60L * 1000L;
 
@@ -92,9 +92,12 @@ public class AuthProviderImpl implements AuthProvider {
     public String generateToken(String id, String password) {
         UsernamePasswordAuthenticationToken authenticationToken =
             new UsernamePasswordAuthenticationToken(id, password);
+        Member member = memberRepository.findById(id)
+            .orElseThrow(() -> new GeneralException(Status.MEMBER_NOT_FOUND));
 
-        Authentication authentication = authenticationManager.authenticate(authenticationToken);
-        String authorities = authentication.getAuthorities().stream()
+        String authorities = Collections.singletonList(
+                new SimpleGrantedAuthority("ROLE_USER"))
+            .stream()
             .map(GrantedAuthority::getAuthority)
             .collect(Collectors.joining(","));
 
@@ -102,7 +105,7 @@ public class AuthProviderImpl implements AuthProvider {
         Date expirationDate = Date.from(validity.atZone(ZoneId.systemDefault()).toInstant());
 
         return Jwts.builder()
-            .setSubject(authentication.getName())
+            .setSubject(id)
             .claim("role", authorities)
             .signWith(key, SignatureAlgorithm.HS512)
             .setExpiration(expirationDate)
