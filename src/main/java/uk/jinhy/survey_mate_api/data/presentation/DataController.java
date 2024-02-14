@@ -76,7 +76,7 @@ public class DataController {
         return ApiResponse.onSuccess(Status.OK.getCode(), Status.OK.getMessage(), null);
     }
 
-    @GetMapping(value = "/buy/{dataId}")
+    @PostMapping(value = "/buy/{dataId}")
     @Operation(summary = "설문장터 구매")
     public ApiResponse<Object> buyData(
         @PathVariable("dataId") Long dataId
