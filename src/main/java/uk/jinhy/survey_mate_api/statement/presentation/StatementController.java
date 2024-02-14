@@ -26,7 +26,7 @@ public class StatementController {
 
     @GetMapping(value = "/list")
     @Operation(summary = "전체 사용내역 조회")
-    public ApiResponse<?> getStatementList() {
+    public ApiResponse<StatementControllerDTO.StatementListDTO> getStatementList() {
         Member member = authService.getCurrentMember();
 
         if(member == null) {
@@ -42,7 +42,7 @@ public class StatementController {
 
     @GetMapping(value = "/total")
     @Operation(summary = "전체 포인트 조회")
-    public ApiResponse<?> getTotalAmount() {
+    public ApiResponse<StatementControllerDTO.TotalAmountDTO> getTotalAmount() {
         Member member = authService.getCurrentMember();
 
         Long totalAmount = statementService.getTotalAmount(member);

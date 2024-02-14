@@ -32,7 +32,7 @@ public class DataController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value = "", consumes = { "multipart/form-data" })
     @Operation(summary = "설문장터 등록")
-    public ApiResponse<?> createDataList(@ModelAttribute DataControllerDTO.CreateDataRequestDTO requestDTO) {
+    public ApiResponse<Object> createDataList(@ModelAttribute DataControllerDTO.CreateDataRequestDTO requestDTO) {
         DataServiceDTO.CreateDataDTO serviceDTO = converter.toServiceCreateDataDto(requestDTO);
         Member member = authService.getCurrentMember();
 
@@ -43,7 +43,7 @@ public class DataController {
 
     @GetMapping(value = "/{dataId}")
     @Operation(summary = "설문장터 상세 조회")
-    public ApiResponse<?> getData(
+    public ApiResponse<DataControllerDTO.DataDetailDTO> getData(
             @PathVariable("dataId") Long dataId
     ) {
         Data data = dataService.getData(dataId);
@@ -56,7 +56,7 @@ public class DataController {
 
     @PatchMapping(value = "/{dataId}", consumes = { "multipart/form-data" })
     @Operation(summary = "설문장터 수정")
-    public ApiResponse<?> editData(
+    public ApiResponse<Object> editData(
         @ModelAttribute DataControllerDTO.EditDataRequestDTO requestDTO,
         @PathVariable("dataId") Long dataId
     ) {
@@ -70,7 +70,7 @@ public class DataController {
 
     @DeleteMapping(value = "/{dataId}")
     @Operation(summary = "설문장터 삭제")
-    public ApiResponse<?> deleteData(@PathVariable("dataId") Long dataId) {
+    public ApiResponse<Object> deleteData(@PathVariable("dataId") Long dataId) {
         Member member = authService.getCurrentMember();
         dataService.deleteData(member, dataId);
         return ApiResponse.onSuccess(Status.OK.getCode(), Status.OK.getMessage(), null);
@@ -78,7 +78,7 @@ public class DataController {
 
     @GetMapping(value = "/buy/{dataId}")
     @Operation(summary = "설문장터 구매")
-    public ApiResponse<?> buyData(
+    public ApiResponse<Object> buyData(
         @PathVariable("dataId") Long dataId
     ) {
         Member member = authService.getCurrentMember();
@@ -89,7 +89,7 @@ public class DataController {
 
     @GetMapping(value = "/list")
     @Operation(summary = "전체 설문장터 조회")
-    public ApiResponse<?> getDataList() {
+    public ApiResponse<DataControllerDTO.DataListDTO> getDataList() {
         List<Data> dataList = dataService.getRecentDataList();
         DataControllerDTO.DataListDTO responseDTO = converter.toControllerDataListDto(dataList);
         return ApiResponse.onSuccess(Status.OK.getCode(), Status.OK.getMessage(), responseDTO);
@@ -97,7 +97,7 @@ public class DataController {
 
     @GetMapping(value = "/list/buyer")
     @Operation(summary = "구매한 설문장터 조회")
-    public ApiResponse<?> getDataListAsBuyer() {
+    public ApiResponse<DataControllerDTO.DataListDTO> getDataListAsBuyer() {
         Member member = authService.getCurrentMember();
         List<Data> dataList = dataService.getDataListAsBuyer(member);
         DataControllerDTO.DataListDTO responseDTO = converter.toControllerDataListDto(dataList);
@@ -106,7 +106,7 @@ public class DataController {
 
     @GetMapping(value = "/list/seller")
     @Operation(summary = "판매 등록한 설문장터 조회")
-    public ApiResponse<?> getDataListAsSeller() {
+    public ApiResponse<DataControllerDTO.DataListDTO> getDataListAsSeller() {
         Member member = authService.getCurrentMember();
         List<Data> dataList = dataService.getDataListAsSeller(member);
         DataControllerDTO.DataListDTO responseDTO = converter.toControllerDataListDto(dataList);
