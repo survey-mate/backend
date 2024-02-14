@@ -18,10 +18,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import uk.jinhy.survey_mate_api.auth.application.service.JwtAuthenticationFilter;
 import uk.jinhy.survey_mate_api.auth.infrastructure.AuthenticationProviderImpl;
 import uk.jinhy.survey_mate_api.auth.presentation.JwtAccessDeniedHandler;
 import uk.jinhy.survey_mate_api.auth.presentation.JwtAuthenticationEntryPoint;
+import uk.jinhy.survey_mate_api.auth.presentation.JwtAuthenticationFilter;
 
 @RequiredArgsConstructor
 @Configuration

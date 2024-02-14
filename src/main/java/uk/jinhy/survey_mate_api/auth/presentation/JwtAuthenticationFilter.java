@@ -1,4 +1,4 @@
-package uk.jinhy.survey_mate_api.auth.application.service;
+package uk.jinhy.survey_mate_api.auth.presentation;
 
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import uk.jinhy.survey_mate_api.auth.application.service.AuthProvider;
 import uk.jinhy.survey_mate_api.common.response.Status;
 import uk.jinhy.survey_mate_api.common.response.exception.GeneralException;
 
