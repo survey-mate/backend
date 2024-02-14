@@ -29,10 +29,6 @@ public class StatementController {
     public ApiResponse<StatementControllerDTO.StatementListDTO> getStatementList() {
         Member member = authService.getCurrentMember();
 
-        if(member == null) {
-            throw new GeneralException(Status.UNAUTHORIZED);
-        }
-
         List<Statement> statementList = statementService.getStatementList(member);
         StatementControllerDTO.StatementListDTO responseDTO =
             new StatementControllerDTO.StatementListDTO(statementList);
