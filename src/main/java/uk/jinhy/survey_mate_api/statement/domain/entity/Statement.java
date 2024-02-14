@@ -14,7 +14,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
 import uk.jinhy.survey_mate_api.auth.domain.entity.Member;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -27,7 +30,6 @@ public class Statement {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long statementId;
 
-    @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     @NotNull
@@ -36,8 +38,14 @@ public class Statement {
     @NotNull
     private Long amount;
 
+    @CreatedDate
+    private LocalDateTime createdAt;
+
     @NotNull
     private String description;
+
+    @NotNull
+    private Long balance;
 
     public void confirmMember(Member member) {
         this.member = member;
