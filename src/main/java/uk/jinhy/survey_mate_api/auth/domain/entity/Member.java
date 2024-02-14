@@ -96,6 +96,10 @@ public class Member {
         password = newPassword;
     }
 
+    public void changeNickname(String newNickname) {
+        this.nickname = newNickname;
+    }
+
     public void setIsStudent(boolean isStudent) {
         this.isStudent = isStudent;
     }

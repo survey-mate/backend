@@ -132,6 +132,19 @@ public class AuthControllerDTO {
 
     }
 
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class NicknameUpdateRequestDTO {
+
+        @NotNull
+        @Schema(description = "새로운 닉네임", example = "로그로그로그")
+        private String newNickname;
+
+    }
+
+
     @NoArgsConstructor
     @Getter
     public static class DeleteAccountRequestDTO {
