@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -95,18 +94,12 @@ public class AuthProviderImpl implements AuthProvider {
         Member member = memberRepository.findById(id)
             .orElseThrow(() -> new GeneralException(Status.MEMBER_NOT_FOUND));
 
-        String authorities = Collections.singletonList(
-                new SimpleGrantedAuthority("ROLE_USER"))
-            .stream()
-            .map(GrantedAuthority::getAuthority)
-            .collect(Collectors.joining(","));
-
         LocalDateTime validity = LocalDateTime.now().plusSeconds(ACCESS_TOKEN_DURATION);
         Date expirationDate = Date.from(validity.atZone(ZoneId.systemDefault()).toInstant());
 
         return Jwts.builder()
             .setSubject(id)
-            .claim("role", authorities)
+            .claim("role", "ROLE_USER")
             .signWith(key, SignatureAlgorithm.HS512)
             .setExpiration(expirationDate)
             .compact();
