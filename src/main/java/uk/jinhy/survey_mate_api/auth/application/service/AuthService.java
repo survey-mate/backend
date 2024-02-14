@@ -4,10 +4,6 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import uk.jinhy.survey_mate_api.auth.application.dto.AuthServiceDTO;
@@ -35,9 +31,6 @@ import uk.jinhy.survey_mate_api.statement.application.service.StatementService;
 @Service
 public class AuthService {
 
-    @Qualifier("AuthenticationManager")
-    private final AuthenticationManager authenticationManager;
-
     private final JwtTokenProvider jwtTokenProvider;
 
     private final MemberRepository memberRepository;
@@ -55,6 +48,8 @@ public class AuthService {
     private final PasswordResetTokenRepository passwordResetTokenRepository;
 
     private final StatementService statementService;
+
+    private final AuthProvider authProvider;
 
     public AuthControllerDTO.MemberResponseDTO join(AuthServiceDTO.MemberDTO dto) {
         String emailAddress = dto.getMemberId();
@@ -110,14 +105,8 @@ public class AuthService {
             throw new GeneralException(Status.MEMBER_NOT_FOUND);
         }
 
-        UsernamePasswordAuthenticationToken authenticationToken =
-            new UsernamePasswordAuthenticationToken(id, password);
-
-        Authentication authentication = authenticationManager.authenticate(authenticationToken);
-        String jwtToken = jwtTokenProvider.createToken(authentication);
-
         return AuthControllerDTO.JwtResponseDTO.builder()
-            .jwt(jwtToken)
+            .jwt(authProvider.generateToken(id, password))
             .build();
     }
 
@@ -292,7 +281,7 @@ public class AuthService {
     }
 
     public Member getCurrentMember() {
-        String memberId = AuthProvider.getAuthenticationInfoMemberId();
+        String memberId = authProvider.getUsernameFromAuthentication();
         return memberRepository.findById(memberId)
             .orElseThrow(() -> new GeneralException(Status.MEMBER_NOT_FOUND));
     }
