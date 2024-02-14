@@ -30,7 +30,6 @@ import uk.jinhy.survey_mate_api.common.response.exception.GeneralException;
 import uk.jinhy.survey_mate_api.common.util.Util;
 import uk.jinhy.survey_mate_api.statement.application.dto.StatementServiceDTO;
 import uk.jinhy.survey_mate_api.statement.application.service.StatementService;
-import uk.jinhy.survey_mate_api.survey.application.service.SurveyRegistrationFee;
 
 @RequiredArgsConstructor
 @Service
@@ -58,7 +57,6 @@ public class AuthService {
     private final StatementService statementService;
 
     public AuthControllerDTO.MemberResponseDTO join(AuthServiceDTO.MemberDTO dto) {
-
         String emailAddress = dto.getMemberId();
         String emailToken = dto.getEmailToken();
 
@@ -91,11 +89,11 @@ public class AuthService {
         memberRepository.save(member);
 
         StatementServiceDTO.EarnPointDTO earnPointDTO = StatementServiceDTO
-                .EarnPointDTO
-                .builder()
-                .description("회원가입 축하 포인트")
-                .amount(20L)
-                .build();
+            .EarnPointDTO
+            .builder()
+            .description("회원가입 축하 포인트")
+            .amount(20L)
+            .build();
 
         statementService.earnPoint(member, earnPointDTO);
 
@@ -142,11 +140,11 @@ public class AuthService {
         templateContext.put("code", mailValidationCode);
 
         MailServiceDTO.SendEmailDTO sendEmailDTO = MailServiceDTO.SendEmailDTO.builder()
-                .receiver(dto.getReceiver())
-                .templateFileName("SurveyEmail.html")
-                .subject("[썰매 (Survey Mate)] 회원가입을 위한 인증 코드입니다.")
-                .templateContext(templateContext)
-                .build();
+            .receiver(dto.getReceiver())
+            .templateFileName("SurveyEmail.html")
+            .subject("[썰매 (Survey Mate)] 회원가입을 위한 인증 코드입니다.")
+            .templateContext(templateContext)
+            .build();
 
         mailService.sendEmail(sendEmailDTO);
     }
@@ -196,11 +194,11 @@ public class AuthService {
         templateContext.put("code", accountValidationCode);
 
         MailServiceDTO.SendEmailDTO sendEmailDTO = MailServiceDTO.SendEmailDTO.builder()
-                .receiver(dto.getReceiver())
-                .templateFileName("SurveyEmail.html")
-                .subject("[썰매 (Survey Mate)] 계정 비밀번호 재설정을 위한 인증 코드입니다.")
-                .templateContext(templateContext)
-                .build();
+            .receiver(dto.getReceiver())
+            .templateFileName("SurveyEmail.html")
+            .subject("[썰매 (Survey Mate)] 계정 비밀번호 재설정을 위한 인증 코드입니다.")
+            .templateContext(templateContext)
+            .build();
 
         mailService.sendEmail(sendEmailDTO);
     }
@@ -278,20 +276,15 @@ public class AuthService {
     public void deleteAccount(AuthServiceDTO.DeleteAccountDTO dto) {
         Member member = getCurrentMember();
 
-        String emailAddress = member.getMemberId();
         if (!passwordEncoder.matches(dto.getCurrentPassword(), member.getPassword())) {
             throw new GeneralException(Status.PASSWORD_INCORRECT);
         }
 
-        memberRepository.deleteById(emailAddress);
+        memberRepository.delete(member);
     }
 
     public boolean checkNickname(String nickname) {
-        if (memberRepository.existsByNickname(nickname)) {
-            return true;
-        } else {
-            return false;
-        }
+        return memberRepository.existsByNickname(nickname);
     }
 
     public boolean isStudentAccount() {
