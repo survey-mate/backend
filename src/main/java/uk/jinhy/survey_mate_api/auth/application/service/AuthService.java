@@ -263,6 +263,18 @@ public class AuthService {
         memberRepository.save(member);
     }
 
+    public void updateNickname(AuthServiceDTO.NicknameUpdateDTO dto) {
+        Member member = getCurrentMember();
+        String newNickname = dto.getNewNickname();
+
+        if (checkNickname(newNickname)) {
+            throw new GeneralException(Status.NICKNAME_ALREADY_EXIST);
+        }
+
+        member.changeNickname(newNickname);
+        memberRepository.save(member);
+    }
+
     public void deleteAccount(AuthServiceDTO.DeleteAccountDTO dto) {
         Member member = getCurrentMember();
 

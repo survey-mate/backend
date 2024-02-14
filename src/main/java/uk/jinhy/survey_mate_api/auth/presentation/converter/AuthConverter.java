@@ -82,4 +82,12 @@ public class AuthConverter {
             .build();
     }
 
+    public AuthServiceDTO.NicknameUpdateDTO toServiceNicknameUpdateDTO(
+            AuthControllerDTO.NicknameUpdateRequestDTO dto
+    ) {
+        return AuthServiceDTO.NicknameUpdateDTO.builder()
+                .newNickname(dto.getNewNickname())
+                .build();
+    }
+
 }

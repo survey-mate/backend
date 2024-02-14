@@ -97,4 +97,12 @@ public class AuthServiceDTO {
 
     }
 
+    @Getter
+    @Builder
+    public static class NicknameUpdateDTO {
+
+        private String newNickname;
+
+    }
+
 }
