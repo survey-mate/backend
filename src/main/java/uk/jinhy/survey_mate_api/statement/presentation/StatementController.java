@@ -14,6 +14,7 @@ import uk.jinhy.survey_mate_api.common.response.Status;
 import uk.jinhy.survey_mate_api.common.response.exception.GeneralException;
 import uk.jinhy.survey_mate_api.statement.application.service.StatementService;
 import uk.jinhy.survey_mate_api.statement.domain.entity.Statement;
+import uk.jinhy.survey_mate_api.statement.presentation.converter.StatementConverter;
 import uk.jinhy.survey_mate_api.statement.presentation.dto.StatementControllerDTO;
 
 @RequiredArgsConstructor
@@ -24,18 +25,37 @@ public class StatementController {
     private final StatementService statementService;
     private final AuthService authService;
 
+    private final StatementConverter converter;
+
     @GetMapping(value = "/list")
-    @Operation(summary = "전체 사용내역 조회")
+    @Operation(summary = "포인트 전체 내역 조회")
     public ApiResponse<StatementControllerDTO.StatementListDTO> getStatementList() {
         Member member = authService.getCurrentMember();
 
-        if(member == null) {
-            throw new GeneralException(Status.UNAUTHORIZED);
-        }
-
         List<Statement> statementList = statementService.getStatementList(member);
-        StatementControllerDTO.StatementListDTO responseDTO =
-            new StatementControllerDTO.StatementListDTO(statementList);
+        StatementControllerDTO.StatementListDTO responseDTO = converter.toControllerStatementListDto(statementList);
+
+        return ApiResponse.onSuccess(Status.OK.getCode(), Status.OK.getMessage(), responseDTO);
+    }
+
+    @GetMapping(value = "/list/buyer")
+    @Operation(summary = "포인트 사용 내역 조회")
+    public ApiResponse<StatementControllerDTO.StatementListDTO> getStatementListAsBuyer() {
+        Member member = authService.getCurrentMember();
+
+        List<Statement> statementList = statementService.getStatementListAsBuyer(member);
+        StatementControllerDTO.StatementListDTO responseDTO = converter.toControllerStatementListDto(statementList);
+
+        return ApiResponse.onSuccess(Status.OK.getCode(), Status.OK.getMessage(), responseDTO);
+    }
+
+    @GetMapping(value = "/list/seller")
+    @Operation(summary = "포인트 수령 내역 조회")
+    public ApiResponse<StatementControllerDTO.StatementListDTO> getStatementListAsSeller() {
+        Member member = authService.getCurrentMember();
+
+        List<Statement> statementList = statementService.getStatementListAsSeller(member);
+        StatementControllerDTO.StatementListDTO responseDTO = converter.toControllerStatementListDto(statementList);
 
         return ApiResponse.onSuccess(Status.OK.getCode(), Status.OK.getMessage(), responseDTO);
     }
