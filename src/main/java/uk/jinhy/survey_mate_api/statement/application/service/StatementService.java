@@ -21,6 +21,7 @@ public class StatementService {
             .member(member)
             .amount(-1L * dto.getAmount())
             .description(dto.getDescription())
+            .balance(getTotalAmount(member) + -1L * dto.getAmount())
             .build();
 
         if (getTotalAmount(member) + statement.getAmount() < 0) {
@@ -35,6 +36,7 @@ public class StatementService {
             .member(member)
             .amount(dto.getAmount())
             .description(dto.getDescription())
+            .balance(getTotalAmount(member) + dto.getAmount())
             .build();
 
         statementRepository.save(statement);
@@ -52,11 +54,11 @@ public class StatementService {
         return statementRepository.findTotalAmountByMember(member);
     }
 
-    public List<Statement> getStatementAsBuyer(Member buyer) {
+    public List<Statement> getStatementListAsBuyer(Member buyer) {
         return statementRepository.findByBuyer(buyer);
     }
 
-    public List<Statement> getStatementAsSeller(Member seller) {
+    public List<Statement> getStatementListAsSeller(Member seller) {
         return statementRepository.findBySeller(seller);
     }
 }

@@ -17,14 +17,24 @@ public class DataServiceFacade {
 
     @Transactional
     public void buyData(Member buyer, Long dataId) {
+        Member seller = dataService.getData(dataId).getSeller();
         Long price = dataService.buyData(buyer, dataId);
 
         StatementServiceDTO.PayPointDTO payPointDTO = StatementServiceDTO
             .PayPointDTO
             .builder()
-            .description("설문조사 구매")
+            .description("설문 응답 데이터 구매")
             .amount(price)
             .build();
+
+        StatementServiceDTO.EarnPointDTO earnPointDTO = StatementServiceDTO
+                .EarnPointDTO
+                .builder()
+                .description("설문 응답 데이터 판매")
+                .amount(price)
+                .build();
+
         statementService.payPoint(buyer, payPointDTO);
+        statementService.earnPoint(seller, earnPointDTO);
     }
 }

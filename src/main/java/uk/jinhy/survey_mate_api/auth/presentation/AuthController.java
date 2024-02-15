@@ -139,6 +139,17 @@ public class AuthController {
             Status.OK.getMessage(), responseDto);
     }
 
+    @PatchMapping("/nickname")
+    @Operation(summary = "닉네임 변경")
+    public ApiResponse<?> updateNickname(
+            @RequestBody AuthControllerDTO.NicknameUpdateRequestDTO requestDTO
+    ) {
+        AuthServiceDTO.NicknameUpdateDTO nicknameUpdateDTO = authConverter.toServiceNicknameUpdateDTO(requestDTO);
+        authService.updateNickname(nicknameUpdateDTO);
+        return ApiResponse.onSuccess(Status.OK.getCode(),
+                Status.OK.getMessage(), null);
+    }
+
     @GetMapping("/nickname/{nickname}")
     @Operation(summary = "닉네임 중복 확인")
     public ApiResponse<?> checkNickname(

@@ -29,11 +29,11 @@ public enum Status {
     NICKNAME_ALREADY_EXIST(HttpStatus.CONFLICT, "NICKNAME409", "이미 사용 중인 닉네임 입니다."),
 
     JWT_NULL(HttpStatus.UNAUTHORIZED, "JWT401", "JWT가 NULL입니다."),
-    JWT_INVALID(HttpStatus.FORBIDDEN, "JWT404", "JWT가 유효하지 않습니다."),
+    JWT_INVALID(HttpStatus.FORBIDDEN, "JWT403", "JWT가 유효하지 않습니다."),
 
     UNAUTHENTICATED_USER(HttpStatus.UNAUTHORIZED, "AUTH401", "인증 정보가 없습니다."),
 
-    MAIL_SEND_FAIL(HttpStatus.BAD_REQUEST, "MAIL4000", "메일 전송에 실패했습니다."),
+    MAIL_SEND_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "MAIL500", "메일 전송에 실패했습니다."),
     BAD_MAIL_ADDRESS(HttpStatus.BAD_REQUEST, "MAIL4001", "이메일이 학교 계정이 아닙니다."),
     DUPLICATE_MAIL(HttpStatus.CONFLICT, "MAIL409", "이미 가입된 이메일 입니다."),
     MAIL_CODE_DIFFERENT(HttpStatus.NOT_FOUND, "MAILCODE404", "이메일 인증 코드가 일치하지 않습니다."),

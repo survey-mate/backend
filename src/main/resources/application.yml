@@ -50,7 +50,7 @@ cloud:
       auto: false
 
 jwt:
-  secret: 1ecadcca6955d88702e5df3116ac2d4fef2fc50c3b8cea83d83abff1659b266dda01f142c76961878fdf6ba20fb6dbc35171a5db7976d2325e6a1a43057a0eef
+  secret: ${JWT_SECRET_KEY}
   header: Authorization
   token-prefix: Bearer
 

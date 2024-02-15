@@ -1,5 +1,6 @@
 package uk.jinhy.survey_mate_api.statement.presentation.dto;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,9 +13,20 @@ public class StatementControllerDTO {
     @Builder
     @Getter
     @AllArgsConstructor
+    public static class StatementDTO {
+
+        private LocalDateTime createdAt;
+        private Long amount;
+        private Long balance;
+        private String description;
+    }
+
+    @Builder
+    @Getter
+    @AllArgsConstructor
     public static class StatementListDTO {
 
-        private List<Statement> statements;
+        private List<StatementDTO> statements;
     }
 
     @Builder

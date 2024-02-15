@@ -18,23 +18,22 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import uk.jinhy.survey_mate_api.common.jwt.AuthenticationProviderImpl;
-import uk.jinhy.survey_mate_api.common.jwt.JwtAccessDeniedHandler;
-import uk.jinhy.survey_mate_api.common.jwt.JwtAuthenticationEntryPoint;
-import uk.jinhy.survey_mate_api.common.jwt.JwtAuthenticationFilter;
-import uk.jinhy.survey_mate_api.common.jwt.JwtTokenProvider;
+import uk.jinhy.survey_mate_api.auth.infrastructure.AuthenticationProviderImpl;
+import uk.jinhy.survey_mate_api.auth.presentation.JwtAccessDeniedHandler;
+import uk.jinhy.survey_mate_api.auth.presentation.JwtAuthenticationEntryPoint;
+import uk.jinhy.survey_mate_api.auth.presentation.JwtAuthenticationFilter;
 
 @RequiredArgsConstructor
 @Configuration
 public class SecurityConfig {
-
-    private final JwtTokenProvider jwtTokenProvider;
 
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
 
     private final UserDetailsService userDetailsService;
+
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     private final String[] allowedUrls = {
         "/",
@@ -61,7 +60,6 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    @Bean
     public AuthenticationProvider authenticationProvider() {
         return new AuthenticationProviderImpl(userDetailsService, passwordEncoder());
     }
@@ -92,7 +90,7 @@ public class SecurityConfig {
                 httpSecurityHeadersConfigurer.frameOptions(
                     HeadersConfigurer.FrameOptionsConfig::disable)
             )
-            .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider),
+            .addFilterBefore(jwtAuthenticationFilter,
                 UsernamePasswordAuthenticationFilter.class)
             .exceptionHandling(
                 exception -> exception.authenticationEntryPoint(jwtAuthenticationEntryPoint)
