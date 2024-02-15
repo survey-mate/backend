@@ -27,6 +27,11 @@ spring:
     password: ${MAIL_PASSWORD}
     properties:
       mail:
+        transport:
+          protocol: smtp
+        debug: true
+        mime:
+          charset: UTF-8
         smtp:
           auth: true
           starttls:
