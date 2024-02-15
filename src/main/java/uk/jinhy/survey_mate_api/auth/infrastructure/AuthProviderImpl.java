@@ -35,7 +35,7 @@ public class AuthProviderImpl implements AuthProvider {
 
     private final MemberRepository memberRepository;
 
-    private static final long ACCESS_TOKEN_DURATION = 30L * 60L * 1000L;
+    private static final long ACCESS_TOKEN_DURATION = 60L * 60L * 24L * 1000L * 7;
 
     @Value("${jwt.secret}")
     String secretKey;
