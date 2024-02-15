@@ -6,7 +6,6 @@ import javax.crypto.SecretKey;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import uk.jinhy.survey_mate_api.common.jwt.JwtTokenProvider;
 
 @Configuration
 public class JwtConfig {
@@ -21,10 +20,4 @@ public class JwtConfig {
             Base64.getEncoder().encodeToString(plainSecretKey.getBytes());
         return Keys.hmacShaKeyFor(keyBase64Encoded.getBytes());
     }
-
-    @Bean
-    public JwtTokenProvider jwtTokenProvider() {
-        return new JwtTokenProvider();
-    }
-
 }

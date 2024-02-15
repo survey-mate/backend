@@ -4,10 +4,6 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import uk.jinhy.survey_mate_api.auth.application.dto.AuthServiceDTO;
@@ -24,22 +20,15 @@ import uk.jinhy.survey_mate_api.auth.domain.repository.PasswordResetTokenReposit
 import uk.jinhy.survey_mate_api.auth.presentation.dto.AuthControllerDTO;
 import uk.jinhy.survey_mate_api.common.email.service.MailService;
 import uk.jinhy.survey_mate_api.common.email.service.dto.MailServiceDTO;
-import uk.jinhy.survey_mate_api.common.jwt.JwtTokenProvider;
 import uk.jinhy.survey_mate_api.common.response.Status;
 import uk.jinhy.survey_mate_api.common.response.exception.GeneralException;
 import uk.jinhy.survey_mate_api.common.util.Util;
 import uk.jinhy.survey_mate_api.statement.application.dto.StatementServiceDTO;
 import uk.jinhy.survey_mate_api.statement.application.service.StatementService;
-import uk.jinhy.survey_mate_api.survey.application.service.SurveyRegistrationFee;
 
 @RequiredArgsConstructor
 @Service
 public class AuthService {
-
-    @Qualifier("AuthenticationManager")
-    private final AuthenticationManager authenticationManager;
-
-    private final JwtTokenProvider jwtTokenProvider;
 
     private final MemberRepository memberRepository;
 
@@ -57,8 +46,9 @@ public class AuthService {
 
     private final StatementService statementService;
 
-    public AuthControllerDTO.MemberResponseDTO join(AuthServiceDTO.MemberDTO dto) {
+    private final AuthProvider authProvider;
 
+    public AuthControllerDTO.MemberResponseDTO join(AuthServiceDTO.MemberDTO dto) {
         String emailAddress = dto.getMemberId();
         String emailToken = dto.getEmailToken();
 
@@ -91,11 +81,11 @@ public class AuthService {
         memberRepository.save(member);
 
         StatementServiceDTO.EarnPointDTO earnPointDTO = StatementServiceDTO
-                .EarnPointDTO
-                .builder()
-                .description("회원가입 축하 포인트")
-                .amount(20L)
-                .build();
+            .EarnPointDTO
+            .builder()
+            .description("회원가입 축하 포인트")
+            .amount(20L)
+            .build();
 
         statementService.earnPoint(member, earnPointDTO);
 
@@ -112,14 +102,8 @@ public class AuthService {
             throw new GeneralException(Status.MEMBER_NOT_FOUND);
         }
 
-        UsernamePasswordAuthenticationToken authenticationToken =
-            new UsernamePasswordAuthenticationToken(id, password);
-
-        Authentication authentication = authenticationManager.authenticate(authenticationToken);
-        String jwtToken = jwtTokenProvider.createToken(authentication);
-
         return AuthControllerDTO.JwtResponseDTO.builder()
-            .jwt(jwtToken)
+            .jwt(authProvider.generateToken(id, password))
             .build();
     }
 
@@ -142,11 +126,11 @@ public class AuthService {
         templateContext.put("code", mailValidationCode);
 
         MailServiceDTO.SendEmailDTO sendEmailDTO = MailServiceDTO.SendEmailDTO.builder()
-                .receiver(dto.getReceiver())
-                .templateFileName("SurveyEmail.html")
-                .subject("[썰매 (Survey Mate)] 회원가입을 위한 인증 코드입니다.")
-                .templateContext(templateContext)
-                .build();
+            .receiver(dto.getReceiver())
+            .templateFileName("SurveyEmail.html")
+            .subject("[썰매 (Survey Mate)] 회원가입을 위한 인증 코드입니다.")
+            .templateContext(templateContext)
+            .build();
 
         mailService.sendEmail(sendEmailDTO);
     }
@@ -196,11 +180,11 @@ public class AuthService {
         templateContext.put("code", accountValidationCode);
 
         MailServiceDTO.SendEmailDTO sendEmailDTO = MailServiceDTO.SendEmailDTO.builder()
-                .receiver(dto.getReceiver())
-                .templateFileName("SurveyEmail.html")
-                .subject("[썰매 (Survey Mate)] 계정 비밀번호 재설정을 위한 인증 코드입니다.")
-                .templateContext(templateContext)
-                .build();
+            .receiver(dto.getReceiver())
+            .templateFileName("SurveyEmail.html")
+            .subject("[썰매 (Survey Mate)] 계정 비밀번호 재설정을 위한 인증 코드입니다.")
+            .templateContext(templateContext)
+            .build();
 
         mailService.sendEmail(sendEmailDTO);
     }
@@ -278,20 +262,15 @@ public class AuthService {
     public void deleteAccount(AuthServiceDTO.DeleteAccountDTO dto) {
         Member member = getCurrentMember();
 
-        String emailAddress = member.getMemberId();
         if (!passwordEncoder.matches(dto.getCurrentPassword(), member.getPassword())) {
             throw new GeneralException(Status.PASSWORD_INCORRECT);
         }
 
-        memberRepository.deleteById(emailAddress);
+        memberRepository.delete(member);
     }
 
     public boolean checkNickname(String nickname) {
-        if (memberRepository.existsByNickname(nickname)) {
-            return true;
-        } else {
-            return false;
-        }
+        return memberRepository.existsByNickname(nickname);
     }
 
     public boolean isStudentAccount() {
@@ -299,7 +278,7 @@ public class AuthService {
     }
 
     public Member getCurrentMember() {
-        String memberId = AuthProvider.getAuthenticationInfoMemberId();
+        String memberId = authProvider.getUsernameFromAuthentication();
         return memberRepository.findById(memberId)
             .orElseThrow(() -> new GeneralException(Status.MEMBER_NOT_FOUND));
     }

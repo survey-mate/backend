@@ -1,4 +1,4 @@
-package uk.jinhy.survey_mate_api.common.jwt;
+package uk.jinhy.survey_mate_api.auth.infrastructure;
 
 import java.util.Collections;
 import java.util.List;

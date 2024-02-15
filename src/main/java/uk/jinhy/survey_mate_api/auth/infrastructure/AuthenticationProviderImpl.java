@@ -1,4 +1,4 @@
-package uk.jinhy.survey_mate_api.common.jwt;
+package uk.jinhy.survey_mate_api.auth.infrastructure;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

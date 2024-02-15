@@ -1,4 +1,4 @@
-package uk.jinhy.survey_mate_api.common.jwt;
+package uk.jinhy.survey_mate_api.auth.presentation;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
