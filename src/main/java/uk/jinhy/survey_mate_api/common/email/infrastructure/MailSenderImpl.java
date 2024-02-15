@@ -10,19 +10,16 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
 import uk.jinhy.survey_mate_api.common.email.service.MailSender;
 import uk.jinhy.survey_mate_api.common.email.service.dto.MailSenderDTO.SendMailDTO;
+import uk.jinhy.survey_mate_api.common.response.Status;
+import uk.jinhy.survey_mate_api.common.response.exception.GeneralException;
 
 @Slf4j
 @RequiredArgsConstructor
 @Component
 public class MailSenderImpl implements MailSender {
-
-    @Qualifier("mailSender")
-    private final JavaMailSender emailSender;
 
     @Override
     public void sendMail(SendMailDTO dto) {
@@ -52,10 +49,8 @@ public class MailSenderImpl implements MailSender {
             response = client.post(request);
         } catch (MailjetException e) {
             log.error(e.getMessage(), e);
-            throw new RuntimeException(e);
+            throw new GeneralException(Status.MAIL_SEND_FAIL);
         }
-        System.out.println(response.getStatus());
-        System.out.println(response.getData());
     }
 }
 
