@@ -11,17 +11,20 @@ public interface StatementRepository extends JpaRepository<Statement, Long> {
 
     Optional<Statement> findByStatementId(Long id);
 
-    List<Statement> findByMember(Member member);
 
     @Query("select ifnull(sum(statement.amount), 0) from Statement statement "
         + "where statement.member = :member")
     Long findTotalAmountByMember(Member member);
 
+    List<Statement> findByMemberOrderByCreatedAtDesc(Member member);
+
     @Query("select statement from Statement statement "
-        + "where statement.member = :buyer and statement.amount  < 0")
+        + "where statement.member = :buyer and statement.amount  < 0"
+        + " order by statement.createdAt desc")
     List<Statement> findByBuyer(Member buyer);
 
     @Query("select statement from Statement statement "
-        + "where statement.member = :seller and statement.amount  > 0")
+        + "where statement.member = :seller and statement.amount  > 0"
+        + " order by statement.createdAt desc")
     List<Statement> findBySeller(Member seller);
 }

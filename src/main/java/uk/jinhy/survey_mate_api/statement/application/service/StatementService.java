@@ -47,7 +47,7 @@ public class StatementService {
     }
 
     public List<Statement> getStatementList(Member member) {
-        return statementRepository.findByMember(member);
+        return statementRepository.findByMemberOrderByCreatedAtDesc(member);
     }
 
     public Long getTotalAmount(Member member) {
