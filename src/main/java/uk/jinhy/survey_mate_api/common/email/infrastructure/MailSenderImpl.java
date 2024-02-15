@@ -51,6 +51,7 @@ public class MailSenderImpl implements MailSender {
         try {
             response = client.post(request);
         } catch (MailjetException e) {
+            log.error(e.getMessage(), e);
             throw new RuntimeException(e);
         }
         System.out.println(response.getStatus());
