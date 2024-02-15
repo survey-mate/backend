@@ -18,11 +18,11 @@ spring:
         format_sql: true
         use_sql_comments: true
         hbm2ddl:
-          auto: create
+          auto: update
         default_batch_fetch_size: 1000
   mail:
     host: smtp.gmail.com
-    port: 587
+    port: 465
     username: surveyMateUMC5@gmail.com
     password: ${MAIL_PASSWORD}
     properties:
@@ -34,6 +34,8 @@ spring:
           charset: UTF-8
         smtp:
           auth: true
+          ssl:
+            enable: true
           starttls:
             enable: true
             required: true
