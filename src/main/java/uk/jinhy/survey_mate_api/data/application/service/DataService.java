@@ -3,6 +3,9 @@ package uk.jinhy.survey_mate_api.data.application.service;
 import jakarta.transaction.Transactional;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -111,6 +114,8 @@ public class DataService {
         return dataRepository.findByDataId(dataId)
                 .orElseThrow(() -> new GeneralException(Status.DATA_NOT_FOUND));
     }
+
+    public List<Data> getDataList() { return dataRepository.findAll(Sort.by(Sort.Direction.DESC, "createdAt")); }
 
     public List<Data> getDataListAsBuyer(Member buyer) {
         return dataRepository.findByBuyer(buyer);

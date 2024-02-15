@@ -90,7 +90,7 @@ public class DataController {
     @GetMapping(value = "/list")
     @Operation(summary = "전체 설문장터 조회")
     public ApiResponse<DataControllerDTO.DataListDTO> getDataList() {
-        List<Data> dataList = dataService.getRecentDataList();
+        List<Data> dataList = dataService.getDataList();
         DataControllerDTO.DataListDTO responseDTO = converter.toControllerDataListDto(dataList);
         return ApiResponse.onSuccess(Status.OK.getCode(), Status.OK.getMessage(), responseDTO);
     }
@@ -109,6 +109,14 @@ public class DataController {
     public ApiResponse<DataControllerDTO.DataListDTO> getDataListAsSeller() {
         Member member = authService.getCurrentMember();
         List<Data> dataList = dataService.getDataListAsSeller(member);
+        DataControllerDTO.DataListDTO responseDTO = converter.toControllerDataListDto(dataList);
+        return ApiResponse.onSuccess(Status.OK.getCode(), Status.OK.getMessage(), responseDTO);
+    }
+
+    @GetMapping(value = "/new")
+    @Operation(summary = "신규 설문장터 조회")
+    public ApiResponse<DataControllerDTO.DataListDTO> getNewDataList() {
+        List<Data> dataList = dataService.getRecentDataList();
         DataControllerDTO.DataListDTO responseDTO = converter.toControllerDataListDto(dataList);
         return ApiResponse.onSuccess(Status.OK.getCode(), Status.OK.getMessage(), responseDTO);
     }
