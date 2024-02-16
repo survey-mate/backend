@@ -11,7 +11,6 @@ public class MailSenderDTO {
     @AllArgsConstructor
     public static class SendMailDTO {
 
-        public String from;
         public String to;
         public String content;
         public String subject;
