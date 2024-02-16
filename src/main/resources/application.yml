@@ -20,27 +20,6 @@ spring:
         hbm2ddl:
           auto: update
         default_batch_fetch_size: 1000
-  mail:
-    host: smtp.gmail.com
-    port: 465
-    username: surveyMateUMC5@gmail.com
-    password: ${MAIL_PASSWORD}
-    properties:
-      mail:
-        transport:
-          protocol: smtp
-        debug: true
-        mime:
-          charset: UTF-8
-        smtp:
-          auth: true
-          ssl:
-            enable: true
-          starttls:
-            enable: true
-            required: true
-          connection-timeout: 5000
-          timeout: 5000
 
 cloud:
   aws:

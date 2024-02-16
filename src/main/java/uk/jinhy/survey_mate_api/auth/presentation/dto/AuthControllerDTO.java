@@ -203,4 +203,11 @@ public class AuthControllerDTO {
 
     }
 
+    @Getter
+    @Builder
+    public static class GetProfileResponseDTO {
+
+        private String nickname;
+    }
+
 }

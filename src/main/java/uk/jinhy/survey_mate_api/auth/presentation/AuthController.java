@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import uk.jinhy.survey_mate_api.auth.application.dto.AuthServiceDTO;
 import uk.jinhy.survey_mate_api.auth.application.service.AuthService;
+import uk.jinhy.survey_mate_api.auth.domain.entity.Member;
 import uk.jinhy.survey_mate_api.auth.presentation.converter.AuthConverter;
 import uk.jinhy.survey_mate_api.auth.presentation.dto.AuthControllerDTO;
-import uk.jinhy.survey_mate_api.auth.presentation.dto.CodeResponseDTO;
 import uk.jinhy.survey_mate_api.common.response.ApiResponse;
 import uk.jinhy.survey_mate_api.common.response.Status;
 
@@ -54,7 +54,8 @@ public class AuthController {
     public ApiResponse<?> sendEmailCode(
         @RequestBody @Valid AuthControllerDTO.CertificateCodeRequestDTO requestDTO
     ) {
-        AuthServiceDTO.CertificateCodeDTO certificateCodeDTO = authConverter.toServiceCertificateCodeDTO(requestDTO);
+        AuthServiceDTO.CertificateCodeDTO certificateCodeDTO = authConverter.toServiceCertificateCodeDTO(
+            requestDTO);
         authService.sendMailCode(certificateCodeDTO);
         return ApiResponse.onSuccess(Status.OK.getCode(),
             Status.OK.getMessage(), null);
@@ -66,7 +67,8 @@ public class AuthController {
         @RequestBody @Valid AuthControllerDTO.MailCodeRequestDTO requestDTO
     ) {
         AuthServiceDTO.MailCodeDTO mailCodeDTO = authConverter.toServiceMailCodeDTO(requestDTO);
-        AuthControllerDTO.EmailCodeResponseDTO emailCodeResponseDTO = authService.checkEmailCode(mailCodeDTO);
+        AuthControllerDTO.EmailCodeResponseDTO emailCodeResponseDTO = authService.checkEmailCode(
+            mailCodeDTO);
         return ApiResponse.onSuccess(Status.CREATED.getCode(),
             Status.CREATED.getMessage(), emailCodeResponseDTO);
     }
@@ -76,7 +78,8 @@ public class AuthController {
     public ApiResponse<?> sendPasswordResetCode(
         @RequestBody @Valid AuthControllerDTO.CertificateCodeRequestDTO requestDTO
     ) {
-        AuthServiceDTO.CertificateCodeDTO certificateCodeDTO = authConverter.toServiceCertificateCodeDTO(requestDTO);
+        AuthServiceDTO.CertificateCodeDTO certificateCodeDTO = authConverter.toServiceCertificateCodeDTO(
+            requestDTO);
         authService.sendPasswordResetCode(certificateCodeDTO);
         return ApiResponse.onSuccess(Status.OK.getCode(),
             Status.OK.getMessage(), null);
@@ -87,7 +90,8 @@ public class AuthController {
     public ApiResponse<?> checkPasswordResetCode(
         @RequestBody @Valid AuthControllerDTO.PasswordResetCodeRequestDTO resetDTO
     ) {
-        AuthServiceDTO.PasswordResetCodeDTO passwordResetCodeDTO = authConverter.toServicePasswordResetCodeDTO(resetDTO);
+        AuthServiceDTO.PasswordResetCodeDTO passwordResetCodeDTO = authConverter.toServicePasswordResetCodeDTO(
+            resetDTO);
         AuthControllerDTO.PasswordResetCodeResponseDTO passwordResetCodeResponseDTO
             = authService.checkPasswordResetCode(passwordResetCodeDTO);
         return ApiResponse.onSuccess(Status.CREATED.getCode(),
@@ -99,7 +103,8 @@ public class AuthController {
     public ApiResponse<?> resetPassword(
         @RequestBody @Valid AuthControllerDTO.PasswordResetRequestDTO requestDTO
     ) {
-        AuthServiceDTO.PasswordResetDTO passwordResetDTO = authConverter.toServicePasswordResetDTO(requestDTO);
+        AuthServiceDTO.PasswordResetDTO passwordResetDTO = authConverter.toServicePasswordResetDTO(
+            requestDTO);
         authService.resetPassword(passwordResetDTO);
         return ApiResponse.onSuccess(Status.OK.getCode(),
             Status.OK.getMessage(), null);
@@ -110,7 +115,8 @@ public class AuthController {
     public ApiResponse<?> updatePassword(
         @RequestBody @Valid AuthControllerDTO.PasswordUpdateRequestDTO requestDto
     ) {
-        AuthServiceDTO.PasswordUpdateDTO passwordUpdateDTO = authConverter.toServicePasswordUpdateDTO(requestDto);
+        AuthServiceDTO.PasswordUpdateDTO passwordUpdateDTO = authConverter.toServicePasswordUpdateDTO(
+            requestDto);
         authService.updatePassword(passwordUpdateDTO);
         return ApiResponse.onSuccess(Status.OK.getCode(),
             Status.OK.getMessage(), null);
@@ -121,7 +127,8 @@ public class AuthController {
     public ApiResponse<?> deleteAccount(
         @RequestBody AuthControllerDTO.DeleteAccountRequestDTO requestDTO
     ) {
-        AuthServiceDTO.DeleteAccountDTO deleteAccountDTO = authConverter.toServiceDeleteAccountDTO(requestDTO);
+        AuthServiceDTO.DeleteAccountDTO deleteAccountDTO = authConverter.toServiceDeleteAccountDTO(
+            requestDTO);
         authService.deleteAccount(deleteAccountDTO);
         return ApiResponse.onSuccess(Status.OK.getCode(),
             Status.OK.getMessage(), null);
@@ -142,25 +149,38 @@ public class AuthController {
     @PatchMapping("/nickname")
     @Operation(summary = "닉네임 변경")
     public ApiResponse<?> updateNickname(
-            @RequestBody AuthControllerDTO.NicknameUpdateRequestDTO requestDTO
+        @RequestBody AuthControllerDTO.NicknameUpdateRequestDTO requestDTO
     ) {
-        AuthServiceDTO.NicknameUpdateDTO nicknameUpdateDTO = authConverter.toServiceNicknameUpdateDTO(requestDTO);
+        AuthServiceDTO.NicknameUpdateDTO nicknameUpdateDTO = authConverter.toServiceNicknameUpdateDTO(
+            requestDTO);
         authService.updateNickname(nicknameUpdateDTO);
         return ApiResponse.onSuccess(Status.OK.getCode(),
-                Status.OK.getMessage(), null);
+            Status.OK.getMessage(), null);
     }
 
     @GetMapping("/nickname/{nickname}")
     @Operation(summary = "닉네임 중복 확인")
     public ApiResponse<?> checkNickname(
-            @PathVariable("nickname") String nickname) {
+        @PathVariable("nickname") String nickname) {
         boolean isExist = authService.checkNickname(nickname);
         AuthControllerDTO.IsNicknameExistResponseDTO responseDTO
-                = AuthControllerDTO.IsNicknameExistResponseDTO.builder()
-                .isNicknameExist(isExist)
-                .build();
+            = AuthControllerDTO.IsNicknameExistResponseDTO.builder()
+            .isNicknameExist(isExist)
+            .build();
         return ApiResponse.onSuccess(Status.OK.getCode(),
-                Status.OK.getMessage(), responseDTO);
+            Status.OK.getMessage(), responseDTO);
+    }
+
+    @GetMapping("/profile")
+    @Operation(summary = "프로필 확인")
+    public ApiResponse<?> checkNickname() {
+        Member member = authService.getCurrentMember();
+        AuthControllerDTO.GetProfileResponseDTO responseDTO
+            = AuthControllerDTO.GetProfileResponseDTO.builder()
+            .nickname(member.getNickname())
+            .build();
+        return ApiResponse.onSuccess(Status.OK.getCode(),
+            Status.OK.getMessage(), responseDTO);
     }
 
 }
