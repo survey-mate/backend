@@ -4,13 +4,19 @@ import io.swagger.v3.oas.annotations.Operation;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 import uk.jinhy.survey_mate_api.auth.application.service.AuthService;
 import uk.jinhy.survey_mate_api.auth.domain.entity.Member;
 import uk.jinhy.survey_mate_api.common.response.ApiResponse;
 import uk.jinhy.survey_mate_api.common.response.Status;
-import uk.jinhy.survey_mate_api.common.response.exception.GeneralException;
 import uk.jinhy.survey_mate_api.data.application.dto.DataServiceDTO;
 import uk.jinhy.survey_mate_api.data.application.service.DataService;
 import uk.jinhy.survey_mate_api.data.application.service.DataServiceFacade;
@@ -19,7 +25,7 @@ import uk.jinhy.survey_mate_api.data.presentation.converter.DataConverter;
 import uk.jinhy.survey_mate_api.data.presentation.dto.DataControllerDTO;
 
 @RequiredArgsConstructor
-@RequestMapping("/data")
+@RequestMapping("/api/data")
 @RestController
 public class DataController {
 
@@ -30,9 +36,10 @@ public class DataController {
     private final DataConverter converter;
 
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping(value = "", consumes = { "multipart/form-data" })
+    @PostMapping(value = "", consumes = {"multipart/form-data"})
     @Operation(summary = "설문장터 등록")
-    public ApiResponse<Object> createDataList(@ModelAttribute DataControllerDTO.CreateDataRequestDTO requestDTO) {
+    public ApiResponse<Object> createDataList(
+        @ModelAttribute DataControllerDTO.CreateDataRequestDTO requestDTO) {
         DataServiceDTO.CreateDataDTO serviceDTO = converter.toServiceCreateDataDto(requestDTO);
         Member member = authService.getCurrentMember();
 
@@ -44,17 +51,18 @@ public class DataController {
     @GetMapping(value = "/{dataId}")
     @Operation(summary = "설문장터 상세 조회")
     public ApiResponse<DataControllerDTO.DataDetailDTO> getData(
-            @PathVariable("dataId") Long dataId
+        @PathVariable("dataId") Long dataId
     ) {
         Data data = dataService.getData(dataId);
         Member member = authService.getCurrentMember();
 
-        DataControllerDTO.DataDetailDTO responseDTO = converter.toControllerDataDetailDto(data, data.isPurchased(member));
+        DataControllerDTO.DataDetailDTO responseDTO = converter.toControllerDataDetailDto(data,
+            data.isPurchased(member));
 
         return ApiResponse.onSuccess(Status.OK.getCode(), Status.OK.getMessage(), responseDTO);
     }
 
-    @PatchMapping(value = "/{dataId}", consumes = { "multipart/form-data" })
+    @PatchMapping(value = "/{dataId}", consumes = {"multipart/form-data"})
     @Operation(summary = "설문장터 수정")
     public ApiResponse<Object> editData(
         @ModelAttribute DataControllerDTO.EditDataRequestDTO requestDTO,
