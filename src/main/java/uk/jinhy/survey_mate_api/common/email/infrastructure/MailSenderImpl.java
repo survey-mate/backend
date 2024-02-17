@@ -37,7 +37,7 @@ public class MailSenderImpl implements MailSender {
             .property(Emailv31.MESSAGES, new JSONArray()
                 .put(new JSONObject()
                     .put(Emailv31.Message.FROM, new JSONObject()
-                        .put("Email", "no_reply@jinhy.uk")
+                        .put("Email", "no_reply@sleigh.college")
                         .put("Name", "썰매(Survey Mate)"))
                     .put(Emailv31.Message.TO, new JSONArray()
                         .put(new JSONObject()
