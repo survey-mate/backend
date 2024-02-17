@@ -22,7 +22,7 @@ import uk.jinhy.survey_mate_api.common.response.Status;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 public class AuthController {
 
     private final AuthService authService;

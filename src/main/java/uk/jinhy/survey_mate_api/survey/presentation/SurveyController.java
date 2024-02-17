@@ -29,7 +29,7 @@ import uk.jinhy.survey_mate_api.survey.presentation.converter.SurveyConverter;
 import uk.jinhy.survey_mate_api.survey.presentation.dto.SurveyControllerDTO;
 
 @RequiredArgsConstructor
-@RequestMapping("/survey")
+@RequestMapping("/api/survey")
 @RestController
 @PreAuthorize("hasRole('USER')")
 public class SurveyController {
