@@ -122,7 +122,7 @@ public class AuthController {
             Status.OK.getMessage(), null);
     }
 
-    @DeleteMapping("/account")
+    @PostMapping("/account")
     @Operation(summary = "회원 탈퇴")
     public ApiResponse<?> deleteAccount(
         @RequestBody AuthControllerDTO.DeleteAccountRequestDTO requestDTO
