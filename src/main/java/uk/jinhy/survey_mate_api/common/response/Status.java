@@ -19,7 +19,8 @@ public enum Status {
     SURVEY_NOT_FOUND(HttpStatus.NOT_FOUND, "SURVEY404", "설문조사를 찾을 수 없습니다."),
     WRONG_PERIOD_VALUE(HttpStatus.BAD_REQUEST, "SURVEY4000", "잘못된 설문조사 기간입니다."),
     BAD_SURVEY_FORM_LINK(HttpStatus.BAD_REQUEST, "SURVEY4001", "잘못된 설문조사 링크입니다."),
-    WRONG_REGISTRANT(HttpStatus.FORBIDDEN, "SURVEY403", "설문조사를 만든 사용자가 아닙니다."),
+    WRONG_REGISTRANT(HttpStatus.FORBIDDEN, "SURVEY4031", "설문조사를 만든 사용자가 아닙니다."),
+    NON_STUDENT_REGISTRANT(HttpStatus.FORBIDDEN, "SURVEY4032", "설문조사는 학생만 생성 가능합니다."),
     ALREADY_ANSWERED(HttpStatus.CONFLICT, "SURVEY409", "이미 응답한 설문조사입니다."),
 
     MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "MEMBER404", "해당 아이디는 존재하지 않습니다."),
