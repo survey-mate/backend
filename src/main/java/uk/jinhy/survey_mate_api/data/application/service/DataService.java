@@ -115,7 +115,7 @@ public class DataService {
                 .orElseThrow(() -> new GeneralException(Status.DATA_NOT_FOUND));
     }
 
-    public List<Data> getDataList() { return dataRepository.findAll(Sort.by(Sort.Direction.DESC, "createdAt")); }
+    public List<Data> getDataList() { return dataRepository.findAll(); }
 
     public List<Data> getDataListAsBuyer(Member buyer) {
         return dataRepository.findByBuyer(buyer);
