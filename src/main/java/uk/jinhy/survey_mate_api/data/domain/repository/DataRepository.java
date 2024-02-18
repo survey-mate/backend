@@ -14,6 +14,11 @@ public interface DataRepository extends JpaRepository<Data, Long> {
     Optional<Data> findByDataId(Long id);
 
     @Query("select data from Data data "
+            + "where data.isDeleted = false"
+            + " order by data.createdAt desc")
+    List<Data> findAll();
+
+    @Query("select data from Data data "
             + "where data.seller = :member and data.isDeleted = false"
             + " order by data.createdAt desc")
     List<Data> findBySeller(Member member);
