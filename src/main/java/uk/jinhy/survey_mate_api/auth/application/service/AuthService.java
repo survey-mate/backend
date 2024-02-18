@@ -86,7 +86,7 @@ public class AuthService {
             .EarnPointDTO
             .builder()
             .description("회원가입 축하 포인트")
-            .amount(20L)
+            .amount(100L)
             .build();
 
         statementService.earnPoint(member, earnPointDTO);

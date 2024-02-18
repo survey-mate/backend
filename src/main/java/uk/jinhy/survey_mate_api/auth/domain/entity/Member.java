@@ -105,7 +105,7 @@ public class Member {
     }
 
     public void setIsStudent(String emailAddress) {
-        if (emailAddress.matches(".*\\.(ac\\.kr|edu)$")) {
+        if (emailAddress.matches(".*\\.(ac\\.kr|edu)$") || emailAddress.matches(".*@(ewhain\\.net)")) {
             this.setIsStudent(true);
         } else {
             this.setIsStudent(false);
