@@ -21,7 +21,7 @@ public class SurveyServiceFacadeImpl implements SurveyServiceFacade {
     @Transactional
     public Survey createSurvey(Member registrant, SurveyCommandServiceDTO.CreateSurveyDTO dto) {
         if (!registrant.isStudent()) {
-            throw new GeneralException(Status.WRONG_REGISTRANT);
+            throw new GeneralException(Status.NON_STUDENT_REGISTRANT);
         }
         StatementServiceDTO.PayPointDTO payPointDTO = StatementServiceDTO
             .PayPointDTO
