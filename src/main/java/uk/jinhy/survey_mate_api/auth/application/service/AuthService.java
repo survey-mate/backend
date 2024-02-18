@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import uk.jinhy.survey_mate_api.auth.application.dto.AuthServiceDTO;
@@ -28,6 +29,7 @@ import uk.jinhy.survey_mate_api.statement.application.service.StatementService;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class AuthService {
 
     private final MemberRepository memberRepository;
@@ -98,8 +100,11 @@ public class AuthService {
         String id = dto.getId();
         String password = dto.getPassword();
 
-        if (!memberRepository.existsByMemberId(id)) {
-            throw new GeneralException(Status.MEMBER_NOT_FOUND);
+        Member member = memberRepository.findById(id)
+                .orElseThrow(() -> new GeneralException(Status.MEMBER_NOT_FOUND));
+
+        if (!passwordEncoder.matches(password, member.getPassword())) {
+            throw new GeneralException(Status.PASSWORD_INCORRECT);
         }
 
         return AuthControllerDTO.JwtResponseDTO.builder()
