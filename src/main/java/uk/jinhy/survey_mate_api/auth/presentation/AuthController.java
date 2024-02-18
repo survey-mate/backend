@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import uk.jinhy.survey_mate_api.auth.application.dto.AuthServiceDTO;
 import uk.jinhy.survey_mate_api.auth.application.service.AuthService;
@@ -158,10 +159,10 @@ public class AuthController {
             Status.OK.getMessage(), null);
     }
 
-    @GetMapping("/nickname/{nickname}")
+    @GetMapping("/nickname/check")
     @Operation(summary = "닉네임 중복 확인")
     public ApiResponse<?> checkNickname(
-        @PathVariable("nickname") String nickname) {
+        @RequestParam(name = "nickname") String nickname) {
         boolean isExist = authService.checkNickname(nickname);
         AuthControllerDTO.IsNicknameExistResponseDTO responseDTO
             = AuthControllerDTO.IsNicknameExistResponseDTO.builder()
