@@ -4,6 +4,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import uk.jinhy.survey_mate_api.auth.domain.entity.Member;
+import uk.jinhy.survey_mate_api.common.response.Status;
+import uk.jinhy.survey_mate_api.common.response.exception.GeneralException;
 import uk.jinhy.survey_mate_api.statement.application.dto.StatementServiceDTO;
 import uk.jinhy.survey_mate_api.statement.application.service.StatementService;
 import uk.jinhy.survey_mate_api.survey.application.dto.SurveyCommandServiceDTO;
@@ -18,6 +20,9 @@ public class SurveyServiceFacadeImpl implements SurveyServiceFacade {
 
     @Transactional
     public Survey createSurvey(Member registrant, SurveyCommandServiceDTO.CreateSurveyDTO dto) {
+        if (!registrant.isStudent()) {
+            throw new GeneralException(Status.WRONG_REGISTRANT);
+        }
         StatementServiceDTO.PayPointDTO payPointDTO = StatementServiceDTO
             .PayPointDTO
             .builder()
