@@ -45,7 +45,7 @@ public class SecurityConfig {
         "/api/auth/password/certification",
         "/api/auth/password/certification-request",
         "/api/auth/password/reset",
-        "/api/auth/nickname/**",
+        "/api/auth/nickname/*",
         "/error",
         "/v2/api-docs",
         "/swagger-resources/**",
